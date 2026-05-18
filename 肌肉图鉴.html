@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b03a2e">
+<title>肌肉图鉴 · 34 块训练肌肉 3D 对照</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --line-2:#d6cfbe; --accent:#b03a2e; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7; font-size:15px;
+    padding:28px 18px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:920px; margin:0 auto;}
+  header{text-align:center; margin-bottom:22px;}
+  .tag{font-size:11px; letter-spacing:.32em; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:26px; margin:6px 0 4px; letter-spacing:1px;}
+  header .sub{color:var(--muted); font-size:13.5px;}
+
+  section{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-bottom:18px;
+  }
+  section h2{font-size:18px; color:var(--accent); letter-spacing:1px; margin-bottom:4px;}
+  section .lead{color:var(--muted); font-size:13px; margin-bottom:14px;}
+
+  /* 3D 模型入口卡片 */
+  .model-cards{display:flex; flex-direction:column; gap:9px; margin:4px 0 12px;}
+  .model-card{
+    display:flex; align-items:center; gap:13px; text-decoration:none; color:inherit;
+    background:var(--paper-2); border:1px solid var(--line-2); border-radius:12px;
+    padding:13px 15px; transition:.12s;
+  }
+  .model-card:active,.model-card:hover{background:var(--accent-light); border-color:var(--accent);}
+  .model-card .mc-icon{font-size:24px; flex:none;}
+  .model-card div b{font-size:14.5px;}
+  .model-card div span{display:block; font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .model-card .mc-arrow{margin-left:auto; color:var(--accent); font-size:18px; flex:none;}
+  .model-note{
+    font-size:12px; color:var(--ink-2); background:var(--soft-yellow);
+    border:1px solid #f0e2b8; border-radius:8px; padding:10px 13px; margin-top:4px; line-height:1.6;
+  }
+  .model-note a{color:var(--accent);}
+
+  /* 区域 + 肌肉表 */
+  .region{margin-bottom:16px;}
+  .region:last-child{margin-bottom:0;}
+  .region-head{
+    display:flex; align-items:baseline; gap:8px; margin-bottom:6px;
+    padding-bottom:4px; border-bottom:2px solid var(--accent-light);
+  }
+  .region-head .icon{font-size:17px;}
+  .region-head .name{font-size:15.5px; font-weight:700; color:var(--accent);}
+  .region-head .cnt{font-size:11.5px; color:var(--muted);}
+  table{width:100%; border-collapse:collapse;}
+  th,td{text-align:left; padding:7px 9px; vertical-align:top; font-size:13px;}
+  th{
+    background:#f7f1e3; color:var(--ink-2); font-size:11.5px; font-weight:600;
+    letter-spacing:.3px;
+  }
+  td{border-bottom:1px solid var(--line);}
+  tr:last-child td{border-bottom:0;}
+  .m-cn{font-weight:600; color:var(--ink); white-space:nowrap;}
+  .m-en{color:var(--muted); font-size:11.5px; font-style:italic;}
+  .col-cn{width:21%;} .col-en{width:21%;} .col-loc{width:36%;} .col-fn{width:22%;}
+
+  @media (max-width:680px){
+    body{padding:20px 12px;}
+    section{padding:15px 13px;}
+    table,thead,tbody,tr,td{display:block; width:100%;}
+    thead{display:none;}
+    tr{border:1px solid var(--line); border-radius:9px; padding:8px 10px; margin-bottom:8px;}
+    td{border:0; padding:2px 0;}
+    td::before{content:attr(data-l)" · "; color:var(--muted); font-size:11px;}
+    .m-cn{white-space:normal;}
+  }
+  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="tag">MUSCLE ATLAS</div>
+    <h1>肌肉图鉴</h1>
+    <p class="sub">本训练系统用到的 34 块肌肉 · 10 个区域 · 3D 模型 + 解剖位置对照</p>
+  </header>
+
+  <!-- 3D 模型 -->
+  <section>
+    <h2>① 看 3D 肌肉模型</h2>
+    <p class="lead">为什么这里不直接嵌一个 3D 模型？因为你现在是<b>直接打开本地文件</b>（地址栏是 file://）——浏览器会拦截外部 3D 内容内嵌，硬嵌进来只会是个黑框（你之前遇到的就是这个）。在线 3D 模型必须等整站<b>托管上线</b>后才能内嵌显示。<br>
+    下面这几个按钮会在<b>新标签页</b>打开真正的 3D 模型——这个<b>现在就能用</b>，点开就是可旋转、可缩放的全身肌肉 3D。</p>
+    <div class="model-cards">
+      <a class="model-card" href="https://www.zygotebody.com/" target="_blank" rel="noopener">
+        <div class="mc-icon">🧍</div>
+        <div><b>Zygote Body</b><span>免费在线 3D 人体，可逐层剥开看肌肉，无需注册 — 最推荐先用这个</span></div>
+        <div class="mc-arrow">↗</div>
+      </a>
+      <a class="model-card" href="https://anatomy.biodigital.com/muscular-system" target="_blank" rel="noopener">
+        <div class="mc-icon">🫀</div>
+        <div><b>BioDigital · 肌肉系统</b><span>医学级 3D 解剖，可点选每块肌肉看名称</span></div>
+        <div class="mc-arrow">↗</div>
+      </a>
+      <a class="model-card" href="https://anatomy3datlas.com/" target="_blank" rel="noopener">
+        <div class="mc-icon">📕</div>
+        <div><b>Anatomy 3D Atlas</b><span>高细节 3D 解剖图谱，任意角度观察</span></div>
+        <div class="mc-arrow">↗</div>
+      </a>
+      <a class="model-card" href="https://sketchfab.com/3d-models/anatomy-of-the-human-muscular-system-75cc6aa94b5c4ed88f9810770d614ac1" target="_blank" rel="noopener">
+        <div class="mc-icon">💪</div>
+        <div><b>Sketchfab · 人体肌肉系统</b><span>可旋转缩放的全身肌肉 3D 模型</span></div>
+        <div class="mc-arrow">↗</div>
+      </a>
+    </div>
+    <div class="model-note">💡 等你把整站托管上线（参考之前说的 Netlify）之后告诉我——我可以把可旋转的 3D 模型<b>直接嵌回这个页面</b>，不用再跳出去。在那之前，用上面的按钮打开 + 配合下面第 ② 部分的对照表，完全够用；对照表是纯本地内容，永远不会黑框。</div>
+  </section>
+
+  <!-- 34 块对照表 -->
+  <section>
+    <h2>② 34 块肌肉 · 区域对照表</h2>
+    <p class="lead">把我们训练系统里的中文细分名，对应到标准解剖名、身体位置和主要功能。「位置 / 怎么辨认」一列帮你在上面的 3D 模型里找到它。</p>
+    <div id="atlas"></div>
+  </section>
+
+  <!-- 覆盖度评估 -->
+  <section>
+    <h2>③ 覆盖度评估 · 我们这 34 块够不够全？</h2>
+    <p class="lead">先把"全身一共多少肌肉"这件事说清楚，再看我们当前监控的 34 块在健身相关的肌肉里占多大比例。</p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px;">
+      <div style="flex:1;min-width:170px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:.5px;">全身骨骼肌</div>
+        <div style="font-size:22px;font-weight:700;color:var(--ink);">~600–840 块</div>
+        <div style="font-size:11px;color:var(--muted);">命名口径不同；常见说法 ~700</div>
+      </div>
+      <div style="flex:1;min-width:170px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:.5px;">健身相关 / 可主动训练</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent);">~45–50 块</div>
+        <div style="font-size:11px;color:var(--muted);">其余多为面部/咀嚼/足底内在/内脏等</div>
+      </div>
+      <div style="flex:1;min-width:170px;background:var(--accent-light);border:1px solid var(--accent);border-radius:10px;padding:11px 14px;">
+        <div style="font-size:11px;color:var(--accent);letter-spacing:.5px;">本系统当前监控</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent);">34 块</div>
+        <div style="font-size:11px;color:#7a3a30;">覆盖约 70%，主要肌群基本齐</div>
+      </div>
+    </div>
+
+    <p>为什么"全身 700 块"和"健身相关 50 块"差这么多？因为人体里大部分肌肉不在健身训练范围内：<b>面部表情肌、咀嚼肌、舌头、咽喉、眼外肌、足底内在肌、各种深层小稳定肌、内脏平滑肌、心肌</b>——这些要么不可自主控制，要么没有针对性训练动作。健身真正"练得到、量得到"的，就是这 40 多块。</p>
+
+    <h3>未覆盖但健身相关的肌肉清单</h3>
+    <p class="lead">分三档：🔴 <b>建议加</b>（有专门动作能练、训练相关性高）；🟡 <b>可选</b>（功能跟已收录的肌肉重叠，常被代表）；⚪ <b>不必单列</b>（不训练 / 已合并 / 非健身相关）。</p>
+
+    <table>
+      <thead><tr><th style="width:8%">优先</th><th style="width:22%">肌肉</th><th style="width:11%">区域</th><th style="width:30%">功能 / 为什么重要</th><th>典型训练动作</th></tr></thead>
+      <tbody>
+        <tr><td>🔴</td><td><b>前锯肌</b><br><span class="m-en">Serratus anterior</span></td><td>背 / 肩胛</td><td>肩胛前伸 + 上回旋。圆肩、翼状肩胛的关键肌；推举/倒立稳定的基础</td><td>Push-up plus、哑铃直臂前推、负重熊爬</td></tr>
+        <tr><td>🔴</td><td><b>大圆肌</b><br><span class="m-en">Teres major</span></td><td>背</td><td>肩内收 + 内旋。下拉/划船里参与度很高，常被并入背阔肌但实际工作量大</td><td>引体、高位下拉、划船（已在做）</td></tr>
+        <tr><td>🔴</td><td><b>腰方肌（QL）</b><br><span class="m-en">Quadratus lumborum</span></td><td>腰 / 核心</td><td>抗侧屈、骨盆稳定。单侧负重和侧桥的主练肌；下背痛的常见相关肌</td><td>侧桥、农夫行走（单侧）、单侧哑铃下蹲</td></tr>
+        <tr><td>🔴</td><td><b>肱肌</b><br><span class="m-en">Brachialis</span></td><td>手臂</td><td>纯粹的屈肘肌（不参与前臂旋转），藏在肱二头肌下面，体积可观</td><td>锤式弯举、反握弯举、TRX 弯举</td></tr>
+        <tr><td>🔴</td><td><b>肱桡肌</b><br><span class="m-en">Brachioradialis</span></td><td>手臂</td><td>前臂中立位时屈肘最强；锤式弯举主力之一</td><td>锤式弯举、反握弯举</td></tr>
+        <tr><td>🔴</td><td><b>胫骨后肌</b><br><span class="m-en">Tibialis posterior</span></td><td>小腿（深层）</td><td>踝跖屈 + 足内翻，维持足弓。跑者足弓塌陷常和它弱有关</td><td>足内翻抗阻、单腿提踵 + 内翻</td></tr>
+        <tr><td>🔴</td><td><b>胸小肌</b><br><span class="m-en">Pectoralis minor</span></td><td>胸（深层）</td><td>肩胛前倾 + 下回旋。过紧是圆肩的主因之一</td><td>主要靠拉伸 / 松解管理，而不是练强</td></tr>
+        <tr><td>🔴</td><td><b>颈部肌群</b><br><span class="m-en">SCM + cervical extensors</span></td><td>颈</td><td>颈屈 / 伸 / 旋。久坐人群的"乌龟颈"和它直接相关</td><td>颈四向抗阻、靠墙颈拉伸</td></tr>
+        <tr><td>🟡</td><td>多裂肌 <span class="m-en">Multifidus</span></td><td>腰 / 核心</td><td>深层脊柱稳定。鸟狗、死虫激活它，但和「竖脊肌」功能重叠</td><td>鸟狗、死虫</td></tr>
+        <tr><td>🟡</td><td>臀小肌 <span class="m-en">Gluteus minimus</span></td><td>臀</td><td>髋外展、稳定，功能跟臀中肌几乎一样</td><td>蚌式、侧抬腿（同臀中肌）</td></tr>
+        <tr><td>🟡</td><td>股二头肌-短头 <span class="m-en">Biceps femoris short head</span></td><td>大腿后</td><td>只屈膝（不跨髋），坐姿腿弯举侧重它</td><td>坐姿腿弯举</td></tr>
+        <tr><td>🟡</td><td>缝匠肌 <span class="m-en">Sartorius</span></td><td>大腿前 / 髋</td><td>屈髋+屈膝+外旋的细长肌，功能被髂腰肌+股直肌+内收肌覆盖</td><td>侧弓步、单腿瑜伽姿势</td></tr>
+        <tr><td>🟡</td><td>跖肌 <span class="m-en">Plantaris</span></td><td>小腿</td><td>小腿后侧的小肌，和腓肠肌一起，可有可无</td><td>提踵附带</td></tr>
+        <tr><td>⚪</td><td>肩袖 4 块（冈上 / 冈下 / 小圆 / 肩胛下）</td><td>肩</td><td>已被收录为「<b>肩袖肌群</b>」一个组——不展开</td><td>面拉、外旋训练</td></tr>
+        <tr><td>⚪</td><td>趾屈/伸肌、足底内在肌</td><td>足</td><td>非健身训练范围</td><td>—</td></tr>
+        <tr><td>⚪</td><td>肋间肌、深层颈小肌</td><td>躯干 / 颈</td><td>呼吸 / 姿态相关，不主动训练</td><td>—</td></tr>
+        <tr><td>⚪</td><td>面部肌、咀嚼肌、舌、咽喉</td><td>头</td><td>不在健身训练范围</td><td>—</td></tr>
+        <tr><td>⚪</td><td>内脏平滑肌、心肌</td><td>—</td><td>不可主动训练</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="model-note" style="background:#e3f1e6;border-color:#bcdcc4;color:#2a4a30;">
+      <b>整体结论：</b>34 块覆盖了 <b>所有"练得到、量得到"的主要肌群</b>——胸/背/肩/手臂/核心/下肢都齐了。真正应该补的是 🔴 那 8 块，尤其 <b>前锯肌、大圆肌、腰方肌、肱肌、肱桡肌</b>，加上它们之后系统就接近完整。
+    </div>
+    <div class="model-note">
+      要把🔴那批加进训练系统吗？告诉我，我把它们写进训练数据库.js 的肌肉表（含 MEV/MAV/MRV）和相关动作的贡献系数（比如肱肌/肱桡肌要并入弯举类、前锯肌要并入推举类）。这是个数据库扩展+所有页面联动的活，不是改一处就行的。
+    </div>
+    <p class="ref">数据来源：<a href="https://en.wikipedia.org/wiki/List_of_skeletal_muscles_of_the_human_body" target="_blank" rel="noopener">Wikipedia · 人体骨骼肌列表</a> · <a href="https://www.healthline.com/health/how-many-muscles-are-in-the-human-body" target="_blank" rel="noopener">Healthline · 人体肌肉数量</a>。健身相关肌肉数量 (~45–50) 是按 NSCA / ACE 健身解剖教材通常覆盖的范围估算。</p>
+  </section>
+
+  <footer>肌肉名称与分区与「训练数据库.js」一致 · 3D 模型为第三方公开资源，仅作位置参考</footer>
+</div>
+
+<script>
+// 34 块肌肉数据：[中文名, 英文/解剖名, 位置怎么辨认, 主要功能]
+const ATLAS = [
+  { region:'胸', icon:'🔴', muscles:[
+    ['胸大肌-上部','Pectoralis major · clavicular head','胸前靠锁骨那一束，上斜推时主要发力','肩屈、手臂水平内收'],
+    ['胸大肌-中下部','Pectoralis major · sternocostal head','胸前主体，从胸骨横铺到上臂，平板/下斜推主力','水平内收、肩内收'],
+  ]},
+  { region:'背', icon:'🟢', muscles:[
+    ['背阔肌','Latissimus dorsi','后背两侧最大的扇形肌，从下背连到上臂，"背宽"靠它','肩内收、肩伸（下拉/划船）'],
+    ['菱形肌','Rhomboids','两块肩胛骨之间的深层肌，被斜方肌盖住','肩胛后缩、内收'],
+    ['斜方肌-上部','Upper trapezius','脖子两侧连到肩峰，耸肩时鼓起来的那块','肩胛上提'],
+    ['斜方肌-中下部','Mid / lower trapezius','肩胛骨之间和下方，菱形铺在上背','肩胛后缩、下沉'],
+    ['竖脊肌','Erector spinae','沿脊柱两侧、从骶骨到颈部的长条肌群','脊柱伸展、抗弯曲'],
+  ]},
+  { region:'肩', icon:'🟡', muscles:[
+    ['三角肌前束','Anterior deltoid','肩膀正前面那束，推举时摸得到','肩屈、水平内收'],
+    ['三角肌中束','Lateral / middle deltoid','肩膀正侧面，决定肩"宽"的那束','肩外展'],
+    ['三角肌后束','Posterior deltoid','肩膀正后面那束','肩水平外展、肩伸'],
+    ['肩袖肌群','Rotator cuff','肩关节深层 4 块小肌（冈上/冈下/小圆/肩胛下）','肩内外旋、稳定肩关节'],
+  ]},
+  { region:'手臂', icon:'🟠', muscles:[
+    ['肱二头肌','Biceps brachii','上臂前侧，弯举时鼓起来的那块','屈肘、前臂旋后'],
+    ['肱三头肌-长头','Triceps brachii · long head','上臂后侧偏内那束，唯一跨过肩关节','伸肘、肩伸'],
+    ['肱三头肌-外侧+内侧头','Triceps · lateral & medial heads','上臂后侧外侧 + 深层两束','伸肘'],
+    ['前臂','Forearm flexors / extensors','肘到手腕的一圈肌，握力相关','屈腕伸腕、握力'],
+  ]},
+  { region:'腰腹', icon:'🔵', muscles:[
+    ['腹直肌','Rectus abdominis','肚子正面的"六块腹肌"','躯干屈曲'],
+    ['腹斜肌','Obliques · internal & external','腰两侧斜向走行的肌','躯干旋转、侧屈'],
+    ['腹横肌','Transverse abdominis','最深层，像束腰带一样横裹腹腔','收紧腹内压、稳定躯干'],
+    ['髂腰肌（髋屈肌）','Iliopsoas','从腰椎/骨盆深层连到大腿根','屈髋'],
+  ]},
+  { region:'大腿前', icon:'🦵', muscles:[
+    ['股四头肌-外侧+中间头','Vastus lateralis + intermedius','大腿前侧的外侧束和深层束，深蹲主力','伸膝'],
+    ['股直肌','Rectus femoris','大腿前侧正中那束，唯一跨髋、膝两个关节','伸膝、屈髋'],
+    ['股内侧肌-VMO','Vastus medialis（VMO）','大腿前侧靠膝盖内侧的泪滴状隆起','伸膝、稳定髌骨'],
+  ]},
+  { region:'大腿后', icon:'🟤', muscles:[
+    ['腘绳肌-股二头长头','Biceps femoris · long head','大腿后侧偏外那束','屈膝、伸髋'],
+    ['腘绳肌-半腱+半膜','Semitendinosus + semimembranosus','大腿后侧偏内的两束','屈膝、伸髋'],
+  ]},
+  { region:'臀', icon:'🍑', muscles:[
+    ['臀大肌-上部','Gluteus maximus · upper fibers','臀部上方那部分','伸髋、髋外旋'],
+    ['臀大肌-下部','Gluteus maximus · lower fibers','臀部下方那部分，臀推顶端强收缩','伸髋'],
+    ['臀中肌','Gluteus medius','髋骨外上方、部分被臀大肌盖住，单腿稳定靠它','髋外展、骨盆稳定'],
+  ]},
+  { region:'髋', icon:'⭕', muscles:[
+    ['内收肌群','Hip adductors','大腿内侧的一组肌','髋内收'],
+    ['髋外展肌-TFL','Tensor fasciae latae','髋骨前外侧的小肌，连着髂胫束','髋外展、屈髋'],
+    ['髋深层旋转肌','Deep hip external rotators','臀部深层的一组小肌（梨状肌等）','髋外旋、稳定髋关节'],
+  ]},
+  { region:'小腿', icon:'🦶', muscles:[
+    ['腓肠肌','Gastrocnemius','小腿后侧表层那两个"腿肚子"隆起','踝跖屈、屈膝'],
+    ['比目鱼肌','Soleus','腓肠肌深层的扁平肌，坐姿提踵主要练它','踝跖屈'],
+    ['胫骨前肌','Tibialis anterior','小腿前外侧、胫骨旁边那条','踝背屈'],
+    ['腓骨长短肌','Peroneus longus / brevis','小腿外侧','踝外翻、稳定踝关节'],
+  ]},
+];
+
+const box = document.getElementById('atlas');
+let total = 0;
+ATLAS.forEach(g => {
+  const rows = g.muscles.map(m => `
+    <tr>
+      <td class="col-cn" data-l="肌肉"><span class="m-cn">${m[0]}</span></td>
+      <td class="col-en" data-l="解剖名"><span class="m-en">${m[1]}</span></td>
+      <td class="col-loc" data-l="位置 / 怎么辨认">${m[2]}</td>
+      <td class="col-fn" data-l="主要功能">${m[3]}</td>
+    </tr>`).join('');
+  total += g.muscles.length;
+  box.insertAdjacentHTML('beforeend', `
+    <div class="region">
+      <div class="region-head">
+        <span class="icon">${g.icon}</span>
+        <span class="name">${g.region}</span>
+        <span class="cnt">${g.muscles.length} 块</span>
+      </div>
+      <table>
+        <thead><tr>
+          <th class="col-cn">肌肉（我们的体系）</th>
+          <th class="col-en">英文 / 解剖名</th>
+          <th class="col-loc">位置 / 怎么辨认</th>
+          <th class="col-fn">主要功能</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`);
+});
+</script>
+</body>
+</html>

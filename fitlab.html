@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FitLab">
+<meta name="theme-color" content="#b03a2e">
+<link rel="manifest" href="fitlab-manifest.json">
+<title>FitLab</title>
+<style>
+:root{
+  --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+  --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+  --line:#e8e3d8; --line-2:#d6cfbe; --accent:#b03a2e; --accent-light:#fbe7e1;
+  --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8; --good:#2d6e3a;
+  --p1:#2f5d8d; --p2:#b03a2e; --p3:#c08a2e;
+  --tab-h:60px;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%; overflow:hidden;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.6; font-size:15px;
+}
+#app{
+  height:100vh; height:100dvh;
+  padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom));
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.screen{padding:18px 16px 24px; max-width:540px; margin:0 auto;}
+
+/* Header */
+.scr-head{display:flex; align-items:baseline; gap:10px; margin-bottom:6px;}
+.scr-head h1{font-size:22px; flex:1;}
+.scr-sub{font-size:12.5px; color:var(--muted); margin-bottom:14px;}
+.back-btn{
+  color:var(--accent); background:transparent; border:0; padding:5px 0; font-size:14px;
+  cursor:pointer; font-weight:500;
+}
+
+/* Tab bar */
+#tabbar{
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+  display:flex; padding:6px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index:100;
+}
+#tabbar .tab{
+  flex:1; text-align:center; font-size:11px; color:var(--muted);
+  padding:4px 0; cursor:pointer; user-select:none;
+}
+#tabbar .tab.active{color:var(--accent);}
+#tabbar .tab .ico{font-size:22px; display:block; line-height:1.2;}
+
+/* Cards */
+.card{
+  background:var(--paper); border:1px solid var(--line); border-radius:12px;
+  padding:14px 16px; margin:8px 0;
+}
+.card.accent{background:var(--accent-light); border-color:var(--accent);}
+.card.gold{background:var(--soft-yellow); border-color:#f0e2b8;}
+.card.green{background:#e3f1e6; border-color:#bcdcc4;}
+.card.blue{background:var(--soft-blue); border-color:#c5d4e3;}
+.card.muted{background:var(--paper-2);}
+.card .title{font-weight:700; font-size:15px;}
+.card .meta{font-size:12px; color:var(--muted); margin-top:2px;}
+
+/* Today big card */
+.today-card{
+  background:var(--paper); border:2px solid var(--accent); border-radius:14px;
+  padding:16px 18px; margin:10px 0 14px;
+}
+.today-card .label{font-size:11px; color:var(--accent); font-weight:700; letter-spacing:.2em; text-transform:uppercase;}
+.today-card .head{font-size:17px; font-weight:700; margin-top:4px;}
+.today-card .phase{font-size:12.5px; color:var(--muted); margin-top:2px;}
+.today-card .movs{font-size:12.5px; margin:10px 0; color:var(--ink-2); line-height:1.65;}
+
+/* Buttons */
+.btn{
+  width:100%; padding:13px 16px; font-size:14.5px; font-weight:600;
+  background:var(--accent); color:#fff; border:0; border-radius:10px;
+  cursor:pointer; margin:6px 0; -webkit-appearance:none;
+}
+.btn:active{opacity:.85;}
+.btn.secondary{background:var(--paper); color:var(--accent); border:1px solid var(--accent);}
+.btn.ghost{background:transparent; color:var(--accent); border:0;}
+
+/* Section heading */
+.sec-h{font-size:13px; color:var(--accent); font-weight:700; margin:18px 0 6px;}
+
+/* List item */
+.list-item{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 14px; background:var(--paper);
+  border-bottom:1px solid var(--line);
+  border-radius:0;
+  cursor:pointer;
+}
+.list-item:first-of-type{border-radius:10px 10px 0 0;}
+.list-item:last-of-type{border-bottom:0; border-radius:0 0 10px 10px;}
+.list-item.single{border-radius:10px;}
+.list-item .ico{width:28px; text-align:center; font-size:18px; flex:none;}
+.list-item .lbl{flex:1; font-size:14px;}
+.list-item .meta{font-size:11.5px; color:var(--muted);}
+.list-item .chev{color:var(--muted); font-size:18px;}
+.list-group{background:var(--paper); border:1px solid var(--line); border-radius:10px; margin:8px 0;}
+
+/* Grid (我的) */
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+.grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
+.grid-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:14px 10px; text-align:center; cursor:pointer;
+}
+.grid-card .ico{font-size:26px; display:block;}
+.grid-card .lbl{font-size:12.5px; font-weight:600; margin-top:5px;}
+.grid-card .meta{font-size:10.5px; color:var(--muted); margin-top:2px;}
+
+/* KPI */
+.kpi-row{display:flex; gap:8px; margin:10px 0;}
+.kpi{
+  flex:1; background:var(--paper-2); border-radius:10px; padding:9px 8px;
+  text-align:center; border:1px solid var(--line);
+}
+.kpi b{display:block; font-size:18px; color:var(--accent); line-height:1.1;}
+.kpi span{font-size:10.5px; color:var(--muted);}
+
+/* Time chips (复盘) */
+.time-chips{display:flex; gap:6px; overflow-x:auto; margin:6px 0 14px; padding-bottom:4px;}
+.time-chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:none; padding:6px 14px; border-radius:20px;
+  font-size:12.5px; background:var(--paper); border:1px solid var(--line);
+  color:var(--ink-2); cursor:pointer;
+}
+.chip.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+/* Coach quote */
+.coach{
+  background:var(--soft-yellow); border:1px solid #f0e2b8;
+  border-radius:10px; padding:11px 14px; margin:10px 0;
+  color:#7a5a1f; font-size:13px; line-height:1.65;
+}
+.coach .label{font-size:11px; font-weight:700; margin-bottom:3px;}
+.coach b{color:#5a3a0e;}
+
+/* Note */
+.note{
+  background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:8px;
+  padding:10px 13px; font-size:12.5px; color:#7a5a1f; margin:10px 0;
+}
+
+/* Training record - action card */
+.act-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin:8px 0; transition:.15s;
+}
+.act-card.done{background:#e3f1e6; border-color:#bcdcc4;}
+.act-card.active{background:var(--paper); border:2px solid var(--accent);}
+.act-card.pending{opacity:.5;}
+.act-head{display:flex; gap:8px; align-items:center; font-size:14.5px; font-weight:600;}
+.act-head .st{font-size:18px; flex:none;}
+.act-head .info{flex:1;}
+.act-head .summary{font-size:11.5px; color:var(--muted); font-weight:normal; margin-left:auto;}
+.act-plan{font-size:11.5px; color:var(--muted); margin-top:4px;}
+
+/* Sets table */
+.sets-tbl{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px;}
+.sets-tbl th,.sets-tbl td{padding:6px 4px; text-align:center; border-bottom:1px solid var(--line);}
+.sets-tbl th{background:#f7f1e3; font-size:11px; color:var(--muted); font-weight:600;}
+.sets-tbl .num-cell{
+  font-size:14px; font-weight:600; padding:4px 6px; border-radius:5px;
+  background:var(--paper-2); cursor:pointer; display:inline-block; min-width:42px;
+}
+.sets-tbl .num-cell.empty{background:transparent; color:var(--muted);}
+.sets-tbl tr.current .num-cell{background:var(--accent-light); border:1px solid var(--accent);}
+
+/* Drum picker modal */
+.modal-bg{
+  position:fixed; inset:0; background:rgba(0,0,0,.5);
+  z-index:200; display:flex; align-items:flex-end; justify-content:center;
+}
+.drum{
+  background:var(--paper); border-radius:14px 14px 0 0; width:100%;
+  max-width:540px; padding:14px 16px calc(20px + env(safe-area-inset-bottom));
+}
+.drum-h{display:flex; align-items:center; padding:0 0 10px; border-bottom:1px solid var(--line);}
+.drum-h .ttl{flex:1; font-size:14px; font-weight:700;}
+.drum-h .ok{color:var(--accent); font-weight:700; font-size:15px; padding:6px 10px;}
+.drum-h .cancel{color:var(--muted); font-size:14px; padding:6px 10px;}
+.drum-wheel{
+  height:200px; overflow-y:scroll; scroll-snap-type:y mandatory;
+  -webkit-overflow-scrolling:touch;
+  position:relative; padding:80px 0;
+}
+.drum-wheel::-webkit-scrollbar{display:none;}
+.drum-wheel .opt{
+  height:40px; line-height:40px; text-align:center;
+  font-size:20px; color:var(--muted); scroll-snap-align:center;
+}
+.drum-wheel .opt.sel{font-size:24px; font-weight:700; color:var(--accent);}
+.drum-bar{
+  position:absolute; left:0; right:0; top:50%; transform:translateY(-50%);
+  height:40px; pointer-events:none;
+  border-top:1px solid var(--accent-light); border-bottom:1px solid var(--accent-light);
+}
+
+/* Select dropdown */
+select.eval{
+  width:100%; padding:6px 8px; font-size:12.5px;
+  border:1px solid var(--line); border-radius:6px; background:var(--paper);
+  -webkit-appearance:none; appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%238a857a'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 8px center;
+  padding-right:24px;
+}
+
+textarea.note-area{
+  width:100%; padding:8px 10px; font-size:12.5px;
+  border:1px solid var(--line); border-radius:6px;
+  font-family:inherit; resize:vertical; min-height:50px;
+}
+
+.expand{
+  font-size:12px; color:var(--accent); padding:8px 4px;
+  border-top:1px dashed var(--line); margin-top:8px; cursor:pointer;
+}
+.expand:before{content:'▾ '; }
+.expand.collapsed:before{content:'▸ '; }
+
+.cues-box{
+  background:var(--soft-blue); border-radius:8px; padding:8px 12px; margin:8px 0;
+  font-size:12px; color:var(--ink-2);
+}
+.cues-box ul{margin:4px 0 0 16px;}
+.cues-box li{margin:2px 0;}
+
+/* Progress bar */
+.prog{height:5px; background:var(--line); border-radius:3px; margin:8px 0; overflow:hidden;}
+.prog > div{height:100%; background:var(--accent); transition:width .25s;}
+
+/* Setup screen */
+.setup-overlay{
+  position:fixed; inset:0; background:var(--bg);
+  z-index:150; padding:24px 18px; overflow-y:auto;
+}
+.setup-overlay h2{font-size:20px; margin-bottom:8px;}
+.setup-overlay p{color:var(--ink-2); font-size:14px; margin:8px 0;}
+.setup-overlay input[type=date]{
+  width:100%; padding:11px 12px; font-size:15px;
+  border:1px solid var(--line); border-radius:8px; background:var(--paper);
+}
+
+/* Empty state */
+.empty{padding:40px 20px; text-align:center; color:var(--muted); font-size:14px;}
+.empty .emoji{font-size:48px; display:block; margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="empty"><span class="emoji">⏳</span>加载中...</div>
+</div>
+
+<nav id="tabbar">
+  <div class="tab" data-route="review"><span class="ico">📊</span>复盘</div>
+  <div class="tab active" data-route="plan"><span class="ico">📋</span>计划</div>
+  <div class="tab" data-route="me"><span class="ico">👤</span>我的</div>
+</nav>
+
+<script src="训练数据库.js"></script>
+<script>
+//=================================================================
+// 1. 数据层 · State / Storage / Migration
+//=================================================================
+const LS_KEY = 'fitlab_v1';
+const LEGACY_KEY = 'gym_handbook_v3';
+
+let state = {
+  version: 1,
+  profile: { name:'', units:'kg' },
+  bodyData: { weight:[], bodyFat:[], measurements:[] },
+  goals: [],
+  plan: null,        // active plan with startDate
+  logs: {},          // moveId -> [{date, weight, reps, sets, rir, e_neural, e_form, e_rom, e_volume, note}]
+  personalization: { mevFactor: 1.0 },
+  settings: { weekStart:'Mon' }
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      state = Object.assign(state, JSON.parse(raw));
+      return;
+    }
+    // Migrate from legacy
+    const legacy = localStorage.getItem(LEGACY_KEY);
+    if (legacy) {
+      const d = JSON.parse(legacy);
+      if (d.logs) state.logs = d.logs;
+      if (d.bodyWeight) state.bodyData.weight.push({date:today(), kg:parseFloat(d.bodyWeight)||0});
+      saveState();
+      console.log('Migrated from gym_handbook_v3');
+    }
+  } catch(e){ console.error(e); }
+}
+
+function saveState() {
+  state.lastUpdated = new Date().toISOString();
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  // Mirror logs back to legacy key so handbook still works
+  try {
+    const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY)||'{}');
+    legacy.logs = state.logs;
+    if (state.bodyData.weight.length) {
+      const last = state.bodyData.weight[state.bodyData.weight.length-1];
+      legacy.bodyWeight = String(last.kg||'');
+    }
+    localStorage.setItem(LEGACY_KEY, JSON.stringify(legacy));
+  } catch(e){}
+}
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+//=================================================================
+// 2. 计划 · 默认 30 节计划模板
+//=================================================================
+const PLAN_TEMPLATE = {
+  name: '30 节增肌',
+  weeks: 10,
+  phases: [
+    { name:'重建适应', weeks:[1,2,3], setsBase:2, setsIso:3, rir:[3,4] },
+    { name:'增肌主训', weeks:[4,5,6,7], setsBase:3, setsIso:3, rir:[1,3] },
+    { name:'强化',     weeks:[8,9],   setsBase:3, setsIso:3, rir:[0,2] },
+    { name:'减载',     weeks:[10],    setsBase:2, setsIso:2, rir:[3,4], weightMult:0.7 }
+  ],
+  courses: {
+    A: ['杠铃后蹲','罗马尼亚硬拉','杠铃臀推','引体向上','帕罗夫推','提踵(站姿)'],
+    B: ['杠铃卧推','杠铃俯身划船','站姿杠铃推举','上斜哑铃卧推','杠铃弯举','哑铃侧平举'],
+    C: ['杠铃前蹲','单臂哑铃划船','双杠臂屈伸','行进弓步','面拉','蚌式']
+  },
+  weeklyAdds: { 5:{C:['俯卧腿弯举']}, 6:{A:['坐姿提踵']} },
+  // Movement → (start_kg, peak_kg) [W1 = start, W9 = peak, W10 = peak*0.7]
+  progression: {
+    '杠铃后蹲':{start:27.5,peak:40},
+    '罗马尼亚硬拉':{start:30,peak:42.5},
+    '杠铃臀推':{start:45,peak:60},
+    '杠铃卧推':{start:15,peak:22.5},
+    '杠铃俯身划船':{start:25,peak:35},
+    '站姿杠铃推举':{start:15,peak:22.5},
+    '上斜哑铃卧推':{start:7,peak:12},
+    '杠铃弯举':{start:12,peak:17.5},
+    '哑铃侧平举':{start:4,peak:6},
+    '杠铃前蹲':{start:15,peak:22.5},
+    '单臂哑铃划船':{start:20,peak:28},
+    '行进弓步':{start:10,peak:15},
+    '面拉':{start:17.5,peak:25},
+    '俯卧腿弯举':{start:10,peak:17.5},
+    '坐姿提踵':{start:15,peak:25}
+  }
+};
+// Isolation set as defaults
+const ISO_MOVS = new Set(['帕罗夫推','提踵(站姿)','蚌式','面拉','哑铃侧平举','坐姿提踵','俯卧腿弯举']);
+
+// Plan helpers
+function getActivePlan() {
+  if (state.plan && state.plan.startDate) return state.plan;
+  return null;
+}
+
+function ensureDefaultPlan(startDate) {
+  state.plan = Object.assign({}, PLAN_TEMPLATE, { startDate });
+  saveState();
+}
+
+function planSessionInfo(plan, n) {
+  const week = Math.floor((n-1)/3) + 1;
+  const course = ['A','B','C'][(n-1)%3];
+  const phase = plan.phases.find(p => p.weeks.includes(week)) || plan.phases[0];
+  return { n, week, course, phase };
+}
+
+function movementsForSession(plan, week, course) {
+  const base = plan.courses[course].slice();
+  // Weekly adds
+  for (let w=1; w<=week; w++) {
+    if (plan.weeklyAdds[w] && plan.weeklyAdds[w][course]) {
+      base.push(...plan.weeklyAdds[w][course]);
+    }
+  }
+  return base;
+}
+
+function weightForMov(plan, mov, week) {
+  const p = plan.progression[mov];
+  if (!p) return null;
+  if (week <= 3) return p.start;
+  if (week >= 4 && week <= 9) {
+    const frac = (week - 4) / 5;
+    return Math.round((p.start + (p.peak - p.start) * frac) * 2) / 2;
+  }
+  if (week === 10) return Math.round(p.peak * 0.7 * 2) / 2;
+  return p.start;
+}
+
+function setsForMov(plan, mov, week) {
+  const phase = plan.phases.find(ph => ph.weeks.includes(week)) || plan.phases[0];
+  const base = ISO_MOVS.has(mov) ? phase.setsIso : phase.setsBase;
+  // 哑铃侧平举 W5+ 升 4 组
+  if (mov === '哑铃侧平举' && week >= 5 && week <= 9) return 4;
+  return base;
+}
+
+function repsForMov(mov, week) {
+  if (mov === '引体向上') return '变式（见笔记）';
+  if (ISO_MOVS.has(mov)) return '12-15';
+  if (week <= 3) return '10';
+  if (week <= 9) return '8-10';
+  return '10';
+}
+
+function rirForWeek(plan, week) {
+  const phase = plan.phases.find(p => p.weeks.includes(week)) || plan.phases[0];
+  return phase.rir.join('-');
+}
+
+// Find which session number is "today"
+function currentSession(plan) {
+  if (!plan || !plan.startDate) return null;
+  const start = new Date(plan.startDate + 'T00:00:00');
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const daysSince = Math.floor((now - start) / 86400000);
+  if (daysSince < 0) return { n: 1, daysUntil: -daysSince };
+  // Sessions Mon/Wed/Fri pattern: day 0 = S1, day 2 = S2, day 4 = S3, day 7 = S4
+  // Simpler: 1 session per 2.33 days avg, but lock to M/W/F
+  // We compute week and session within week
+  const week = Math.floor(daysSince/7) + 1;
+  const dayInWeek = daysSince % 7;
+  let sessIdx;
+  if (dayInWeek <= 1) sessIdx = 0;
+  else if (dayInWeek <= 3) sessIdx = 1;
+  else if (dayInWeek <= 5) sessIdx = 2;
+  else sessIdx = 2; // weekend = still pointing to last session
+  const n = (week-1)*3 + sessIdx + 1;
+  return { n: Math.min(n, 30), daysSince, week, dayInWeek };
+}
+
+//=================================================================
+// 3. 路由 · Hash Router
+//=================================================================
+const routes = {};
+let currentRoute = '';
+
+function route(path, fn) { routes[path] = fn; }
+
+function goto(hash) {
+  if (location.hash === '#/'+hash) render();
+  else location.hash = '#/' + hash;
+}
+
+function render() {
+  const hash = (location.hash || '#/plan').replace('#/','');
+  const [base, ...args] = hash.split('/');
+  currentRoute = base;
+  // Update tabbar
+  document.querySelectorAll('#tabbar .tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.route === base || (base.startsWith('plan') && t.dataset.route === 'plan') || (base.startsWith('train') && t.dataset.route === 'plan'));
+  });
+  // Show tabbar (hide on training session?)
+  document.getElementById('tabbar').style.display = 'flex';
+  const fn = routes[base] || routes.plan;
+  document.getElementById('app').innerHTML = fn(args) || '<div class="empty">未实现</div>';
+  // Scroll to top
+  document.getElementById('app').scrollTop = 0;
+}
+
+window.addEventListener('hashchange', render);
+
+//=================================================================
+// 4. 设置首次启动屏（让用户设 W1 起始日期）
+//=================================================================
+function showSetup() {
+  const overlay = document.createElement('div');
+  overlay.className = 'setup-overlay';
+  overlay.innerHTML = `
+    <h2>👋 欢迎使用 FitLab</h2>
+    <p>这是一个数据驱动的训练计划与复盘工具。开始前，请确认 <b>30 节增肌计划</b>的起始日期。</p>
+    <p>第 1 节训练（W1 课型 A）将从这一天起算。建议选今天或本周一。</p>
+    <div style="margin:14px 0;">
+      <input type="date" id="planStart" value="${today()}" />
+    </div>
+    <button class="btn" id="startBtn">开始 →</button>
+    <button class="btn ghost" id="skipBtn">先看看，不开始计划</button>
+    <p style="font-size:11.5px; color:var(--muted); margin-top:18px;">
+      如果你之前用过动作手册，记录会自动迁移。设置之后可以在「我的 → 设置」里改。
+    </p>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById('startBtn').onclick = () => {
+    const v = document.getElementById('planStart').value;
+    if (!v) return;
+    ensureDefaultPlan(v);
+    overlay.remove();
+    render();
+  };
+  document.getElementById('skipBtn').onclick = () => {
+    state.plan = { skipped:true };
+    saveState();
+    overlay.remove();
+    render();
+  };
+}
+
+//=================================================================
+// 5. 屏 · 计划 Tab (Plan)
+//=================================================================
+
+// P1 计划首屏
+route('plan', () => {
+  const plan = getActivePlan();
+  if (!plan) {
+    return `<div class="screen">
+      <div class="scr-head"><h1>计划</h1></div>
+      <div class="empty">
+        <span class="emoji">📋</span>
+        还没有激活的计划<br>
+        <button class="btn" style="max-width:200px; margin:14px auto;" onclick="showSetup()">开始 30 节增肌计划</button>
+      </div>
+    </div>`;
+  }
+
+  const cur = currentSession(plan);
+  if (!cur || cur.daysUntil) {
+    return `<div class="screen">
+      <div class="scr-head"><h1>计划</h1></div>
+      <div class="card gold">
+        <div class="title">计划还没开始</div>
+        <div class="meta">距离 W1 第 1 节还有 ${cur && cur.daysUntil ? cur.daysUntil : '?'} 天</div>
+      </div>
+    </div>`;
+  }
+
+  const info = planSessionInfo(plan, cur.n);
+  const movs = movementsForSession(plan, info.week, info.course);
+  const courseFocus = { A:'下肢+核心', B:'上肢推+拉', C:'全身均衡' }[info.course];
+
+  // Sessions in this week
+  const wStart = (info.week-1)*3 + 1;
+  const wSessions = [wStart, wStart+1, wStart+2].map(n => planSessionInfo(plan, n));
+
+  // Check completed sessions
+  function isSessionDone(n) {
+    const ses = getStoredSession(n);
+    return ses && ses.completed;
+  }
+
+  return `<div class="screen">
+    <div class="scr-head">
+      <h1>我的计划</h1>
+    </div>
+    <div class="scr-sub">${plan.name} · W${info.week} 第 ${info.n} 节 · ${new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'})}</div>
+
+    <div class="today-card">
+      <div class="label">今天</div>
+      <div class="head">第 ${info.n} 节 · 课型 ${info.course} ${courseFocus}</div>
+      <div class="phase">${info.phase.name} · ${movs.length} 个动作 · RIR ${rirForWeek(plan, info.week)}</div>
+      <div class="movs">${movs.join(' · ')}</div>
+      <button class="btn" onclick="goto('train/${info.n}')">${isSessionDone(info.n) ? '查看记录' : '开始训练 →'}</button>
+    </div>
+
+    <div class="sec-h">本周（W${info.week}）</div>
+    <div class="list-group">
+      ${wSessions.map(s => {
+        const done = isSessionDone(s.n);
+        const isToday = s.n === info.n;
+        return `<div class="list-item" onclick="goto('train/${s.n}')">
+          <div class="ico">${done ? '✓' : (isToday ? '⚡' : '○')}</div>
+          <div class="lbl"><b>第 ${s.n} 节 · 课型 ${s.course}</b><div class="meta">${s.phase.name}</div></div>
+          ${done ? '<div class="meta" style="color:var(--good);">已完成</div>' : (isToday ? '<div class="meta" style="color:var(--accent);">今天</div>' : '')}
+          <div class="chev">›</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="sec-h">后续</div>
+    <div class="list-group">
+      ${[2,3,4].filter(w => info.week + w*0 <= plan.weeks && info.week < plan.weeks).map((_,i) => {
+        const startW = info.week + i + 1;
+        if (startW > plan.weeks) return '';
+        const endW = Math.min(startW + 2, plan.weeks);
+        const ph = plan.phases.find(p => p.weeks.includes(startW)) || {};
+        return `<div class="list-item">
+          <div class="ico">📅</div>
+          <div class="lbl"><b>W${startW}${startW===endW?'':' - W'+endW}</b><div class="meta">${ph.name||'-'}</div></div>
+          <div class="chev">›</div>
+        </div>`;
+      }).filter(Boolean).join('') || '<div class="list-item single"><div class="lbl meta">已是最后阶段</div></div>'}
+    </div>
+
+    <div class="sec-h">入口</div>
+    <div class="list-group">
+      <div class="list-item" onclick="alert('计划评估 - Phase B 实现')">
+        <div class="ico">📋</div>
+        <div class="lbl">计划评估</div>
+        <div class="chev">›</div>
+      </div>
+      <div class="list-item" onclick="alert('矩阵视图 - Phase B 实现')">
+        <div class="ico">📊</div>
+        <div class="lbl">矩阵视图</div>
+        <div class="chev">›</div>
+      </div>
+      <div class="list-item" onclick="showSetup()">
+        <div class="ico">🔄</div>
+        <div class="lbl">重设起始日 / 新建计划</div>
+        <div class="chev">›</div>
+      </div>
+    </div>
+  </div>`;
+});
+
+// P2 / P3 训练记录子页
+route('train', (args) => {
+  const plan = getActivePlan();
+  if (!plan) { goto('plan'); return ''; }
+  const n = parseInt(args[0] || 1);
+  const info = planSessionInfo(plan, n);
+  const movs = movementsForSession(plan, info.week, info.course);
+
+  const session = getStoredSession(n) || initSession(n, movs);
+  const done = session.acts.filter(a => a.completed).length;
+  const total = session.acts.length;
+
+  return `<div class="screen">
+    <div class="scr-head">
+      <button class="back-btn" onclick="goto('plan')">← 计划</button>
+      <h1 style="font-size:16px;">第 ${n} 节 · 课型 ${info.course}</h1>
+    </div>
+    <div class="scr-sub" style="text-align:center;">${info.phase.name} · ${done}/${total} 完成</div>
+    <div class="prog"><div style="width:${total ? done/total*100 : 0}%;"></div></div>
+
+    <div id="actCards">
+      ${session.acts.map((a, i) => renderActionCard(a, i, session, info)).join('')}
+    </div>
+
+    <button class="btn ${done === total ? '' : 'secondary'}" style="margin-top:14px;" ${done === total ? '' : 'disabled'} onclick="finishSession(${n})">
+      ${done === total ? '完成本节训练 →' : `完成本节训练（${done}/${total}）`}
+    </button>
+  </div>`;
+});
+
+// Action card render
+function renderActionCard(a, idx, session, info) {
+  const cls = a.completed ? 'done' : (a.active ? 'active' : 'pending');
+  const st = a.completed ? '✓' : (a.active ? '⚡' : '○');
+
+  if (a.completed && !a.active) {
+    const sum = a.sets.length ? `${a.sets[0].w}kg·${a.sets[0].reps}·${a.sets.length}组` : '已记';
+    return `<div class="act-card ${cls}" onclick="setActive(${idx})">
+      <div class="act-head"><span class="st" style="color:var(--good);">${st}</span><span class="info">${a.name}</span><span class="summary">${sum}</span></div>
+    </div>`;
+  }
+
+  if (!a.active) {
+    return `<div class="act-card ${cls}" onclick="setActive(${idx})">
+      <div class="act-head"><span class="st">${st}</span><span class="info">${a.name}</span><span class="summary">${a.planW||''}${a.planW?'kg':''}·${a.planSets}组</span></div>
+    </div>`;
+  }
+
+  // Active card - full expanded
+  const ex = (typeof EXERCISE_DB !== 'undefined') ? findExercise(a.name) : null;
+  const cues = ex && ex.cues ? ex.cues : [];
+
+  return `<div class="act-card active">
+    <div class="act-head"><span class="st" style="color:var(--accent);">${st}</span><span class="info">${a.name}</span></div>
+    <div class="act-plan">计划: ${a.planW?a.planW+'kg':'自重'} · ${a.planReps} 次 · ${a.planSets} 组 · RIR ${a.planRIR}</div>
+
+    ${cues.length ? `<div class="cues-box"><b style="font-size:11.5px;">▾ 动作要点</b><ul>${cues.map(c=>`<li>${c}</li>`).join('')}</ul></div>` : ''}
+
+    <table class="sets-tbl">
+      <thead><tr><th>组</th><th>kg</th><th>次</th><th>RIR</th></tr></thead>
+      <tbody>
+        ${a.sets.map((s, sidx) => {
+          const isCur = sidx === a.curSet;
+          return `<tr class="${isCur?'current':''}">
+            <td>${sidx+1}</td>
+            <td><span class="num-cell ${s.w===null?'empty':''}" onclick="openDrum(${idx},${sidx},'w')">${s.w===null?'-':s.w}</span></td>
+            <td><span class="num-cell ${s.reps===null?'empty':''}" onclick="openDrum(${idx},${sidx},'reps')">${s.reps===null?'-':s.reps}</span></td>
+            <td><span class="num-cell ${s.rir===null?'empty':''}" onclick="openDrum(${idx},${sidx},'rir')">${s.rir===null?'-':s.rir}</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <button class="btn secondary" style="padding:6px 8px; font-size:12.5px; margin-top:6px;" onclick="addSet(${idx})">+ 添加一组</button>
+
+    <div class="expand ${a.evalExpanded?'':'collapsed'}" onclick="toggleEval(${idx})">4 维自评</div>
+    ${a.evalExpanded ? renderEval(idx, a) : ''}
+
+    <div class="expand ${a.noteExpanded?'':'collapsed'}" onclick="toggleNote(${idx})">备注</div>
+    ${a.noteExpanded ? `<textarea class="note-area" placeholder="可选..." oninput="setNote(${idx}, this.value)">${a.note||''}</textarea>` : ''}
+
+    <button class="btn" style="margin-top:10px;" onclick="completeAction(${idx})">✓ 完成此动作</button>
+  </div>`;
+}
+
+function findExercise(cn) {
+  if (typeof EXERCISE_DB === 'undefined') return null;
+  return EXERCISE_DB[cn] || null;
+}
+
+const EVAL_DIMS = [
+  { key:'e_neural', name:'神经感知', options:[
+    ['L0','几乎完全感觉不到'],['L1','偶尔模糊感觉到'],['L2','大部分时间清晰'],
+    ['L3','全程清晰感觉发力'],['L4','能引导到具体分区']
+  ]},
+  { key:'e_form', name:'力线控制', options:[
+    ['L0','需镜子/视频纠正'],['L1','需主动注意才稳'],['L2','主动注意下稳定'],
+    ['L3','不刻意也能保持'],['L4','大重量下仍完美']
+  ]},
+  { key:'e_rom', name:'完整幅度', options:[
+    ['L0','只能半幅度'],['L1','大部分幅度，末端难'],['L2','完整幅度末端略不稳'],
+    ['L3','完整幅度流畅'],['L4','全幅度+慢离心稳']
+  ]},
+  { key:'e_volume', name:'容量耐受', options:[
+    ['L0','1 组就掉质量'],['L1','2-3 个有效组'],['L2','4-5 个有效组'],
+    ['L3','6+ 有效组稳'],['L4','多动作日仍保质']
+  ]}
+];
+
+function renderEval(idx, a) {
+  return `<div style="margin-top:6px;">
+    ${EVAL_DIMS.map(d => `
+      <div style="display:flex; align-items:center; gap:8px; margin:5px 0;">
+        <b style="width:62px; font-size:12px;">${d.name}</b>
+        <select class="eval" onchange="setEval(${idx}, '${d.key}', this.value)">
+          <option value="">— 请选 —</option>
+          ${d.options.map(([k,v]) => `<option value="${k}" ${a[d.key]===k?'selected':''}>${k} · ${v}</option>`).join('')}
+        </select>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+//=================================================================
+// 6. Session State
+//=================================================================
+function sessionStorageKey(n) { return `fitlab_session_${n}`; }
+function getStoredSession(n) {
+  try { return JSON.parse(localStorage.getItem(sessionStorageKey(n))); }
+  catch(e) { return null; }
+}
+function saveSession(n, ses) {
+  localStorage.setItem(sessionStorageKey(n), JSON.stringify(ses));
+}
+function initSession(n, movs) {
+  const plan = getActivePlan();
+  const info = planSessionInfo(plan, n);
+  const acts = movs.map(name => {
+    const w = weightForMov(plan, name, info.week);
+    const sets = setsForMov(plan, name, info.week);
+    const reps = repsForMov(name, info.week);
+    const rir = rirForWeek(plan, info.week);
+    return {
+      name,
+      planW: w, planReps: reps, planSets: sets, planRIR: rir,
+      sets: Array(sets).fill(null).map(() => ({w:w, reps:null, rir:null})),
+      curSet: 0,
+      completed: false, active: false,
+      e_neural:'', e_form:'', e_rom:'', e_volume:'', note:''
+    };
+  });
+  if (acts.length) acts[0].active = true;
+  const ses = { n, date: today(), acts, completed: false };
+  saveSession(n, ses);
+  return ses;
+}
+
+// Action handlers
+window.setActive = function(idx) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  if (!ses) return;
+  ses.acts.forEach((a,i) => a.active = (i === idx));
+  saveSession(n, ses);
+  render();
+};
+
+window.openDrum = function(actIdx, setIdx, field) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  const s = ses.acts[actIdx].sets[setIdx];
+  const planW = ses.acts[actIdx].planW;
+
+  let values, current, title, step;
+  if (field === 'w') {
+    title = '重量 (kg)';
+    step = 0.5;
+    const min = 0, max = 200;
+    values = [];
+    for (let v=min; v<=max; v+=step) values.push(v);
+    current = s.w != null ? s.w : (planW || 20);
+  } else if (field === 'reps') {
+    title = '次数';
+    step = 1;
+    values = [];
+    for (let v=1; v<=50; v++) values.push(v);
+    current = s.reps != null ? s.reps : 10;
+  } else {
+    title = 'RIR';
+    step = 1;
+    values = [];
+    for (let v=0; v<=5; v++) values.push(v);
+    current = s.rir != null ? s.rir : 2;
+  }
+
+  showDrum(title, values, current, (selected) => {
+    s[field] = selected;
+    // If finishing set: when w+reps+rir all filled, advance curSet
+    if (s.w != null && s.reps != null && s.rir != null) {
+      const a = ses.acts[actIdx];
+      if (setIdx === a.curSet && a.curSet < a.sets.length - 1) {
+        a.curSet++;
+      }
+    }
+    saveSession(n, ses);
+    render();
+  });
+};
+
+function showDrum(title, values, current, onOk) {
+  const idx = values.indexOf(current) >= 0 ? values.indexOf(current) : Math.floor(values.length/2);
+  const modal = document.createElement('div');
+  modal.className = 'modal-bg';
+  modal.innerHTML = `
+    <div class="drum" onclick="event.stopPropagation()">
+      <div class="drum-h">
+        <span class="cancel" id="drumCancel">取消</span>
+        <span class="ttl">${title}</span>
+        <span class="ok" id="drumOk">完成</span>
+      </div>
+      <div class="drum-wheel" id="drumWheel">
+        ${values.map((v,i) => `<div class="opt" data-i="${i}" data-v="${v}">${v}</div>`).join('')}
+      </div>
+      <div class="drum-bar"></div>
+    </div>
+  `;
+  modal.onclick = () => modal.remove();
+  document.body.appendChild(modal);
+
+  const wheel = document.getElementById('drumWheel');
+  // Scroll to current
+  const optH = 40;
+  setTimeout(() => { wheel.scrollTop = idx * optH; updateSel(); }, 0);
+
+  let selectedIdx = idx;
+  function updateSel() {
+    const center = wheel.scrollTop + optH * 0.5 + (wheel.clientHeight - optH) / 2;
+    selectedIdx = Math.round((center - optH/2) / optH);
+    selectedIdx = Math.max(0, Math.min(values.length-1, selectedIdx));
+    wheel.querySelectorAll('.opt').forEach((opt, i) => {
+      opt.classList.toggle('sel', i === selectedIdx);
+    });
+  }
+  let scrollT;
+  wheel.onscroll = () => { clearTimeout(scrollT); scrollT = setTimeout(updateSel, 50); updateSel(); };
+
+  document.getElementById('drumOk').onclick = (e) => {
+    e.stopPropagation();
+    modal.remove();
+    onOk(values[selectedIdx]);
+  };
+  document.getElementById('drumCancel').onclick = (e) => {
+    e.stopPropagation();
+    modal.remove();
+  };
+}
+
+window.addSet = function(idx) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  const a = ses.acts[idx];
+  a.sets.push({w:a.planW, reps:null, rir:null});
+  saveSession(n, ses);
+  render();
+};
+
+window.toggleEval = function(idx) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  ses.acts[idx].evalExpanded = !ses.acts[idx].evalExpanded;
+  saveSession(n, ses);
+  render();
+};
+
+window.toggleNote = function(idx) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  ses.acts[idx].noteExpanded = !ses.acts[idx].noteExpanded;
+  saveSession(n, ses);
+  render();
+};
+
+window.setEval = function(idx, key, val) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  ses.acts[idx][key] = val;
+  saveSession(n, ses);
+};
+
+window.setNote = function(idx, val) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  ses.acts[idx].note = val;
+  saveSession(n, ses);
+};
+
+window.completeAction = function(idx) {
+  const m = location.hash.match(/#\/train\/(\d+)/);
+  if (!m) return;
+  const n = parseInt(m[1]);
+  const ses = getStoredSession(n);
+  const a = ses.acts[idx];
+  // Validate at least 1 set has weight & reps
+  const valid = a.sets.some(s => s.w != null && s.reps != null);
+  if (!valid) { alert('至少完成 1 组记录（重量+次数）'); return; }
+  a.completed = true;
+  a.active = false;
+  // Activate next pending
+  const nextIdx = ses.acts.findIndex(x => !x.completed);
+  if (nextIdx >= 0) ses.acts[nextIdx].active = true;
+  saveSession(n, ses);
+  // Persist to logs for permanent record
+  persistActionToLogs(a, ses.date, n);
+  render();
+};
+
+function persistActionToLogs(act, date, sessionN) {
+  // Find moveId from EXERCISE_DB
+  const ex = findExercise(act.name);
+  const moveId = ex ? ex.id : act.name;
+  state.logs[moveId] = state.logs[moveId] || [];
+  // Save best set of each act as a log entry
+  act.sets.forEach((s, i) => {
+    if (s.w != null && s.reps != null) {
+      state.logs[moveId].unshift({
+        date, weight: s.w, reps: s.reps, sets: 1, rir: s.rir,
+        note: `第 ${sessionN} 节 · 第 ${i+1} 组`,
+        e_neural: act.e_neural, e_form: act.e_form, e_rom: act.e_rom, e_volume: act.e_volume,
+        planId: 'plan_default', sessionN
+      });
+    }
+  });
+  saveState();
+}
+
+window.finishSession = function(n) {
+  const ses = getStoredSession(n);
+  if (!ses) return;
+  ses.completed = true;
+  ses.completedAt = new Date().toISOString();
+  saveSession(n, ses);
+  // Go to post-session
+  goto('post/'+n);
+};
+
+// P4 Post-session
+route('post', (args) => {
+  const n = parseInt(args[0]||1);
+  const ses = getStoredSession(n);
+  if (!ses) { goto('plan'); return ''; }
+  const plan = getActivePlan();
+  const info = planSessionInfo(plan, n);
+  // Compute total effective sets
+  let totalSets = 0, totalRIR = 0, rirCount = 0, muscleContrib = {};
+  ses.acts.forEach(a => {
+    a.sets.forEach(s => {
+      if (s.w != null && s.reps != null) {
+        totalSets++;
+        if (s.rir != null) { totalRIR += s.rir; rirCount++; }
+        // Add muscle contributions
+        const ex = findExercise(a.name);
+        if (ex && ex.contrib) {
+          for (const m in ex.contrib) {
+            muscleContrib[m] = (muscleContrib[m]||0) + ex.contrib[m];
+          }
+        }
+      }
+    });
+  });
+  const avgRIR = rirCount ? (totalRIR/rirCount).toFixed(1) : '—';
+  const topMuscles = Object.entries(muscleContrib).sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  // Compute time
+  let timeMin = '—';
+  if (ses.completedAt && ses.acts.length) {
+    // Approximate; we don't track session start
+    timeMin = '~45';
+  }
+
+  return `<div class="screen">
+    <div style="text-align:center; padding:18px 0 6px;">
+      <div style="font-size:48px;">🎉</div>
+      <h1 style="font-size:24px; margin:8px 0 4px;">第 ${n} 节完成！</h1>
+      <div class="scr-sub">${info.phase.name} · 课型 ${info.course} · ${ses.acts.length}/${ses.acts.length} 动作</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><b>${totalSets}</b><span>有效组</span></div>
+      <div class="kpi"><b>${avgRIR}</b><span>平均 RIR</span></div>
+      <div class="kpi"><b>${timeMin}</b><span>用时（分）</span></div>
+    </div>
+
+    <div class="sec-h">本节对每块肌肉的贡献</div>
+    <div class="card">
+      ${topMuscles.map(([m,v]) => `<div style="display:flex; padding:5px 0; border-bottom:1px solid var(--line); font-size:13.5px;">
+        <span>${m}</span>
+        <span style="margin-left:auto; color:var(--accent); font-weight:600;">+${v.toFixed(1)} 组</span>
+      </div>`).join('')}
+      ${Object.keys(muscleContrib).length > 6 ? `<div style="padding:5px 0; color:var(--muted); font-size:12px;">...还有 ${Object.keys(muscleContrib).length-6} 块</div>` : ''}
+    </div>
+
+    ${n < 30 ? `
+    <div class="sec-h">下一节</div>
+    <div class="card">
+      <div class="title">第 ${n+1} 节 · 课型 ${['A','B','C'][n%3]}</div>
+      <div class="meta">${planSessionInfo(plan,n+1).phase.name}</div>
+    </div>` : ''}
+
+    <button class="btn" onclick="goto('plan')">完成 · 返回计划</button>
+    <button class="btn secondary" onclick="goto('review')">查看本周复盘 →</button>
+  </div>`;
+});
+
+//=================================================================
+// 7. R1 复盘
+//=================================================================
+route('review', () => {
+  const plan = getActivePlan();
+  if (!plan) {
+    return `<div class="screen">
+      <div class="scr-head"><h1>复盘</h1></div>
+      <div class="empty"><span class="emoji">📊</span>还没有训练数据<br><div class="meta" style="margin-top:8px;">先去计划 tab 开始训练</div></div>
+    </div>`;
+  }
+
+  const cur = currentSession(plan);
+  if (!cur) return `<div class="screen"><div class="scr-head"><h1>复盘</h1></div></div>`;
+
+  const info = planSessionInfo(plan, cur.n);
+  const wStart = (info.week-1)*3 + 1;
+  const wSessions = [wStart, wStart+1, wStart+2];
+  const wDone = wSessions.filter(n => {
+    const s = getStoredSession(n);
+    return s && s.completed;
+  }).length;
+
+  // Compute muscle volumes this week
+  const wMuscles = {};
+  wSessions.forEach(n => {
+    const s = getStoredSession(n);
+    if (!s || !s.completed) return;
+    s.acts.forEach(a => {
+      a.sets.forEach(set => {
+        if (set.w != null && set.reps != null) {
+          const ex = findExercise(a.name);
+          if (ex && ex.contrib) {
+            for (const m in ex.contrib) {
+              wMuscles[m] = (wMuscles[m]||0) + ex.contrib[m];
+            }
+          }
+        }
+      });
+    });
+  });
+
+  // Compare with MUSCLE_TARGETS
+  let nMev = 0, nClose = 0, nShort = 0, nUntrained = 0;
+  if (typeof MUSCLE_TARGETS !== 'undefined') {
+    for (const m in MUSCLE_TARGETS) {
+      const a = wMuscles[m] || 0;
+      const mev = MUSCLE_TARGETS[m].mev;
+      if (a === 0) nUntrained++;
+      else if (a >= mev) nMev++;
+      else if (a >= mev*0.7) nClose++;
+      else nShort++;
+    }
+  }
+
+  const totalMuscles = typeof MUSCLE_TARGETS !== 'undefined' ? Object.keys(MUSCLE_TARGETS).length : 42;
+
+  // RIR average across week
+  let totalRIR=0, rirCount=0;
+  wSessions.forEach(n => {
+    const s = getStoredSession(n);
+    if (!s) return;
+    s.acts.forEach(a => a.sets.forEach(set => {
+      if (set.rir != null) { totalRIR+=set.rir; rirCount++; }
+    }));
+  });
+  const avgRIR = rirCount ? (totalRIR/rirCount).toFixed(1) : '—';
+
+  return `<div class="screen">
+    <div class="scr-head"><h1>复盘</h1></div>
+
+    <div class="time-chips">
+      <div class="chip">今日</div>
+      <div class="chip active">本周</div>
+      <div class="chip" onclick="alert('Phase B 实现')">本月</div>
+      <div class="chip" onclick="alert('Phase B 实现')">季度</div>
+      <div class="chip" onclick="alert('Phase B 实现')">半年</div>
+      <div class="chip" onclick="alert('Phase B 实现')">年</div>
+    </div>
+
+    <div class="scr-sub">W${info.week} · ${info.phase.name}</div>
+
+    <div class="coach">
+      <div class="label">👨‍🏫 教练说</div>
+      ${wDone === wSessions.length ?
+        `本周（W${info.week}）所有 3 节完成。${nMev > 0 ? `${nMev} 块主肌达到 MEV、${nClose} 块接近` : '继续完成训练后会看到训练量评估'}。` :
+        `本周已完成 ${wDone}/3 节${wDone>0 ? `。继续训练后能看到完整评估` : '。开始训练后这里会展示反馈'}`
+      }
+    </div>
+
+    <div class="sec-h">① 周期定位</div>
+    <div class="card">
+      <div style="font-size:13px;"><b>计划</b>: ${plan.name}（W1 → W${plan.weeks}）</div>
+      <div style="font-size:13px; margin-top:3px;"><b>当前</b>: W${info.week} · ${info.phase.name}</div>
+      <div class="meta" style="margin-top:3px;">这阶段任务：${info.phase.name === '重建适应' ? '建立动作模式 + 肌肉感知' :
+        (info.phase.name === '增肌主训' ? '把训练量推到 MEV 甜区' :
+        (info.phase.name === '强化' ? '冲本周期峰值' : '主动恢复，让前面疲劳兑现增长'))}</div>
+    </div>
+
+    <div class="sec-h">② 当初的假设（阶段处方）</div>
+    <div class="card">
+      <table style="font-size:13px; width:100%;">
+        <tr><td><b>容量</b></td><td>每动作 ${info.phase.setsBase} 组</td></tr>
+        <tr><td><b>强度</b></td><td>RIR ${info.phase.rir.join('-')}</td></tr>
+        <tr><td><b>重量</b></td><td>${info.week<=3 ? '起步保守' : (info.week<=7 ? '渐进 +2.5kg/周' : info.week<=9 ? '冲峰值' : '减载 -30%')}</td></tr>
+        <tr><td><b>训练量预测</b></td><td>主肌达 ${info.phase.name === '重建适应' ? '~60% MEV' : (info.phase.name === '减载' ? '~50% MEV' : 'MEV+')}</td></tr>
+      </table>
+    </div>
+
+    <div class="sec-h">③ 本周实际</div>
+    <div class="kpi-row">
+      <div class="kpi"><b>${wDone}/3</b><span>节完成</span></div>
+      <div class="kpi"><b>${nMev}</b><span>达 MEV</span></div>
+      <div class="kpi"><b>${nClose}</b><span>接近</span></div>
+      <div class="kpi"><b>${avgRIR}</b><span>平均 RIR</span></div>
+    </div>
+
+    ${wDone > 0 ? `
+    <div class="card">
+      <div style="font-size:12.5px; font-weight:700; margin-bottom:6px;">每块肌肉 · 本周训练量</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; font-size:11.5px;">
+        <div style="background:#e3f1e6; padding:5px 8px; border-radius:5px;">✅ <b>${nMev}</b> 达 MEV</div>
+        <div style="background:#fff8e3; padding:5px 8px; border-radius:5px;">🟡 <b>${nClose}</b> 接近</div>
+        <div style="background:#fbe7e1; padding:5px 8px; border-radius:5px;">🔴 <b>${nShort}</b> 不足</div>
+        <div style="background:#f1efe8; padding:5px 8px; border-radius:5px;">⚪ <b>${nUntrained}</b> 未训</div>
+      </div>
+    </div>
+    ` : ''}
+
+    <div class="sec-h">④ 一致 vs 偏离</div>
+    <div class="card ${wDone === 3 ? 'green' : 'muted'}">
+      ${wDone === 3 ? '✓ 完成度按预期' : `⚠ 本周完成 ${wDone}/3 节`}<br>
+      <span style="font-size:11.5px; color:var(--muted);">完整偏离分析待 Phase B 实现</span>
+    </div>
+
+    <div class="sec-h">⑤ 教练建议 · ⑥ 前瞻</div>
+    <div class="card accent">
+      <div style="font-size:13px;">
+        ${info.week < plan.weeks ?
+          `下周 W${info.week+1} 进入${plan.phases.find(p=>p.weeks.includes(info.week+1))?.name || '...'}。继续按计划走。` :
+          `计划已接近完成（W${info.week}/${plan.weeks}）。准备开始下个周期。`
+        }
+      </div>
+    </div>
+
+    <button class="btn secondary" style="margin-top:14px;" onclick="alert('Phase B 实现')">看完整执行调整建议 →</button>
+  </div>`;
+});
+
+//=================================================================
+// 8. M1 我的
+//=================================================================
+route('me', () => {
+  const plan = getActivePlan();
+  const lastWeight = state.bodyData.weight.length ? state.bodyData.weight[state.bodyData.weight.length-1].kg : null;
+  return `<div class="screen">
+    <div class="scr-head"><h1>我的</h1></div>
+    <div class="scr-sub">${plan ? plan.name + ' 进行中' : '尚未开始计划'}</div>
+
+    <div class="card">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:44px; height:44px; background:var(--accent-light); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px;">👤</div>
+        <div style="flex:1;">
+          <div class="title">${lastWeight ? lastWeight+' kg' : '— kg'} · ${state.profile.units || 'kg'}</div>
+          <div class="meta">个人 MEV 系数：${state.personalization.mevFactor}×</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-h">追踪</div>
+    <div class="grid-2">
+      <div class="grid-card" onclick="alert('Phase B 实现')"><div class="ico">🏃</div><div class="lbl">身体数据</div><div class="meta">${lastWeight ? '最近 '+lastWeight+' kg' : '未记录'}</div></div>
+      <div class="grid-card" onclick="alert('Phase B 实现')"><div class="ico">🎯</div><div class="lbl">目标</div><div class="meta">${state.goals.length} 个进行中</div></div>
+    </div>
+
+    <div class="sec-h">学习与参考</div>
+    <div class="grid-3">
+      <a class="grid-card" href="计划原理科普.html"><div class="ico">📚</div><div class="lbl">训练原理</div></a>
+      <a class="grid-card" href="肌肉图鉴.html"><div class="ico">🫀</div><div class="lbl">肌肉图鉴</div></a>
+      <a class="grid-card" href="健身动作手册-手机版.html"><div class="ico">💪</div><div class="lbl">动作库</div></a>
+    </div>
+
+    <div class="sec-h">参考文档</div>
+    <div class="list-group">
+      <a class="list-item" href="给新用户的指南.html"><div class="ico">📖</div><div class="lbl">给新用户的指南</div><div class="chev">›</div></a>
+      <a class="list-item" href="应用设计文档.html"><div class="ico">📐</div><div class="lbl">应用设计文档</div><div class="chev">›</div></a>
+      <a class="list-item" href="版本历史与优化记录.html"><div class="ico">📝</div><div class="lbl">版本历史</div><div class="chev">›</div></a>
+    </div>
+
+    <div class="sec-h">设置</div>
+    <div class="list-group">
+      <div class="list-item" onclick="showSetup()">
+        <div class="ico">📅</div>
+        <div class="lbl">计划起始日<div class="meta">${plan && plan.startDate ? plan.startDate : '未设'}</div></div>
+        <div class="chev">›</div>
+      </div>
+      <div class="list-item" onclick="exportData()">
+        <div class="ico">📤</div>
+        <div class="lbl">导出数据（JSON 备份）</div>
+        <div class="chev">›</div>
+      </div>
+      <div class="list-item" onclick="importData()">
+        <div class="ico">📥</div>
+        <div class="lbl">导入数据</div>
+        <div class="chev">›</div>
+      </div>
+      <div class="list-item" onclick="alert('FitLab v1.0 MVP · 数据存于本机浏览器 · 详见版本历史')">
+        <div class="ico">ℹ️</div>
+        <div class="lbl">关于 FitLab</div>
+        <div class="chev">›</div>
+      </div>
+    </div>
+  </div>`;
+});
+
+window.exportData = function() {
+  const sessions = {};
+  for (let n=1; n<=30; n++) {
+    const s = getStoredSession(n);
+    if (s) sessions[n] = s;
+  }
+  const data = { state, sessions };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `fitlab-backup-${today()}.json`;
+  a.click();
+};
+
+window.importData = function() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const d = JSON.parse(reader.result);
+        if (d.state) { Object.assign(state, d.state); saveState(); }
+        if (d.sessions) {
+          for (const n in d.sessions) saveSession(parseInt(n), d.sessions[n]);
+        }
+        alert('导入成功');
+        render();
+      } catch(err) { alert('导入失败: '+err.message); }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+};
+
+//=================================================================
+// 9. Tab bar handlers
+//=================================================================
+document.querySelectorAll('#tabbar .tab').forEach(t => {
+  t.addEventListener('click', () => goto(t.dataset.route));
+});
+
+//=================================================================
+// 10. Init
+//=================================================================
+loadState();
+
+// Wait for EXERCISE_DB (it loads via <script src>)
+function init() {
+  if (typeof EXERCISE_DB === 'undefined' || typeof MUSCLE_TARGETS === 'undefined') {
+    setTimeout(init, 100);
+    return;
+  }
+  // First time? Show setup
+  if (!state.plan) {
+    showSetup();
+    render();
+  } else {
+    render();
+  }
+}
+init();
+</script>
+</body>
+</html>

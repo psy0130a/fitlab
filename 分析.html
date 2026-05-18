@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>训练数据分析 · 肌群视角</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #faf8f3; --paper: #ffffff; --paper-2: #fdfaf2;
+    --ink: #1f1d1a; --ink-2: #4a463f; --muted: #8a857a;
+    --line: #e8e3d8; --line-2: #d6cfbe;
+    --accent: #b03a2e; --accent-2: #d65a4a; --accent-light: #fbe7e1;
+    --gold: #c08a2e;
+    --good: #2d6e3a; --good-light: #e3f1e6;
+    --warn: #b8642a; --warn-light: #fde7d8;
+    --bad: #c8462c; --bad-light: #fbe7e1;
+    --over: #7a4eb0; --over-light: #ede0fa;
+    --untrained: #d6cfbe;
+    --info-light: #eef3f8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7; font-size: 14.5px;
+  }
+  .container { max-width: 1240px; margin: 0 auto; padding: 32px 36px 80px; }
+
+  .nav-back {
+    position: fixed; top: 16px; left: 16px; z-index: 30;
+    background: var(--paper); border: 1px solid var(--line-2);
+    border-radius: 18px; padding: 6px 14px; font-size: 12.5px;
+    color: var(--accent); text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  header.cover {
+    text-align: center; padding: 12px 0 24px;
+    border-bottom: 1px solid var(--line); margin-bottom: 18px;
+  }
+  header.cover .tag {
+    display: inline-block; font-size: 11px; letter-spacing: 0.35em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 10px;
+  }
+  header.cover h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: 2px; }
+  header.cover .subtitle { color: var(--muted); font-size: 13px; margin: 0; }
+
+  .controls-bar {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg);
+    padding: 10px 0 8px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .goal-bar {
+    display: flex; gap: 10px; align-items: center; justify-content: center;
+    margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .goal-tabs {
+    display: flex; gap: 3px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 18px;
+    padding: 3px;
+  }
+  .goal-tabs button {
+    background: transparent; border: 0; padding: 4px 14px;
+    font-size: 12px; color: var(--ink-2); cursor: pointer;
+    border-radius: 14px; font-family: inherit;
+  }
+  .goal-tabs button.active { background: var(--gold); color: white; font-weight: 600; }
+  .goal-tabs button:hover:not(.active) { background: #faf5e7; color: var(--accent); }
+
+  .gran-tabs {
+    display: flex; gap: 4px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 22px;
+    padding: 4px; width: fit-content; margin: 0 auto 10px;
+  }
+  .gran-tabs button {
+    background: transparent; border: 0; padding: 6px 18px;
+    font-size: 13px; color: var(--ink-2); cursor: pointer;
+    border-radius: 18px; font-family: inherit; letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+  .gran-tabs button.active { background: var(--accent); color: white; font-weight: 600; }
+  .gran-tabs button:hover:not(.active) { background: var(--accent-light); color: var(--accent); }
+
+  .date-bar {
+    display: flex; gap: 10px; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--muted); flex-wrap: wrap;
+  }
+  .date-bar input[type="date"] {
+    border: 1px solid var(--line-2); border-radius: 6px;
+    padding: 3px 7px; font-size: 12px; background: white; font-family: inherit;
+  }
+  .date-bar .quick {
+    background: var(--paper); border: 1px solid var(--line-2);
+    padding: 3px 10px; border-radius: 14px;
+    font-size: 11.5px; cursor: pointer; color: var(--ink-2); font-family: inherit;
+  }
+  .date-bar .quick:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .date-bar .quick.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .period-selector {
+    display: flex; gap: 4px; flex-wrap: wrap; justify-content: center;
+    margin-top: 8px;
+  }
+  .period-selector button {
+    background: var(--paper); border: 1px solid var(--line-2);
+    padding: 4px 12px; font-size: 11.5px; border-radius: 12px;
+    color: var(--ink-2); cursor: pointer; font-family: inherit;
+  }
+  .period-selector button.active {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+
+  section.card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 24px; margin-bottom: 16px;
+  }
+  section.card h2 {
+    margin: 0 0 4px; font-size: 17px; color: var(--accent); letter-spacing: 0.5px;
+  }
+  section.card .lead {
+    color: var(--muted); font-size: 12.5px; margin: 4px 0 14px;
+    padding-bottom: 8px; border-bottom: 1px dotted var(--line);
+  }
+
+  /* Body heatmap */
+  .heatmap-wrap {
+    display: flex; gap: 24px; align-items: flex-start; justify-content: center;
+    background: linear-gradient(180deg, #fdfaf2 0%, #f5ede0 100%);
+    border-radius: 10px; padding: 16px;
+  }
+  .heatmap-view { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .heatmap-view .view-cap { font-size: 10px; letter-spacing: 1.5px; color: var(--muted); }
+  .heatmap-wrap .rbh-wrapper { width: 200px !important; padding: 0 !important; }
+  .heatmap-wrap .rbh-wrapper svg { width: 100% !important; height: auto !important; }
+  .heatmap-wrap .rbh-wrapper svg polygon { stroke: #9c7c52; stroke-width: 0.4; cursor: pointer; }
+  .heatmap-loading { padding: 30px; font-size: 12px; color: var(--muted); }
+
+  .heatmap-legend {
+    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    font-size: 11.5px; color: var(--muted); margin-top: 10px;
+  }
+  .heatmap-legend .item { display: flex; align-items: center; gap: 5px; }
+  .heatmap-legend .swatch {
+    display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  /* Muscle status table */
+  table.mst {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+  }
+  table.mst th, table.mst td {
+    padding: 7px 8px; border-bottom: 1px solid var(--line);
+    text-align: left; vertical-align: middle;
+  }
+  table.mst th {
+    background: #f7f1e3; font-weight: 600; font-size: 11.5px;
+    color: var(--ink-2); letter-spacing: 0.3px;
+    position: sticky; top: 0;
+  }
+  table.mst td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  table.mst td.col-status {
+    width: 110px;
+  }
+  table.mst tr.row { cursor: pointer; }
+  table.mst tr.row:hover { background: #faf5e7; }
+  table.mst tr.expanded { background: var(--soft-yellow, #fff8e3) !important; }
+  /* 类别 header 行 */
+  table.mst tr.cat-header td {
+    background: linear-gradient(90deg, #faf5e7 0%, #fff8e3 100%);
+    border-top: 2px solid var(--accent);
+    border-bottom: 1px solid var(--line-2);
+    padding: 9px 12px;
+  }
+  table.mst tr.cat-header:first-child td { border-top: 0; }
+  .cat-row {
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  }
+  .cat-title { display: flex; align-items: center; gap: 6px; }
+  .cat-icon { font-size: 18px; }
+  .cat-title b { color: var(--accent); font-size: 14px; }
+  .cat-sub { color: var(--muted); font-size: 11px; }
+  .cat-stats {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-left: auto;
+    font-size: 11.5px; color: var(--muted);
+  }
+  .cat-stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .cat-flag {
+    padding: 1px 7px; border-radius: 10px; font-size: 10.5px; font-weight: 600;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;
+  }
+  .status-pill .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  }
+  .status-pill.untrained { background: #f2eee3; color: #8a857a; }
+  .status-pill.untrained .dot { background: var(--untrained); }
+  .status-pill.under { background: var(--bad-light); color: var(--bad); }
+  .status-pill.under .dot { background: var(--bad); }
+  .status-pill.warn { background: var(--warn-light); color: var(--warn); }
+  .status-pill.warn .dot { background: var(--warn); }
+  .status-pill.good { background: var(--good-light); color: var(--good); }
+  .status-pill.good .dot { background: var(--good); }
+  .status-pill.over { background: var(--over-light); color: var(--over); }
+  .status-pill.over .dot { background: var(--over); }
+  .trend { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .trend.up { color: var(--good); }
+  .trend.dn { color: var(--bad); }
+  .trend.same { color: var(--muted); }
+
+  /* Drill-down row */
+  tr.detail td {
+    background: #fdfaf2; padding: 14px 18px;
+    border-bottom: 2px solid var(--line);
+  }
+  .detail-content {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .detail-exercises {
+    font-size: 12px;
+  }
+  .detail-exercises h5 { margin: 0 0 6px; font-size: 12px; color: var(--accent); }
+  .detail-exercises table { width: 100%; font-size: 11.5px; border-collapse: collapse; }
+  .detail-exercises td { padding: 3px 6px; border-bottom: 1px dotted var(--line); }
+  .detail-exercises td.n { color: var(--muted); }
+  .detail-trend-chart {
+    background: var(--paper); border-radius: 6px; padding: 8px;
+    border: 1px solid var(--line);
+    height: 180px; position: relative;
+  }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .kpi {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .kpi .label { font-size: 11px; color: var(--muted); letter-spacing: 0.8px; margin-bottom: 3px; }
+  .kpi .value { font-size: 20px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .kpi .value.accent { color: var(--accent); }
+  .kpi .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Balance cards */
+  .balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .balance-group-title {
+    grid-column: 1 / -1;
+    font-size: 12px; color: var(--accent); font-weight: 600;
+    letter-spacing: 1px; padding: 4px 0;
+    border-bottom: 1px dotted var(--line-2);
+    margin-top: 4px;
+  }
+  .balance-group-title:first-child { margin-top: 0; }
+  .balance {
+    border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+    background: var(--paper-2);
+  }
+  .balance .name { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .balance .ratio { font-size: 20px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .balance .target { font-size: 11px; color: var(--muted); }
+  .balance .verdict { margin-top: 4px; font-size: 11.5px; }
+  .balance.good { border-left: 4px solid var(--good); }
+  .balance.warn { border-left: 4px solid var(--warn); }
+
+  /* Conclusions */
+  .conclusion {
+    background: var(--paper-2); border-left: 3px solid var(--gold);
+    padding: 10px 14px; border-radius: 6px; margin: 8px 0; font-size: 13px;
+  }
+  .conclusion.good { background: var(--good-light); border-left-color: var(--good); }
+  .conclusion.warn { background: var(--warn-light); border-left-color: var(--warn); }
+  .conclusion .head {
+    font-weight: 600; color: var(--ink); margin-bottom: 4px;
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .conclusion .head .badge {
+    background: var(--ink); color: white; padding: 1px 8px;
+    border-radius: 10px; font-size: 10px; font-weight: 500; letter-spacing: 0.3px;
+  }
+
+  /* Foundation flat table (collapsible) */
+  .flat-toolbar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;
+  }
+  .flat-toolbar input {
+    border: 1px solid var(--line-2); border-radius: 6px;
+    padding: 4px 8px; font-size: 12px; background: white;
+  }
+  .flat-toolbar button {
+    background: var(--paper); border: 1px solid var(--line-2);
+    padding: 4px 10px; border-radius: 6px; font-size: 11.5px;
+    color: var(--ink-2); cursor: pointer; font-family: inherit;
+  }
+  table.flat {
+    width: 100%; border-collapse: collapse; font-size: 11.5px;
+  }
+  table.flat th, table.flat td {
+    padding: 4px 6px; border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  table.flat th {
+    background: #f7f1e3; font-weight: 600; font-size: 11px;
+    position: sticky; top: 0;
+  }
+  table.flat td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  table.flat td.muscles { font-size: 10.5px; color: var(--muted); }
+  .flat-wrapper { max-height: 480px; overflow-y: auto; border: 1px solid var(--line); border-radius: 6px; }
+
+  details.collapsible summary {
+    cursor: pointer; font-size: 13px; color: var(--accent); padding: 6px 0;
+  }
+
+  .footnote { font-size: 11px; color: var(--muted); line-height: 1.6; margin-top: 18px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .footnote b { color: var(--ink-2); }
+
+  @media (max-width: 760px) {
+    .container { padding: 20px 12px 50px; }
+    .heatmap-wrap { flex-direction: column; }
+    .detail-content { grid-template-columns: 1fr; }
+    .gran-tabs button { padding: 5px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="nav-back" href="健身动作手册.html">← 回到动作手册</a>
+
+<div class="container">
+
+  <header class="cover">
+    <div class="tag">MUSCLE-CENTRIC TRAINING ANALYTICS</div>
+    <h1>训练数据分析 · 肌群视角</h1>
+    <p class="subtitle">从每块肌肉出发：练了没？多少？多频？强度？趋势？</p>
+  </header>
+
+  <!-- 数据源条 -->
+  <div class="data-source-bar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper-2,#fdfaf2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;margin-bottom:14px;font-size:12px;">
+    <span style="color:var(--accent);font-weight:600;letter-spacing:.5px;">数据源</span>
+    <span id="dsInfo" style="color:var(--ink-2);">—</span>
+    <span style="flex:1;"></span>
+    <button id="dsRefresh" style="background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:4px 12px;font-size:11.5px;color:var(--ink-2);cursor:pointer;font-family:inherit;">↻ 刷新（重读手册）</button>
+    <button id="dsImport" style="background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:4px 12px;font-size:11.5px;color:var(--ink-2);cursor:pointer;font-family:inherit;">⬆ 导入历史 (JSON)</button>
+    <button id="dsClearImport" style="display:none;background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:4px 12px;font-size:11.5px;color:var(--bad,#b03a2e);cursor:pointer;font-family:inherit;">清除导入</button>
+  </div>
+
+  <!-- 控制条 -->
+  <div class="controls-bar">
+    <div class="goal-bar">
+      <span style="font-size:12px;color:var(--muted);letter-spacing:1px;">训练目标</span>
+      <div class="goal-tabs">
+        <button data-goal="hypertrophy" class="active">增肌</button>
+        <button data-goal="strength">力量</button>
+        <button data-goal="endurance">耐力</button>
+        <button data-goal="health">健康维持</button>
+      </div>
+      <span id="goalDesc" style="font-size:11px;color:var(--muted);"></span>
+    </div>
+    <div class="gran-tabs">
+      <button data-gran="session">单次</button>
+      <button data-gran="week" class="active">周</button>
+      <button data-gran="month">月</button>
+      <button data-gran="quarter">季度</button>
+      <button data-gran="all">全部</button>
+    </div>
+    <div class="date-bar">
+      <span>范围</span>
+      <input type="date" id="dateStart">
+      <span>~</span>
+      <input type="date" id="dateEnd">
+      <button class="quick" data-range="all">全部</button>
+      <button class="quick" data-range="3m">近3月</button>
+      <button class="quick" data-range="1m">近1月</button>
+      <span id="rangeInfo" style="font-size:11px;"></span>
+    </div>
+    <div class="period-selector" id="periodSelector"></div>
+  </div>
+
+  <!-- KPI 总览 -->
+  <div id="kpiGrid" class="kpi-grid"></div>
+
+  <!-- 段 1：解剖图热力 -->
+  <section class="card">
+    <h2>① 全身肌群训练状态地图</h2>
+    <p class="lead">每块肌肉根据它在 <span id="periodLabel">当前周期</span> 内获得的训练量着色。点击下方表格行可查看单肌群详情。</p>
+    <div class="heatmap-wrap">
+      <div class="heatmap-view"><div id="bodyFront"><div class="heatmap-loading">加载中...</div></div><div class="view-cap">前 · FRONT</div></div>
+      <div class="heatmap-view"><div id="bodyBack"><div class="heatmap-loading">加载中...</div></div><div class="view-cap">后 · BACK</div></div>
+    </div>
+    <div class="heatmap-legend">
+      <div class="item"><span class="swatch" style="background:#d6cfbe;"></span>未训练 (0 组)</div>
+      <div class="item"><span class="swatch" style="background:#c8462c;"></span>不足 (&lt; MEV)</div>
+      <div class="item"><span class="swatch" style="background:#c08a2e;"></span>下沿 (MEV~MAV)</div>
+      <div class="item"><span class="swatch" style="background:#2d6e3a;"></span>甜区 (MAV~MRV)</div>
+      <div class="item"><span class="swatch" style="background:#7a4eb0;"></span>超额 (&gt; MRV)</div>
+    </div>
+    <details class="collapsible" style="margin-top:12px;border-top:1px dotted var(--line);padding-top:8px;">
+      <summary>📖 评判依据：MEV / MAV / MRV 是什么？阈值哪里来？怎么算"周等效组数"？</summary>
+      <div style="font-size:12.5px;color:var(--ink-2);line-height:1.65;padding:10px 14px;background:var(--paper-2);border-radius:8px;margin-top:10px;">
+
+        <h4 style="margin:6px 0;color:var(--accent);font-size:14px;">① 三个阈值的含义（生理学定义）</h4>
+        <p>三个阈值来自 Mike Israetel 的 <b>Renaissance Periodization · Scientific Principles of Hypertrophy Training</b>（2018 出版）。他基于 Schoenfeld 等人的研究 + 多年训练数千运动员的实测数据，提出了"训练量响应曲线"：</p>
+        <table style="width:100%;font-size:12px;border-collapse:collapse;margin:6px 0;">
+          <tr style="background:#f7f1e3;"><th style="padding:5px 8px;text-align:left;">阈值</th><th>含义（生理学）</th><th>实际意义</th></tr>
+          <tr><td style="padding:5px 8px;"><b>MV</b><br><span style="color:var(--muted);font-size:10.5px;">Maintenance Volume</span></td><td>维持现有肌肉量所需的最少周组数</td><td>低于此值肌肉会萎缩</td></tr>
+          <tr><td style="padding:5px 8px;"><b>MEV</b><br><span style="color:var(--muted);font-size:10.5px;">Minimum Effective</span></td><td>开始触发肌肥大的最低组数</td><td>低于此值 = 维持但不长</td></tr>
+          <tr><td style="padding:5px 8px;"><b>MAV</b><br><span style="color:var(--muted);font-size:10.5px;">Max Adaptive</span></td><td>增长最快的"甜区"组数</td><td>这是要瞄准的目标</td></tr>
+          <tr><td style="padding:5px 8px;"><b>MRV</b><br><span style="color:var(--muted);font-size:10.5px;">Max Recoverable</span></td><td>身体能恢复的最大周组数</td><td>超过此值 = 过度训练 / 减损</td></tr>
+        </table>
+        <p style="font-size:11.5px;color:var(--muted);">"1 组" 这里指 <b>RIR 0–3 的有效组</b>（接近力竭，留 0-3 次余量），不是热身组。</p>
+
+        <h4 style="margin:14px 0 6px;color:var(--accent);font-size:14px;">② 数字本身的科学溯源</h4>
+        <ul style="margin:6px 0;padding-left:20px;font-size:12.5px;">
+          <li><b>Schoenfeld 2017 Meta-Analysis</b>（10 项 RCT, J Sports Sci）：每周 1–4 组 → 5.4% 肌肥大；5–9 组 → 6.6%；10+ 组 → 9.8%。剂量-反应明确存在拐点。</li>
+          <li><b>Krieger 2010</b>：&lt; 5 组/周几乎无增长，→ 这就是<b>MV/MEV 下沿</b>的依据。</li>
+          <li><b>Israetel RP（2018）</b>：基于 Schoenfeld 的曲线 + 实测训练员数据，给出每肌群独立的 MEV/MAV/MRV 三档（不是研究 RCT 的直接结果，是 RP 工程化的合理近似）。</li>
+        </ul>
+
+        <h4 style="margin:14px 0 6px;color:var(--accent);font-size:14px;">③ 个体差异 — 数字不是"圣经"</h4>
+        <p>这些阈值是 <b>中级训练者的均值</b>。真实你的位置会受以下因素影响：</p>
+        <ul style="margin:6px 0;padding-left:20px;font-size:12.5px;">
+          <li>训练经验：新手只需 MEV 就能长；高级要靠近 MRV 才能继续推进</li>
+          <li>性别：女性 MRV 通常比男性高 10–20%（恢复更快）</li>
+          <li>睡眠 / 营养 / 压力：恢复差时整体 MRV 会下移</li>
+          <li>个体遗传：肌纤维比例、激素水平等</li>
+        </ul>
+        <p style="font-size:11.5px;color:var(--muted);">→ 所以本看板的判断仅作为"客观参考"，最终调整还要看你自己的恢复体感、力量进度、肌肉感觉。</p>
+
+        <h4 style="margin:14px 0 6px;color:var(--accent);font-size:14px;">④ "周等效组数"怎么算？</h4>
+        <p>不同时间窗口里组数的绝对值不能直接比，所以归一化到"如果按当前节奏，每周会有多少组"：</p>
+        <pre style="background:#f0eadd;padding:8px 12px;border-radius:6px;font-size:11.5px;color:var(--ink);white-space:pre-wrap;">
+周等效组数 = 期内累计组数 × 7 / 期内天数
+
+例如：
+• 单次（1 天）做胸 4 组   → 4 × 7 / 1 = 28 组/周
+  （意为：如果天天这么练，胸的周组数就是 28，已超 MRV）
+• 1 月（30 天）做胸 16 组 → 16 × 7 / 30 ≈ 3.7 组/周
+  （远低于 MEV 10）</pre>
+        <p style="font-size:11.5px;color:var(--muted);">这样所有粒度都映射到同一刻度，可与 MEV/MAV/MRV 直接比较。</p>
+
+        <h4 style="margin:14px 0 6px;color:var(--accent);font-size:14px;">⑤ 本看板用的全部 34 块肌群阈值表</h4>
+        <div id="thresholdsTable" style="max-height:300px;overflow-y:auto;border:1px solid var(--line);border-radius:6px;"></div>
+      </div>
+    </details>
+  </section>
+
+  <style>
+    .engagement-table{ border-collapse:separate; border-spacing:0; font-size:11px; }
+    .engagement-table th, .engagement-table td{ padding:3px 4px; text-align:center; white-space:nowrap; }
+    .engagement-table thead th{ background:#f7f1e3; position:sticky; top:0; z-index:2; font-weight:600; }
+    .engagement-table .sticky-col{ position:sticky; left:0; z-index:3; background:#fff; text-align:left; min-width:118px; border-right:1px solid var(--line); }
+    .engagement-table thead .sticky-col{ z-index:4; background:#f7f1e3; }
+    .engagement-table .cat-row td{ background:#faf5e7; color:var(--accent); font-weight:600; text-align:left; }
+    .engagement-table .cat-row .sticky-col{ background:#faf5e7; }
+    .engagement-table .mname{ color:var(--ink-2); font-size:11px; }
+    .engagement-table .cell{ width:34px; min-width:34px; font-variant-numeric:tabular-nums; border-bottom:1px solid #f0ece2; }
+    .engagement-table .bk{ font-size:9.5px; color:var(--muted); font-weight:500; }
+    .engagement-table .stat{ background:#fcfaf4; font-variant-numeric:tabular-nums; border-left:1px solid var(--line); min-width:46px; }
+    .engagement-table thead .stat{ background:#f1ead6; }
+  </style>
+
+  <!-- 段 2：肌肉 × 时间 训练频率热力表 -->
+  <section class="card">
+    <h2>② 肌肉训练频率热力表</h2>
+    <p class="lead">每行一块肌肉（按大类分组），每列 7 天。格子颜色 = 那一周这块肌肉的<b>周等效强度</b>（有效组数 vs 它的 MEV/MAV/MRV，与上方解剖图同一套配色），空白 = 那周没练到。右侧三列是从真实训练日期算出的<b>训练间隔</b>。</p>
+    <div class="heatmap-legend" style="margin:0 0 10px;">
+      <div class="item"><span class="swatch" style="background:#eee;border:1px solid var(--line);"></span>未练到</div>
+      <div class="item"><span class="swatch" style="background:#c8462c;"></span>不足 (&lt; MEV)</div>
+      <div class="item"><span class="swatch" style="background:#c08a2e;"></span>下沿 (MEV~MAV)</div>
+      <div class="item"><span class="swatch" style="background:#2d6e3a;"></span>甜区 (MAV~MRV)</div>
+      <div class="item"><span class="swatch" style="background:#7a4eb0;"></span>超额 (&gt; MRV)</div>
+    </div>
+    <div style="overflow-x:auto;border:1px solid var(--line);border-radius:8px;">
+      <div id="engagementBox" style="min-width:100%;"></div>
+    </div>
+  </section>
+
+  <!-- 段 3：肌群详情表 -->
+  <section class="card">
+    <h2>③ 肌群训练详情表</h2>
+    <p class="lead">每行 = 一块主要肌肉。状态颜色与解剖图一致。<b>点击任一行展开查看该肌群的训练动作和趋势</b>。</p>
+
+    <details class="collapsible" style="margin-bottom:10px;">
+      <summary>📖 表头每一列什么意思？为什么单次/周/月显示的数值不一样？</summary>
+      <div style="background:var(--paper-2);border-radius:6px;padding:12px 16px;font-size:12.5px;color:var(--ink-2);line-height:1.6;">
+        <p style="margin:0 0 8px;"><b>命名约定：</b>所有肌群用「<b>父肌肉-子部位</b>」格式。例：<b>胸大肌-上部</b> 是 <b>胸大肌</b> 的<b>锁骨头</b>，<b>不是 胸小肌</b>（胸小肌是胸大肌下面的小稳定肌，不参与本表训练评估）。手册里"胸大肌"会自动归到"胸大肌-上部 + 胸大肌-中下部"两个子部位。</p>
+
+        <p style="margin:10px 0 4px;"><b>每列含义和公式：</b></p>
+        <table style="width:100%;font-size:12px;border-collapse:collapse;margin:6px 0;">
+          <thead><tr style="background:#f7f1e3;">
+            <th style="padding:5px 8px;text-align:left;">列</th><th>含义</th><th>公式</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:5px 8px;"><b>状态</b></td><td>该肌群在当前粒度的训练强度评级</td><td>周等效组数 vs MEV/MAV/MRV</td></tr>
+            <tr><td style="padding:5px 8px;"><b>周等效组数</b> ⭐</td><td>归一化到"每周组数"，用于与 MEV/MAV/MRV（周量）直接比较</td><td><code style="background:#f0eadd;padding:1px 4px;">期内有效组数 × 7 / 期内天数</code></td></tr>
+            <tr><td style="padding:5px 8px;"><b>周频次</b></td><td>归一化到"每周训练该肌群几天"</td><td><code style="background:#f0eadd;padding:1px 4px;">期内被刺激的不同日期 / 期内周数</code></td></tr>
+            <tr><td style="padding:5px 8px;"><b>期内总容量</b></td><td>所选期内的累计容量（kg）</td><td><code style="background:#f0eadd;padding:1px 4px;">Σ 主肌动作 容量×1.0 + 协同肌×0.5</code></td></tr>
+            <tr><td style="padding:5px 8px;"><b>最强动作 / 1RM</b></td><td>期内击中该肌群、估算 1RM 最高的动作</td><td><code style="background:#f0eadd;padding:1px 4px;">Epley: 重量 × (1 + 0.0333 × 次数)</code></td></tr>
+            <tr><td style="padding:5px 8px;"><b>趋势</b></td><td>本周期 max 1RM 相对上一同长度周期的变化 %</td><td><code style="background:#f0eadd;padding:1px 4px;">(本期 maxORM − 上期 maxORM) / 上期 × 100%</code></td></tr>
+          </tbody>
+        </table>
+
+        <p style="margin:10px 0 4px;"><b>同样的训练数据在不同粒度下"周等效组数"举例：</b></p>
+        <table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+          <thead><tr style="background:#f7f1e3;">
+            <th style="padding:5px 8px;text-align:left;">粒度</th><th>计算</th><th>含义</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:5px 8px;"><b>单次</b>（1 天，做 4 组）</td><td><code>4 × 7 / 1 = 28</code></td><td>"如果每天都这样训练每周就 28 组"。<b>单次比 MEV 意义有限</b>（没人每天练同一块），建议看"期内总容量"。</td></tr>
+            <tr><td style="padding:5px 8px;"><b>周</b>（7 天，本周 4 组）</td><td><code>4 × 7 / 7 = 4</code></td><td>当周实际组数，直接和 MEV/MAV/MRV 比较。<b>最自然的粒度</b>。</td></tr>
+            <tr><td style="padding:5px 8px;"><b>月</b>（30 天，月内 16 组）</td><td><code>16 × 7 / 30 ≈ 3.7</code></td><td>"按这一个月的训练节奏，平均每周做 3.7 组"。</td></tr>
+            <tr><td style="padding:5px 8px;"><b>季度 / 全部</b></td><td>同理 ×7/天数</td><td>跨段的平均周组数。</td></tr>
+          </tbody>
+        </table>
+
+        <p style="margin:10px 0 0;font-size:11.5px;color:var(--muted);"><b>状态评级（按当前训练目标的 MEV/MAV/MRV）：</b><br>
+        &nbsp; 周等效 = 0 → ⚪ <b>未训练</b><br>
+        &nbsp; 0 &lt; 周等效 &lt; MEV → 🔴 <b>不足</b>（不足以触发肌肉增长）<br>
+        &nbsp; MEV ≤ 周等效 &lt; MAV → 🟡 <b>下沿</b>（有效但未达甜区）<br>
+        &nbsp; MAV ≤ 周等效 ≤ MRV → 🟢 <b>甜区</b>（增长效率最高）<br>
+        &nbsp; 周等效 &gt; MRV → 🟣 <b>超额</b>（超过恢复能力，反损肌力）</p>
+      </div>
+    </details>
+
+    <table class="mst" id="muscleTable">
+      <thead><tr>
+        <th class="col-status">状态</th>
+        <th>肌群</th>
+        <th class="num">周等效组数</th>
+        <th class="num">周频次</th>
+        <th class="num">期内总容量</th>
+        <th>最强动作</th>
+        <th class="num">该动作 1RM</th>
+        <th class="num">趋势</th>
+      </tr></thead>
+      <tbody id="muscleTableBody"></tbody>
+    </table>
+  </section>
+
+  <!-- 段 3：平衡分析 -->
+  <section class="card">
+    <h2>④ 平衡分析（基于肌群表自动派生）</h2>
+    <p class="lead">长期失衡是退行性损伤的前兆。比值基于<b>有效组数</b>（组数 × 贡献系数）在所选时间范围内整体计算——含自重动作。</p>
+    <div id="balanceGrid" class="balance-grid"></div>
+  </section>
+
+  <!-- 段 4：诊断 + 建议 -->
+  <section class="card">
+    <h2>⑤ 综合诊断 + 下阶段建议</h2>
+    <div id="diagnosisBox"></div>
+  </section>
+
+  <!-- 段 5: 下次训练建议 -->
+  <section class="card">
+    <h2>⑥ 下次训练建议（基于当前目标 + 累计缺口）</h2>
+    <p class="lead">从动作库里挑能覆盖缺训肌群最多的动作，配合训练目标推算下次的重量、次数、组数。</p>
+    <div id="nextPlanBox"></div>
+  </section>
+
+  <!-- 段 6：底表（折叠）-->
+  <section class="card">
+    <h2>⑦ 底表 · 每个动作实例</h2>
+    <p class="lead">所有上面的图表和数字都由这张表计算而来。这是事实数据本身。</p>
+    <div class="flat-toolbar">
+      <input type="text" id="flatSearch" placeholder="搜索动作名 / 日期...">
+      <button id="flatExport">导出 CSV</button>
+      <span id="flatCount" style="font-size:11.5px;color:var(--muted);"></span>
+    </div>
+    <div class="flat-wrapper">
+      <table class="flat" id="flatTable">
+        <thead><tr>
+          <th>日期</th><th>#</th><th>动作</th>
+          <th class="num">重量(kg)</th><th class="num">次数</th><th class="num">组数</th>
+          <th class="num">容量</th><th class="num">1RM估算</th>
+          <th>主肌</th><th>协同</th>
+        </tr></thead>
+        <tbody id="flatTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="footnote">
+    <b>数据流：</b>历史底座 + 手册 localStorage 输入 → 合并去重 → 底表（每动作实例一行）→ 按时间窗口聚合 → 肌群状态 → 解剖图 + 频率热力表 + 详情表 + 平衡 + 诊断 + 下次计划。<br>
+    <b>方法：</b>有效组数 = 主肌 × 1.0 + 协同肌 × 0.5（EMG 研究依据）·
+    1RM = w × (1 + 0.0333r) Epley 公式 ·
+    MEV/MAV/MRV 来自 Israetel RP Hypertrophy（按肌群独立）·
+    趋势 = 期内后半段相对前半段的最大 1RM 百分比变化 ·
+    所有指标只读取事实数据（日期/动作/重量/次数/组数），<b>不依赖任何外部标签</b>。<br>
+    <b>限制：</b>4 维自评（神经/力线/幅度/容量）历史数据缺失；体重数据缺失，力量等级用 1RM 绝对值近似。
+  </div>
+
+</div>
+
+<!-- ====================================================================== -->
+<!-- 单一数据源：肌肉表 / 动作库 / 分类器 / 目标参数（与动作手册共用） -->
+<script src="训练数据库.js"></script>
+<script>
+// ============ 29 次历史训练数据 ============
+// 默认历史数据集 —— 用户的历史上课记录（这里是本人的 29 次私教课）。
+// 仅作为"历史底座"：未导入历史时用它；换个人用时把它换成空数组或让他导入即可。
+const DEFAULT_HISTORY = [
+  { n:1, date:'2025-12-04', ex:[{n:'杠铃低杠位深蹲',s:4,w:25,r:10},{n:'哑铃单腿罗马尼亚硬拉',s:4,w:8,r:10},{n:'坐姿哑铃推举',s:4,w:10,r:10},{n:'单腿站立对侧负重推举',s:4,w:5,r:12},{n:'坐姿后倾正握高位下拉',s:4,w:25,r:10}]},
+  { n:2, date:'2025-12-06', ex:[{n:'哑铃卧推',s:1,w:12,r:12},{n:'哑铃卧推',s:4,w:14,r:10},{n:'坐姿正握宽距高位下拉',s:1,w:25,r:10},{n:'坐姿正握宽距高位下拉',s:1,w:30,r:10},{n:'坐姿正握宽距高位下拉',s:2,w:25,r:10},{n:'坐姿正握宽距高位下拉',s:1,w:30,r:10},{n:'站姿正握哑铃推举',s:1,w:10,r:10},{n:'站姿正握哑铃推举',s:4,w:8,r:10},{n:'马步双侧负重交替划船',s:5,w:24,r:10}]},
+  { n:3, date:'2025-12-11', ex:[{n:'杠铃前蹲',s:1,w:15,r:10},{n:'杠铃前蹲',s:3,w:18,r:10},{n:'哑铃交替后弓步蹲',s:4,w:16,r:8},{n:'杠铃罗马尼亚硬拉',s:4,w:35,r:10},{n:'坐姿腿外展',s:4,w:27,r:10}]},
+  { n:4, date:'2025-12-13', ex:[{n:'杠铃上斜卧推',s:4,w:15,r:10},{n:'坐姿胸部支撑钢线下拉',s:4,w:25,r:10},{n:'坐姿钢线推胸-水平',s:4,w:10,r:10},{n:'手膝支撑单侧负重划船',s:4,w:9,r:10}]},
+  { n:5, date:'2025-12-18', ex:[{n:'负重交替侧弓步',s:4,w:8,r:10},{n:'哑铃直腿硬拉',s:5,w:20,r:10},{n:'壶铃宽距深蹲',s:5,w:20,r:10},{n:'哑铃单腿臀推',s:2,w:4,r:10}]},
+  { n:6, date:'2025-12-20', ex:[{n:'坐姿推胸',s:5,w:5,r:10},{n:'反握反向划船',s:5,w:0,r:10},{n:'中位绳索夹胸',s:5,w:5,r:10},{n:'站姿钢线直臂下压',s:5,w:12.5,r:10}]},
+  { n:7, date:'2025-12-23', ex:[{n:'杠铃低杠位深蹲',s:5,w:25,r:10},{n:'杠铃直腿硬拉',s:5,w:35,r:10},{n:'负重交替侧弓步蹲',s:4,w:12,r:10},{n:'上斜板支撑单侧哑铃侧平举',s:4,w:3,r:10}]},
+  { n:8, date:'2025-12-25', ex:[{n:'弹力带引体向上',s:5,w:0,r:10},{n:'手支撑单侧负重划船',s:4,w:12,r:10},{n:'站姿钢线对握直臂下压',s:5,w:7.5,r:10},{n:'站姿钢线划船',s:5,w:20,r:10},{n:'TRX弯举',s:4,w:0,r:10}]},
+  { n:9, date:'2025-12-27', ex:[{n:'哑铃上斜卧推',s:5,w:12,r:10},{n:'哑铃飞鸟',s:5,w:8,r:10},{n:'史密斯机斜板俯卧撑',s:5,w:0,r:10},{n:'上斜绳索夹胸',s:4,w:5,r:10},{n:'TRX力量卷腹',s:5,w:0,r:15}]},
+  { n:10, date:'2025-12-30', ex:[{n:'安全杆深蹲',s:4,w:30,r:10},{n:'正握反向划船',s:4,w:0,r:10},{n:'杠铃前蹲',s:4,w:10,r:10},{n:'坐姿推举',s:4,w:5,r:10},{n:'俯卧腿弯举',s:4,w:30,r:10},{n:'坐姿推胸',s:4,w:5,r:10}]},
+  { n:11, date:'2026-01-08', ex:[{n:'负重跳箱台阶上步',s:4,w:6,r:10},{n:'地雷管罗马尼亚硬拉',s:4,w:35,r:10},{n:'T杆宽距蹲',s:4,w:35,r:10},{n:'后腿支撑单腿硬拉',s:3,w:12,r:10}]},
+  { n:12, date:'2026-01-13', ex:[{n:'双杠臂屈伸',s:5,w:0,r:10},{n:'胸部支撑哑铃划船',s:3,w:20,r:10},{n:'胸部支撑哑铃划船',s:2,w:24,r:10},{n:'杠铃过顶前平举',s:3,w:7.5,r:10},{n:'坐姿对握宽距高位下拉',s:2,w:30,r:10},{n:'坐姿对握宽距高位下拉',s:3,w:25,r:10}]},
+  { n:13, date:'2026-01-17', ex:[{n:'哑铃后撤交叉弓步蹲',s:4,w:20,r:10},{n:'补偿脚杠铃硬拉',s:4,w:30,r:10},{n:'负重交替侧弓步',s:4,w:8,r:10}]},
+  { n:14, date:'2026-01-20', ex:[{n:'钢线俯身推胸',s:5,w:10,r:10},{n:'坐姿单侧反握高位下拉',s:5,w:10,r:10},{n:'下斜绳索夹胸',s:5,w:5,r:12},{n:'反握杠铃划船',s:1,w:20,r:12},{n:'反握杠铃划船',s:4,w:12,r:10}]},
+  { n:15, date:'2026-01-24', ex:[{n:'杠铃高杠位深蹲',s:4,w:25,r:10},{n:'侧卧屈膝支撑弹力圈直腿抬高',s:4,w:3,r:10},{n:'六角杠铃硬拉',s:3,w:40,r:10},{n:'六角杠铃硬拉',s:1,w:40,r:8},{n:'双壶铃直腿硬拉',s:4,w:32,r:10}]},
+  { n:16, date:'2026-01-27', ex:[{n:'马步双侧负重俯身划船',s:5,w:24,r:10},{n:'坐姿钢线推胸-向上',s:2,w:5,r:12},{n:'坐姿钢线推胸-向上',s:3,w:5,r:10},{n:'坐姿夹胸',s:5,w:20,r:10},{n:'仰卧哑铃上拉',s:5,w:8,r:10}]},
+  { n:17, date:'2026-01-31', ex:[{n:'杠铃低杠位深蹲',s:5,w:30,r:10},{n:'补偿脚单壶铃罗马尼亚硬拉',s:4,w:20,r:8},{n:'双壶铃前蹲',s:4,w:16,r:10},{n:'双侧负重单腿罗马尼亚硬拉',s:2,w:24,r:10}]},
+  { n:18, date:'2026-02-03', ex:[{n:'弹力带引体向上',s:5,w:0,r:10},{n:'杠铃宽距卧推',s:5,w:18,r:10},{n:'坐姿钢线夹胸-水平',s:5,w:5,r:12},{n:'站姿钢线X拉',s:5,w:15,r:10}]},
+  { n:19, date:'2026-02-07', ex:[{n:'负重交替前弓步蹲',s:4,w:24,r:10},{n:'T杆单腿臀推',s:4,w:20,r:10},{n:'壶铃宽距深蹲',s:4,w:24,r:10}]},
+  { n:20, date:'2026-02-10', ex:[{n:'坐姿单侧正握高位下拉',s:4,w:10,r:10},{n:'坐姿夹胸',s:1,w:14,r:10},{n:'坐姿夹胸',s:4,w:18,r:10},{n:'坐姿正握窄距钢线划船',s:5,w:25,r:10},{n:'杠铃窄距卧推',s:5,w:15,r:10},{n:'壶铃高风车',s:2,w:8,r:10}]},
+  { n:21, date:'2026-03-17', ex:[{n:'负重后弓步蹲',s:2,w:12,r:12},{n:'后腿支撑单腿硬拉',s:2,w:12,r:12},{n:'稳定球双哑铃卧推',s:2,w:12,r:12},{n:'直线半跪姿钢线划船',s:2,w:17.5,r:12}]},
+  { n:22, date:'2026-03-19', ex:[{n:'弹力带抗旋深蹲',s:2,w:3,r:12},{n:'半跪姿哑铃推举',s:2,w:8,r:12},{n:'哑铃单腿臀推',s:2,w:4,r:12},{n:'单腿站立钢线直臂下压',s:2,w:7.5,r:12}]},
+  { n:23, date:'2026-03-21', ex:[{n:'壶铃前架位后弓步蹲',s:2,w:8,r:12},{n:'平衡软垫钢线推胸-向下',s:2,w:10,r:12},{n:'矢状面钢线单腿罗马尼亚硬拉',s:2,w:5,r:12},{n:'TRX-W字举',s:2,w:0,r:12}]},
+  { n:24, date:'2026-03-24', ex:[{n:'保加利亚单腿深蹲',s:2,w:12,r:10},{n:'平衡软垫深蹲',s:2,w:0,r:12},{n:'站姿钢线对握直臂下压',s:2,w:10,r:10},{n:'直线半跪姿钢线下拉',s:2,w:20,r:12},{n:'瑞士球臀桥',s:2,w:14,r:10},{n:'平板支撑跨步交替',s:2,w:12,r:12},{n:'壶铃高低6步至平衡',s:2,w:0,r:20},{n:'深蹲跳',s:2,w:0,r:10},{n:'杠铃前架位深蹲',s:2,w:12,r:12}]},
+  { n:25, date:'2026-03-26', ex:[{n:'杠铃垫步硬拉',s:2,w:30,r:10},{n:'对侧负重单腿罗马尼亚硬拉',s:2,w:2,r:12},{n:'坐姿哑铃推举',s:2,w:12,r:10},{n:'单腿站立对侧负重推举',s:2,w:5,r:12},{n:'坐姿后倾正握高位下拉',s:2,w:28,r:10},{n:'平衡软垫钢线直臂下压',s:2,w:7.5,r:12}]},
+  { n:26, date:'2026-03-28', ex:[{n:'地雷杆低位交替侧弓步蹲',s:2,w:30,r:10},{n:'站姿钢线单侧胸推',s:2,w:7.5,r:10},{n:'稳定球单哑铃卧推',s:2,w:8,r:12},{n:'站姿钢线单侧划船',s:2,w:10,r:10},{n:'单腿站立双侧负重俯身划船',s:2,w:12,r:12}]},
+  { n:27, date:'2026-04-02', ex:[{n:'站姿钢线X拉',s:2,w:15,r:10},{n:'平衡半球单哑铃划船',s:2,w:7,r:12},{n:'杠铃卧推',s:2,w:18,r:10},{n:'杠铃臀推',s:2,w:50,r:10},{n:'沙球负重臀推',s:2,w:10,r:12}]},
+  { n:28, date:'2026-04-11', ex:[{n:'站姿钢线直臂下压',s:2,w:15,r:10},{n:'平衡半球跪姿钢线下拉',s:2,w:25,r:12},{n:'双侧负重台阶后弓步蹲',s:2,w:16,r:10},{n:'站姿钢线直立划船',s:2,w:10,r:10},{n:'单腿站立双侧负重推举',s:2,w:10,r:12}]},
+  { n:29, date:'2026-04-18', ex:[{n:'正握T杠划船',s:2,w:30,r:12},{n:'鸟狗单臂划船',s:1,w:7,r:12},{n:'鸟狗单臂划船',s:1,w:8,r:12},{n:'T杆交叉弓步蹲',s:2,w:25,r:10},{n:'单腿站立钢线推胸-水平',s:2,w:5,r:12}]}
+];
+
+// ============ 肌肉表 / 动作分类器 来自共享数据源「训练数据库.js」============
+// classifyExercise / MUSCLE_TARGETS / MUSCLE_GROUPS / MUSCLE_CATEGORIES /
+// GOAL_PROFILE / targetsFor / estimate1RM / rirFactor 均由 训练数据库.js 提供
+const classify = classifyExercise;          // 共享分类器（返回 {contrib, primary, secondary}）
+const TARGETS = MUSCLE_TARGETS;             // 共享肌肉阈值表
+const ZH_TO_LIB = {};                       // 派生：肌肉 → 解剖图键
+MUSCLE_GROUPS.forEach(m => ZH_TO_LIB[m] = MUSCLE_TARGETS[m].lib);
+const MUSCLE_TO_CATEGORY = {};               // 派生：肌肉 → 所属大类
+MUSCLE_CATEGORIES.forEach(cat => cat.muscles.forEach(m => MUSCLE_TO_CATEGORY[m] = cat));
+
+// ============ 工具函数 ============
+// estimate1RM / rirFactor 由共享数据源「训练数据库.js」提供
+
+// estimate1RM / rirFactor 由共享数据源「训练数据库.js」提供
+function isoWeekStart(dateStr){
+  const d = new Date(dateStr);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+  return d.toISOString().slice(0, 10);
+}
+function ymKey(dateStr){ return dateStr.slice(0,7); }
+function qKey(dateStr){
+  const [y,m] = dateStr.split('-').map(Number);
+  return `${y}-Q${Math.ceil(m/3)}`;
+}
+function daysBetween(a, b){ return Math.max(1, (new Date(b) - new Date(a)) / (24*3600*1000) + 1); }
+
+// ============================================================
+// 数据源层 —— 分析跑的是「用户自己的数据」，由三处合并而来：
+//   ① 历史底座：导入的历史记录，没有则用 DEFAULT_HISTORY（本人 29 次私教课）
+//   ② 手册输入：手册 localStorage(gym_handbook_v3) 里用户逐组记的训练
+//                （自动跳过手册里"历史 · …"的种子行，避免与①重复计算）
+//   合并 → 去重 → FLAT（每动作实例一行）→ 派生 SESSIONS（按日期分组）
+// 换个人用：他不导入就只看手册输入；导入了就看自己的历史。架构本身通用。
+// ============================================================
+const HANDBOOK_KEY = 'gym_handbook_v3';
+const ANALYSIS_HISTORY_KEY = 'gym_analysis_history';
+
+// 动作 id → 中文名（手册 localStorage 用 id 存，分析用中文名分类）
+const ID_TO_CN = {};
+if (typeof EXERCISE_DB !== 'undefined') Object.values(EXERCISE_DB).forEach(e => { ID_TO_CN[e.id] = e.cn; });
+
+// 把 session 格式 [{date,ex:[{n,w,r,s}]}] 摊平成行
+function flattenSessions(sessions){
+  const out = [];
+  (sessions||[]).forEach(s => (s.ex||[]).forEach(e => {
+    out.push({ date:s.date, name:e.n, w:e.w||0, r:e.r||0, s:e.s||0, src:'历史' });
+  }));
+  return out;
+}
+// ① 历史底座
+function readHistoryRows(){
+  try {
+    const raw = localStorage.getItem(ANALYSIS_HISTORY_KEY);
+    if (raw){
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length){
+        // 支持两种格式：session 数组 或 已摊平的行数组
+        if (arr[0] && arr[0].ex) return flattenSessions(arr);
+        return arr.map(r => ({ date:r.date, name:r.name||r.n, w:r.w||0, r:r.r||0, s:r.s||0, src:'历史(导入)' }));
+      }
+    }
+  } catch(e){}
+  return flattenSessions(DEFAULT_HISTORY);
+}
+// ② 手册 localStorage 里用户记录的训练
+function readHandbookRows(){
+  try {
+    const d = JSON.parse(localStorage.getItem(HANDBOOK_KEY) || 'null');
+    if (!d || !d.logs) return [];
+    const out = [];
+    for (const moveId in d.logs){
+      const cn = ID_TO_CN[moveId] || moveId;
+      (d.logs[moveId] || []).forEach(r => {
+        if ((r.note || '').indexOf('历史 · ') === 0) return;          // 跳过种子行，避免与①重复
+        const w = parseFloat(r.weight)||0, rep = parseFloat(r.reps)||0, st = parseFloat(r.sets)||0;
+        if (!rep && !st && !w) return;                                 // 跳过空行
+        out.push({ date:r.date, name:cn, w, r:rep, s:st||1, src:'手册' });
+      });
+    }
+    return out;
+  } catch(e){ return []; }
+}
+
+// 合并 → 去重 → FLAT；派生 SESSIONS。FLAT / SESSIONS 用 let，导入/刷新后可重建
+let FLAT = [];
+let SESSIONS = [];
+let DATA_STATS = { history:0, handbook:0 };
+function rebuildData(){
+  const history  = readHistoryRows();
+  const handbook = readHandbookRows();
+  DATA_STATS = { history: history.length, handbook: handbook.length };
+  const raw = history.concat(handbook);
+  const seen = new Set();
+  FLAT = [];
+  raw.forEach(e => {
+    if (!e.date || !e.name) return;
+    const key = e.date + '|' + e.name + '|' + e.w + '|' + e.r + '|' + e.s;
+    if (seen.has(key)) return;                                          // 同日同动作同重量次数组数 → 去重
+    seen.add(key);
+    const c = classify(e.name);
+    FLAT.push({
+      date:e.date, name:e.name, w:e.w||0, r:e.r||0, s:e.s||0,
+      vol:(e.w||0)*(e.r||0)*(e.s||0), orm:estimate1RM(e.w, e.r),
+      contrib:c.contrib, primary:c.primary, secondary:c.secondary, src:e.src
+    });
+  });
+  FLAT.sort((a,b) => a.date.localeCompare(b.date));
+  // 派生 SESSIONS（按日期分组），并给 FLAT 行补 session 序号
+  const byDate = {};
+  FLAT.forEach(r => { (byDate[r.date] = byDate[r.date] || []).push(r); });
+  const dates = Object.keys(byDate).sort();
+  SESSIONS = dates.map((d,i) => ({ n:i+1, date:d, ex:byDate[d].map(r => ({ n:r.name, w:r.w, r:r.r, s:r.s })) }));
+  const dateToN = {}; dates.forEach((d,i) => dateToN[d] = i+1);
+  FLAT.forEach(r => { r.n = dateToN[r.date]; });
+}
+rebuildData();
+
+// ============ 按时间窗口聚合到"肌群状态" ============
+// returns: { muscle: { sets, vol, sessions, freq, weeklyEqSets, status, maxOrm, topMove } }
+function muscleStateInRange(start, end){
+  const rows = FLAT.filter(r => r.date >= start && r.date <= end);
+  const state = {};
+  MUSCLE_GROUPS.forEach(m => state[m] = { sets:0, vol:0, sessions:new Set(), maxOrm:0, topMove:null });
+  rows.forEach(r => {
+    // 用 contrib 系数映射，比"主肌×1+协同×0.5"更准
+    const contrib = r.contrib || {};
+    for (const m in contrib){
+      if (!state[m]) continue;
+      const coef = contrib[m];
+      state[m].sets += r.s * coef;
+      state[m].vol += r.vol * coef;
+      state[m].sessions.add(r.date);
+      // 只在主肌（系数 >= 0.7）的动作里取最大 1RM
+      if (coef >= 0.7 && r.orm > state[m].maxOrm) {
+        state[m].maxOrm = r.orm;
+        state[m].topMove = r.name;
+      }
+    }
+  });
+  const days = daysBetween(start, end);
+  const weeks = days / 7;
+  Object.values(state).forEach(s => {
+    s.weeklyEqSets = s.sets / weeks;
+    s.freq = s.sessions.size / weeks;
+    s.sessionCount = s.sessions.size;
+  });
+  return state;
+}
+
+// ============ 状态分级（1 红/2 黄/3 绿/4 紫）============
+function statusOf(muscle, weeklyEqSets){
+  const t = currentTargets[muscle] || TARGETS[muscle];
+  if (!t) return 0;
+  if (weeklyEqSets === 0) return 0;
+  if (weeklyEqSets < t.mev) return 1;
+  if (weeklyEqSets < t.mav) return 2;
+  if (weeklyEqSets <= t.mrv) return 3;
+  return 4;
+}
+const STATUS_NAME = ['未训练','不足','下沿','甜区','超额'];
+const STATUS_CLASS = ['untrained','under','warn','good','over'];
+
+// GOAL_PROFILE / targetsFor 由共享数据源「训练数据库.js」提供
+
+// ============ 当前筛选状态 ============
+let currentGran = 'week';
+let currentGoal = 'hypertrophy';
+let currentTargets = TARGETS;  // 会被 setGoal() 替换
+const TODAY_STR = new Date().toISOString().slice(0,10);
+let dateStart = SESSIONS.length ? SESSIONS[0].date : TODAY_STR;
+let dateEnd = SESSIONS.length ? SESSIONS[SESSIONS.length-1].date : TODAY_STR;
+let selectedPeriod = null;
+let expandedMuscle = null;
+
+function getPeriods(){
+  // 根据 gran 划分时间段，返回 [{key, start, end, label}, ...]
+  if (currentGran === 'all') {
+    return [{ key:'all', start:dateStart, end:dateEnd, label:'全部期间' }];
+  }
+  const filtered = SESSIONS.filter(s => s.date >= dateStart && s.date <= dateEnd);
+  if (currentGran === 'session') {
+    return filtered.map(s => ({ key:s.date, start:s.date, end:s.date, label:`#${s.n} · ${s.date}` }));
+  }
+  const groups = {};
+  filtered.forEach(s => {
+    let k;
+    if (currentGran === 'week') k = isoWeekStart(s.date);
+    else if (currentGran === 'month') k = ymKey(s.date);
+    else if (currentGran === 'quarter') k = qKey(s.date);
+    if (!groups[k]) groups[k] = [];
+    groups[k].push(s);
+  });
+  const sortedKeys = Object.keys(groups).sort();
+  return sortedKeys.map(k => {
+    const ss = groups[k];
+    const dates = ss.map(s=>s.date).sort();
+    const start = dates[0], end = dates[dates.length-1];
+    let label = k;
+    if (currentGran === 'week') label = `周(${k})`;
+    if (currentGran === 'month') label = `${k}`;
+    if (currentGran === 'quarter') label = k;
+    return { key:k, start, end, label, sessions:ss };
+  });
+}
+
+// ============ 趋势：当前周期 vs 上一周期 ============
+function trendOf(muscle, currentRange, previousRange){
+  if (!previousRange) return null;
+  const cur = muscleStateInRange(currentRange.start, currentRange.end);
+  const prev = muscleStateInRange(previousRange.start, previousRange.end);
+  const curO = cur[muscle].maxOrm, prevO = prev[muscle].maxOrm;
+  if (!curO || !prevO) return null;
+  return ((curO - prevO) / prevO * 100);
+}
+
+// ============ body-highlighter 动态加载 ============
+let BodyHighlighter = null;
+let BHFailed = false;
+async function loadBodyHighlighter(){
+  const urls = [
+    'https://cdn.jsdelivr.net/npm/body-highlighter@3.0.2/+esm',
+    'https://esm.sh/body-highlighter@3.0.2',
+    'https://cdn.jsdelivr.net/npm/body-highlighter/+esm'
+  ];
+  for (const u of urls){
+    try {
+      const mod = await import(/* @vite-ignore */ u);
+      BodyHighlighter = mod.default || mod.createBodyHighlighter || mod;
+      if (typeof BodyHighlighter !== 'function' && BodyHighlighter && typeof BodyHighlighter.default === 'function'){
+        BodyHighlighter = BodyHighlighter.default;
+      }
+      if (typeof BodyHighlighter === 'function') return true;
+    } catch(e){ /* try next */ }
+  }
+  BHFailed = true;
+  return false;
+}
+
+// ============ 渲染：body heatmap ============
+function renderBodyHeatmap(state){
+  const frontEl = document.getElementById('bodyFront');
+  const backEl  = document.getElementById('bodyBack');
+  if (BHFailed || !BodyHighlighter){
+    frontEl.innerHTML = backEl.innerHTML = `<div class="heatmap-loading">⚠️ 解剖图库未加载（需联网）<br>下面的表格不受影响</div>`;
+    return;
+  }
+  // 构造 data：每肌群 → frequency = status (1-4)，0 不显示（库会用默认 bodyColor）
+  const data = [];
+  Object.keys(state).forEach(m => {
+    const lib = ZH_TO_LIB[m];
+    if (!lib) return;
+    const st = statusOf(m, state[m].weeklyEqSets);
+    if (st === 0) return;
+    data.push({ name: m, muscles: [lib], frequency: st });
+  });
+  frontEl.innerHTML = '';
+  backEl.innerHTML  = '';
+  try {
+    BodyHighlighter({
+      container: frontEl,
+      data,
+      type: 'anterior',
+      highlightedColors: ['#c8462c', '#c08a2e', '#2d6e3a', '#7a4eb0'],
+      bodyColor: '#d6cfbe',
+      style: { width: '200px', padding: '0' }
+    });
+    BodyHighlighter({
+      container: backEl,
+      data,
+      type: 'posterior',
+      highlightedColors: ['#c8462c', '#c08a2e', '#2d6e3a', '#7a4eb0'],
+      bodyColor: '#d6cfbe',
+      style: { width: '200px', padding: '0' }
+    });
+  } catch(e){
+    frontEl.innerHTML = backEl.innerHTML = `<div class="heatmap-loading">渲染失败：${e.message}</div>`;
+  }
+}
+
+// ============ 渲染：肌肉 × 时间 训练频率热力表 ============
+// 行 = 肌肉（按大类分组）；列 = 每 7 天一格；
+// 格子颜色 = 该周有效组数对照该肌肉 MEV/MAV/MRV 的状态（与解剖图同色）；
+// 右侧间隔统计用真实训练日期算（不受 7 天分桶影响）。
+function renderEngagementHeatmap(){
+  const box = document.getElementById('engagementBox');
+  if (!box) return;
+  const rows = FLAT.filter(r => r.date >= dateStart && r.date <= dateEnd);
+  if (!rows.length){
+    box.innerHTML = '<p style="padding:24px;color:var(--muted);text-align:center;">所选时间范围内暂无训练数据</p>';
+    return;
+  }
+  const dates = rows.map(r => r.date).sort();
+  const first = dates[0], last = dates[dates.length-1];
+  const firstMs = new Date(first).getTime();
+  // 7 天一桶
+  const buckets = [];
+  let d = new Date(first);
+  const lastD = new Date(last);
+  while (d <= lastD){
+    const s = d.toISOString().slice(0,10);
+    const e = new Date(d); e.setDate(e.getDate()+6);
+    buckets.push({ start:s, end:e.toISOString().slice(0,10) });
+    d.setDate(d.getDate()+7);
+  }
+  const bucketOf = ds => Math.floor((new Date(ds).getTime() - firstMs) / (7*24*3600*1000));
+  // 每肌肉 × 桶 的有效组数 + 每肌肉的真实训练日期
+  const grid = {}, mdates = {};
+  MUSCLE_GROUPS.forEach(m => { grid[m] = {}; mdates[m] = new Set(); });
+  rows.forEach(r => {
+    const bi = bucketOf(r.date);
+    for (const m in r.contrib){
+      if (!grid[m]) continue;
+      grid[m][bi] = (grid[m][bi] || 0) + r.s * r.contrib[m];
+      mdates[m].add(r.date);
+    }
+  });
+  // 训练间隔统计（相邻训练日期之间的天数）
+  function stats(dateSet){
+    const ds = [...dateSet].sort();
+    if (ds.length <= 1) return { count:ds.length };
+    const gaps = [];
+    for (let i=1;i<ds.length;i++) gaps.push(Math.round((new Date(ds[i]) - new Date(ds[i-1]))/(24*3600*1000)));
+    return { count:ds.length, avg:gaps.reduce((a,b)=>a+b,0)/gaps.length, max:Math.max(...gaps), min:Math.min(...gaps) };
+  }
+  const COLORS = ['', '#c8462c', '#c08a2e', '#2d6e3a', '#7a4eb0'];   // status 0-4，与解剖图一致
+  function verdict(st){
+    if (st.count === 0) return ['未训练','untrained'];
+    if (st.count === 1) return ['仅 1 次','under'];
+    if (st.avg <= 5) return ['高频','good'];
+    if (st.avg <= 9) return ['适中','warn'];
+    return ['偏疏','under'];
+  }
+  let html = '<table class="engagement-table"><thead><tr><th class="sticky-col">肌肉</th>';
+  buckets.forEach(b => { html += `<th class="bk" title="${b.start} ~ ${b.end}">${b.start.slice(5)}</th>`; });
+  html += '<th class="stat">平均间隔</th><th class="stat">最长</th><th class="stat">最短</th><th class="stat">次数</th><th class="stat">频率</th></tr></thead><tbody>';
+  MUSCLE_CATEGORIES.forEach(cat => {
+    html += `<tr class="cat-row"><td class="sticky-col">${cat.icon} ${cat.name}</td>`
+      + `<td colspan="${buckets.length+5}" style="background:#faf5e7;"></td></tr>`;
+    cat.muscles.forEach(m => {
+      html += `<tr><td class="sticky-col mname">${m}</td>`;
+      buckets.forEach((b,i) => {
+        const v = grid[m][i] || 0;
+        if (!v){ html += '<td class="cell"></td>'; return; }
+        const st = statusOf(m, v);
+        html += `<td class="cell" style="background:${COLORS[st]||'#ddd'};color:#fff;" `
+          + `title="${b.start}~${b.end}：有效组 ${v.toFixed(1)}（${STATUS_NAME[st]}）">${v.toFixed(1)}</td>`;
+      });
+      const s = stats(mdates[m]);
+      const [vtext, vclass] = verdict(s);
+      html += `<td class="stat">${s.avg!=null ? s.avg.toFixed(1)+' 天' : '—'}</td>`
+        + `<td class="stat">${s.max!=null ? s.max+' 天' : '—'}</td>`
+        + `<td class="stat">${s.min!=null ? s.min+' 天' : '—'}</td>`
+        + `<td class="stat">${s.count}</td>`
+        + `<td class="stat"><span class="status-pill ${vclass}"><span class="dot"></span>${vtext}</span></td></tr>`;
+    });
+  });
+  html += '</tbody></table>';
+  box.innerHTML = html;
+}
+
+// ============ 渲染：肌群详情表（按大类分组）============
+function renderMuscleTable(currentRange, previousRange){
+  const state = muscleStateInRange(currentRange.start, currentRange.end);
+  const body = document.getElementById('muscleTableBody');
+  body.innerHTML = '';
+
+  MUSCLE_CATEGORIES.forEach(cat => {
+    // 大类聚合
+    let catSets = 0, catVol = 0, catFreq = 0, catFreqCount = 0;
+    let underN = 0, sweetN = 0, overN = 0, untrainedN = 0;
+    cat.muscles.forEach(m => {
+      const s = state[m];
+      catSets += s.weeklyEqSets;
+      catVol += s.vol;
+      catFreq += s.freq; catFreqCount++;
+      const st = statusOf(m, s.weeklyEqSets);
+      if (st === 0) untrainedN++;
+      else if (st === 1) underN++;
+      else if (st === 3) sweetN++;
+      else if (st === 4) overN++;
+    });
+    const catAvgFreq = catFreq / Math.max(1, catFreqCount);
+    // 类别状态：取该类肌群里"最不足"的作为整体状态
+    const catStatus = untrainedN > 0 ? 0 : (underN > 0 ? 1 : (overN > 0 ? 4 : (sweetN === cat.muscles.length ? 3 : 2)));
+
+    // 类别 header 行
+    const catTr = document.createElement('tr');
+    catTr.className = 'cat-header';
+    catTr.innerHTML = `
+      <td colspan="8">
+        <div class="cat-row">
+          <div class="cat-title">
+            <span class="cat-icon">${cat.icon}</span>
+            <b>${cat.name}</b>
+            <span class="cat-sub">${cat.muscles.length} 块肌肉</span>
+          </div>
+          <div class="cat-stats">
+            <span>累计周等效 <b>${catSets.toFixed(1)}</b> 组</span>
+            <span>平均频次 <b>${catAvgFreq.toFixed(2)}</b> 次/周</span>
+            <span>总容量 <b>${Math.round(catVol).toLocaleString()}</b> kg</span>
+            ${untrainedN > 0 ? `<span class="cat-flag" style="background:var(--bad-light);color:var(--bad);">${untrainedN} 未训练</span>` : ''}
+            ${underN > 0 ? `<span class="cat-flag" style="background:var(--bad-light);color:var(--bad);">${underN} 不足</span>` : ''}
+            ${sweetN > 0 ? `<span class="cat-flag" style="background:var(--good-light);color:var(--good);">${sweetN} 甜区</span>` : ''}
+            ${overN > 0 ? `<span class="cat-flag" style="background:var(--over-light);color:var(--over);">${overN} 超额</span>` : ''}
+          </div>
+        </div>
+      </td>
+    `;
+    body.appendChild(catTr);
+
+    // 该类的具体肌肉（按状态严重度排序）
+    const items = cat.muscles.map(m => ({
+      name: m, ...state[m],
+      status: statusOf(m, state[m].weeklyEqSets),
+      trend: trendOf(m, currentRange, previousRange)
+    })).sort((a,b)=>{
+      const order = [0,1,2,3,4];
+      return order.indexOf(a.status) - order.indexOf(b.status) || (b.weeklyEqSets - a.weeklyEqSets);
+    });
+
+    items.forEach(m => {
+      const tr = document.createElement('tr');
+      tr.className = 'row';
+      tr.dataset.muscle = m.name;
+      if (expandedMuscle === m.name) tr.classList.add('expanded');
+      const trendHtml = m.trend === null ? '<span class="trend same">—</span>' :
+        m.trend > 5 ? `<span class="trend up">↑ ${m.trend.toFixed(1)}%</span>` :
+        m.trend < -5 ? `<span class="trend dn">↓ ${m.trend.toFixed(1)}%</span>` :
+        `<span class="trend same">→ ${m.trend.toFixed(1)}%</span>`;
+      tr.innerHTML = `
+        <td class="col-status">
+          <span class="status-pill ${STATUS_CLASS[m.status]}">
+            <span class="dot"></span>${STATUS_NAME[m.status]}
+          </span>
+        </td>
+        <td><b>${m.name}</b><br><span style="font-size:10.5px;color:var(--muted);">MEV ${currentTargets[m.name]?.mev}·MAV ${currentTargets[m.name]?.mav}·MRV ${currentTargets[m.name]?.mrv}</span></td>
+        <td class="num"><b>${m.weeklyEqSets.toFixed(1)}</b></td>
+        <td class="num">${m.freq.toFixed(2)}</td>
+        <td class="num">${Math.round(m.vol).toLocaleString()}</td>
+        <td>${m.topMove || '<span style="color:var(--muted)">—</span>'}</td>
+        <td class="num">${m.maxOrm ? m.maxOrm.toFixed(0) + ' kg' : '—'}</td>
+        <td class="num">${trendHtml}</td>
+      `;
+      tr.addEventListener('click', () => {
+        expandedMuscle = expandedMuscle === m.name ? null : m.name;
+        renderMuscleTable(currentRange, previousRange);
+      });
+      body.appendChild(tr);
+      if (expandedMuscle === m.name) {
+        const detail = document.createElement('tr');
+        detail.className = 'detail';
+        detail.innerHTML = `<td colspan="8">${buildDetail(m.name, currentRange)}</td>`;
+        body.appendChild(detail);
+        setTimeout(() => renderMuscleTrend(m.name), 30);
+      }
+    });
+  });
+}
+
+function buildDetail(muscle, currentRange){
+  // 拉出该肌群所有动作（在当前粒度的时间窗内）
+  const rs = currentRange.start, re = currentRange.end;
+  const rows = FLAT.filter(r => r.date >= rs && r.date <= re && (r.contrib[muscle] || 0) > 0);
+  // 按动作汇总（用贡献系数加权，与主表口径一致）
+  const byMove = {};
+  rows.forEach(r => {
+    const coef = r.contrib[muscle] || 0;
+    if (!byMove[r.name]) byMove[r.name] = { count:0, totalSets:0, maxOrm:0, coef, latestDate:'', latestW:0, latestR:0 };
+    byMove[r.name].count++;
+    byMove[r.name].totalSets += r.s * coef;          // 有效组数 = 组数 × 贡献系数
+    byMove[r.name].coef = Math.max(byMove[r.name].coef, coef);
+    if (r.orm > byMove[r.name].maxOrm) byMove[r.name].maxOrm = r.orm;
+    if (r.date > byMove[r.name].latestDate) {
+      byMove[r.name].latestDate = r.date;
+      byMove[r.name].latestW = r.w; byMove[r.name].latestR = r.r;
+    }
+  });
+  const moves = Object.entries(byMove).sort((a,b)=>b[1].totalSets - a[1].totalSets).slice(0,10);
+  const moveRows = moves.map(([name, m]) => `
+    <tr>
+      <td>${name} <span class="n">系数 ${m.coef.toFixed(2)}</span></td>
+      <td class="n">${m.count} 次</td>
+      <td class="n">${m.totalSets.toFixed(1)} 组</td>
+      <td class="n">${m.maxOrm.toFixed(0)} kg</td>
+      <td class="n">${m.latestDate}<br>${m.latestW}kg×${m.latestR}</td>
+    </tr>
+  `).join('');
+  return `
+    <div class="detail-content">
+      <div class="detail-exercises">
+        <h5>📍 在 ${rs} ~ ${re} 期间，刺激「${muscle}」的所有动作（按累计组数排序）</h5>
+        <table>
+          <tr><td style="color:var(--muted)"><b>动作</b></td><td class="n">次数</td><td class="n">累计有效组数</td><td class="n">最大 1RM</td><td class="n">最近一次</td></tr>
+          ${moveRows || '<tr><td colspan="5" style="color:var(--muted);padding:8px;">无记录</td></tr>'}
+        </table>
+      </div>
+      <div>
+        <h5 style="font-size:12px;color:var(--accent);margin:0 0 6px;">📈 该肌群核心动作的 1RM 趋势</h5>
+        <div class="detail-trend-chart"><canvas id="trendChart_${muscle}"></canvas></div>
+      </div>
+    </div>
+  `;
+}
+
+let trendChartInstance = null;
+function renderMuscleTrend(muscle){
+  const canvas = document.getElementById('trendChart_' + muscle);
+  if (!canvas) return;
+  // 取该肌群作为主肌（贡献系数 ≥ 0.7）的动作中最常见的 top 3 个，画 1RM 趋势
+  const rows = FLAT.filter(r => r.date >= dateStart && r.date <= dateEnd && (r.contrib[muscle] || 0) >= 0.7);
+  const byMove = {};
+  rows.forEach(r => {
+    if (!byMove[r.name]) byMove[r.name] = [];
+    byMove[r.name].push({ date:r.date, orm:r.orm });
+  });
+  const top = Object.entries(byMove).filter(([,v])=>v.length>=2).sort((a,b)=>b[1].length-a[1].length).slice(0,3);
+  const colors = ['#b03a2e','#2f5d8d','#2d6e3a'];
+  const allDates = [...new Set(rows.map(r=>r.date))].sort();
+  const datasets = top.map(([name, list],i) => ({
+    label: name.length > 12 ? name.slice(0,10)+'..' : name,
+    data: list.map(x=>({x:x.date, y:+x.orm.toFixed(1)})),
+    borderColor: colors[i], backgroundColor: colors[i]+'30',
+    tension: 0.2, pointRadius: 3
+  }));
+  if (trendChartInstance) trendChartInstance.destroy();
+  trendChartInstance = new Chart(canvas, {
+    type: 'line',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      parsing: false,
+      scales: {
+        x: { type: 'category', labels: allDates, ticks: { font: { size: 9 } } },
+        y: { title: { display: true, text: '估算 1RM (kg)', font:{size:10} } }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+// ============ 渲染：KPI ============
+function renderKPI(currentRange, periods){
+  const state = muscleStateInRange(currentRange.start, currentRange.end);
+  document.getElementById('periodLabel').textContent = currentRange.label;
+
+  // 1) 覆盖率 ：达到 MEV 的肌群 / 总肌群
+  const totalMuscles = MUSCLE_GROUPS.length;
+  const metMev = MUSCLE_GROUPS.filter(m => state[m].weeklyEqSets >= currentTargets[m].mev).length;
+  const coverage = (metMev / totalMuscles * 100).toFixed(0);
+
+  // 2) 甜区肌群数
+  const sweetList = MUSCLE_GROUPS.filter(m => {
+    const t = currentTargets[m], w = state[m].weeklyEqSets;
+    return w >= t.mav && w <= t.mrv;
+  });
+
+  // 3) 最大缺口（gap from MEV）
+  const gaps = MUSCLE_GROUPS.map(m => ({
+    name:m, have: state[m].weeklyEqSets, need: currentTargets[m].mev,
+    gap: currentTargets[m].mev - state[m].weeklyEqSets
+  })).filter(g => g.gap > 0).sort((a,b)=>b.gap-a.gap);
+  const biggestGap = gaps[0];
+
+  // 4) 恢复风险（接近 MRV 的肌群，> 85%）
+  const atRisk = MUSCLE_GROUPS.map(m => ({
+    name:m, ratio: state[m].weeklyEqSets / currentTargets[m].mrv
+  })).filter(r => r.ratio >= 0.85).sort((a,b)=>b.ratio-a.ratio);
+
+  // 5) 进步信号：对比上一周期同等长度
+  const periodDays = daysBetween(currentRange.start, currentRange.end);
+  const prevEnd = new Date(currentRange.start); prevEnd.setDate(prevEnd.getDate() - 1);
+  const prevStart = new Date(prevEnd); prevStart.setDate(prevStart.getDate() - periodDays + 1);
+  const fmt = d => d.toISOString().slice(0,10);
+  const prevState = muscleStateInRange(fmt(prevStart), fmt(prevEnd));
+  const prevORMSum = MUSCLE_GROUPS.reduce((a,m)=>a+(prevState[m].maxOrm||0), 0);
+  const curORMSum = MUSCLE_GROUPS.reduce((a,m)=>a+(state[m].maxOrm||0), 0);
+  const ormChange = prevORMSum > 0 ? ((curORMSum-prevORMSum)/prevORMSum*100).toFixed(1) : null;
+  const progressIcon = ormChange === null ? '—' : ormChange > 2 ? '📈' : ormChange < -2 ? '📉' : '➡️';
+
+  // 6) 下次训练方向
+  const dirMuscles = gaps.slice(0,3).map(g => g.name);
+  const dirText = dirMuscles.length ? dirMuscles.join(' · ') : '已饱和';
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi" title="本期达到 MEV 的肌群占比；MEV = 触发增长所需最低周组数。覆盖率低 = 训练范围窄">
+      <div class="label">① 肌群覆盖率</div>
+      <div class="value accent">${coverage}%</div>
+      <div class="sub">${metMev}/${totalMuscles} 肌群 ≥ MEV</div>
+    </div>
+    <div class="kpi" title="处于 MAV~MRV 甜区（增长效率最高）的肌群数量">
+      <div class="label">② 甜区肌群</div>
+      <div class="value" style="color:var(--good);">${sweetList.length}</div>
+      <div class="sub">${sweetList.slice(0,3).join('·')||'—'}</div>
+    </div>
+    <div class="kpi" title="距离 MEV 缺口最大的肌群；下次训练应优先补它">
+      <div class="label">③ 最大缺口</div>
+      <div class="value" style="color:var(--bad);font-size:14px;">${biggestGap?biggestGap.name:'无'}</div>
+      <div class="sub">${biggestGap?`差 ${biggestGap.gap.toFixed(1)} 组/周`:'全部 ≥ MEV'}</div>
+    </div>
+    <div class="kpi" title="接近 MRV（恢复极限）的肌群；本期再加量易过度训练">
+      <div class="label">④ 恢复风险</div>
+      <div class="value" style="color:var(--over);">${atRisk.length}</div>
+      <div class="sub">${atRisk[0]?`${atRisk[0].name} ${(atRisk[0].ratio*100).toFixed(0)}% MRV`:'无'}</div>
+    </div>
+    <div class="kpi" title="本期 vs 上一同长度周期，所有肌群最大估算 1RM 总和变化">
+      <div class="label">⑤ 进步信号</div>
+      <div class="value">${progressIcon} ${ormChange===null?'—':(ormChange>0?'+':'')+ormChange+'%'}</div>
+      <div class="sub">对比上一${currentRange.label||''}周期</div>
+    </div>
+    <div class="kpi" title="基于缺口排序，下次训练优先补这些肌群">
+      <div class="label">⑥ 下次训练方向</div>
+      <div class="value accent" style="font-size:14px;">${dirText}</div>
+      <div class="sub">点⑤段查看详细计划</div>
+    </div>
+  `;
+}
+
+// ============ 渲染：平衡分析 ============
+function renderBalance(currentRange){
+  const state = muscleStateInRange(currentRange.start, currentRange.end);
+  // 按大类汇总「有效组数」。注意：之前用容量(kg)会把平板/俯卧撑/引体等
+  // 自重动作算成 0（重量=0 → 容量=0），严重低估核心和上肢拉。改用有效组数。
+  const catVol = {};
+  MUSCLE_CATEGORIES.forEach(c => {
+    catVol[c.key] = c.muscles.reduce((a,m)=>a+(state[m]?.sets||0), 0);
+  });
+  // 派生组合
+  const sumOf = (mlist) => mlist.reduce((a,m)=>a+(state[m]?.sets||0), 0);
+  const push = sumOf(['胸大肌-上部','胸大肌-中下部','三角肌前束','肱三头肌-长头','肱三头肌-外侧+内侧头']);
+  const pull = sumOf(['背阔肌','菱形肌','斜方肌-中下部','肱二头肌','三角肌后束']);
+  const upperBody = catVol.chest + catVol.back + catVol.shoulder + catVol.arm;
+  const lowerBody = catVol.thigh_front + catVol.thigh_back + catVol.glute + catVol.hip + catVol.calf;
+  // 前链 / 后链
+  const ant = sumOf(['股四头肌-外侧+中间头','股直肌','股内侧肌-VMO','胸大肌-上部','胸大肌-中下部','三角肌前束','腹直肌']);
+  const post = sumOf(['腘绳肌-股二头长头','腘绳肌-半腱+半膜','臀大肌-上部','臀大肌-下部','背阔肌','菱形肌','斜方肌-上部','斜方肌-中下部','竖脊肌','三角肌后束']);
+
+  function balanceCard(name, leftLabel, rightLabel, leftVal, rightVal, range, why){
+    const ratio = rightVal ? leftVal / rightVal : 0;
+    const ok = ratio >= range[0] && ratio <= range[1];
+    const verdict = ok ? '✅ 平衡良好' : (ratio < range[0] ? `⚠️ ${leftLabel} 偏弱` : `⚠️ ${rightLabel} 偏弱`);
+    return `
+      <div class="balance ${ok?'good':'warn'}">
+        <div class="name">${name}</div>
+        <div class="ratio">${ratio.toFixed(2)}</div>
+        <div style="font-size:11px;color:var(--muted);">${leftLabel} ${leftVal.toFixed(1)} / ${rightLabel} ${rightVal.toFixed(1)} 有效组</div>
+        <div class="target">目标 ${range[0]}–${range[1]}</div>
+        <div class="verdict">${verdict}</div>
+        ${why ? `<div style="font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.4;">${why}</div>` : ''}
+      </div>`;
+  }
+  document.getElementById('balanceGrid').innerHTML = `
+    <div class="balance-group-title">上身内部 / 上下平衡</div>
+    ${balanceCard('胸 / 背', '胸', '背', catVol.chest, catVol.back, [0.60, 1.20], '推肌过强 = 圆肩主因（Janda 上交叉综合症）')}
+    ${balanceCard('推 / 拉', '推', '拉', push, pull, [0.85, 1.20], 'Cools 2007：肩袖健康指标')}
+    ${balanceCard('肩 / 胸', '肩', '胸', catVol.shoulder, catVol.chest, [0.30, 1.00], '肩独立训练过少时会被胸训练带偏')}
+    ${balanceCard('上身 / 下身', '上身', '下身', upperBody, lowerBody, [0.50, 1.30], '下身天然偏高（杠铃重量大）')}
+
+    <div class="balance-group-title">下身内部</div>
+    ${balanceCard('大腿前 / 大腿后', '大腿前', '大腿后', catVol.thigh_front, catVol.thigh_back, [1.00, 1.70], '股四头/腘绳比 Q/H 1.0–1.7 是膝健康/运动表现的关键')}
+    ${balanceCard('臀 / 大腿前', '臀', '大腿前', catVol.glute, catVol.thigh_front, [0.50, 1.20], '臀过弱 → 股四头代偿 → 膝压力↑')}
+    ${balanceCard('小腿 / 大腿前', '小腿', '大腿前', catVol.calf, catVol.thigh_front, [0.10, 0.40], '小腿训练量约为大腿的 10–40%')}
+    ${balanceCard('髋稳定 / 臀', '髋', '臀', catVol.hip, catVol.glute, [0.20, 0.70], '内收/外展/深旋是骨盆稳定的辅助')}
+
+    <div class="balance-group-title">全局 + 核心</div>
+    ${balanceCard('前链 / 后链', '前链', '后链', ant, post, [0.70, 1.30], '前=胸/股四/腹；后=背/腘绳/臀；现代久坐人群常偏前')}
+    ${balanceCard('腰腹 / 上身', '腰腹', '上身', catVol.core, upperBody, [0.10, 0.40], '核心约占上身训练 10–40%；过高占用过多')}
+  `;
+}
+
+// ============ 渲染：诊断 + 建议 ============
+function renderDiagnosis(currentRange){
+  const state = muscleStateInRange(currentRange.start, currentRange.end);
+  const under = [], untrained = [], over = [];
+  MUSCLE_GROUPS.forEach(m => {
+    const st = statusOf(m, state[m].weeklyEqSets);
+    if (st === 0) untrained.push(m);
+    else if (st === 1) under.push({ name:m, gap:currentTargets[m].mev - state[m].weeklyEqSets });
+    else if (st === 4) over.push({ name:m, excess:state[m].weeklyEqSets - currentTargets[m].mrv });
+  });
+  let html = '';
+  if (untrained.length){
+    html += `
+      <div class="conclusion warn">
+        <div class="head"><span class="badge">未训练</span>${untrained.length} 个肌群在本周期内完全没被刺激</div>
+        <p>${untrained.join(' · ')}</p>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">建议：从动作手册里挑这些肌群对应的"好动作"，下次训练加进去。</div>
+      </div>`;
+  }
+  if (under.length){
+    under.sort((a,b)=>b.gap-a.gap);
+    html += `
+      <div class="conclusion warn">
+        <div class="head"><span class="badge">不足</span>${under.length} 个肌群在 MEV 以下（增长不会发生）</div>
+        <p>${under.slice(0,8).map(u=>`<b>${u.name}</b> (差 ${u.gap.toFixed(1)} 组/周)`).join(' · ')}${under.length>8?'...':''}</p>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">建议：每个肌群加 1-2 个针对性动作，每个 3-4 组。</div>
+      </div>`;
+  }
+  if (over.length){
+    html += `
+      <div class="conclusion warn">
+        <div class="head"><span class="badge">超额</span>${over.length} 个肌群超过 MRV（恢复不足风险）</div>
+        <p>${over.map(o=>`<b>${o.name}</b> (超 ${o.excess.toFixed(1)} 组/周)`).join(' · ')}</p>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">建议：减组到 MAV 上沿，或考虑 deload 1 周。</div>
+      </div>`;
+  }
+  const sweet = MUSCLE_GROUPS.filter(m => statusOf(m, state[m].weeklyEqSets) === 3);
+  if (sweet.length){
+    html += `
+      <div class="conclusion good">
+        <div class="head"><span class="badge">甜区</span>${sweet.length} 个肌群处于最佳适应区间</div>
+        <p>${sweet.join(' · ')}</p>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">维持当前频率和组数。</div>
+      </div>`;
+  }
+  if (!html) html = `<div class="conclusion">本周期数据不足以产出建议。</div>`;
+  document.getElementById('diagnosisBox').innerHTML = html;
+}
+
+// ============ 渲染：底表 ============
+function renderFlatTable(){
+  const search = (document.getElementById('flatSearch').value || '').trim();
+  const rows = FLAT
+    .filter(r => r.date >= dateStart && r.date <= dateEnd)
+    .filter(r => !search || r.name.indexOf(search) >= 0 || r.date.indexOf(search) >= 0)
+    .sort((a,b) => b.date.localeCompare(a.date));
+  document.getElementById('flatCount').textContent = `共 ${rows.length} 条动作实例`;
+  document.getElementById('flatTableBody').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.date}</td>
+      <td>#${r.n}</td>
+      <td>${r.name}</td>
+      <td class="num">${r.w || '—'}</td>
+      <td class="num">${r.r}</td>
+      <td class="num">${r.s}</td>
+      <td class="num">${r.vol.toLocaleString()}</td>
+      <td class="num">${r.orm ? r.orm.toFixed(0) : '—'}</td>
+      <td class="muscles">${r.primary.join('/')}</td>
+      <td class="muscles">${r.secondary.join('/')}</td>
+    </tr>
+  `).join('');
+}
+
+// ============ 渲染：周期选择器 ============
+function renderPeriodSelector(periods){
+  const box = document.getElementById('periodSelector');
+  if (currentGran === 'all' || periods.length <= 1){
+    box.innerHTML = '';
+    selectedPeriod = periods[0]?.key || null;
+    return;
+  }
+  // 默认选中最后一个周期
+  if (!selectedPeriod || !periods.find(p=>p.key===selectedPeriod)){
+    selectedPeriod = periods[periods.length-1].key;
+  }
+  box.innerHTML = periods.map(p =>
+    `<button data-key="${p.key}" class="${p.key===selectedPeriod?'active':''}">${p.label}</button>`
+  ).join('');
+  box.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    selectedPeriod = b.dataset.key;
+    expandedMuscle = null;
+    refresh();
+  }));
+}
+
+// ============ 主刷新 ============
+function refresh(){
+  // 应用当前目标
+  currentTargets = targetsFor(currentGoal);
+  document.getElementById('goalDesc').textContent = GOAL_PROFILE[currentGoal].desc;
+
+  const periods = getPeriods();
+  renderPeriodSelector(periods);
+  const idx = periods.findIndex(p => p.key === selectedPeriod);
+  const currentRange = periods[idx] || periods[periods.length-1] || { key:'-', start:dateStart, end:dateEnd, label:'-' };
+  const previousRange = idx > 0 ? periods[idx-1] : null;
+
+  renderKPI(currentRange, periods);
+  const state = muscleStateInRange(currentRange.start, currentRange.end);
+  renderBodyHeatmap(state);
+  renderEngagementHeatmap();
+  renderMuscleTable(currentRange, previousRange);
+  renderBalance(currentRange);
+  renderDiagnosis(currentRange);
+  renderThresholdsTable();
+  renderNextPlan(state, currentRange);
+  renderFlatTable();
+}
+
+// ============ 渲染：阈值表 ============
+function renderThresholdsTable(){
+  const box = document.getElementById('thresholdsTable');
+  if (!box) return;
+  const baseT = TARGETS, adjT = currentTargets, m = GOAL_PROFILE[currentGoal].mult;
+  let html = `<table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+    <thead><tr style="background:#f7f1e3;position:sticky;top:0;">
+      <th style="padding:5px 8px;text-align:left;">肌群</th>
+      <th class="num">基准 MEV/MAV/MRV<br><span style="font-weight:normal;color:var(--muted);">增肌</span></th>
+      <th class="num">当前目标 × ${m.toFixed(2)}<br><span style="font-weight:normal;color:var(--muted);">${currentGoal}</span></th>
+    </tr></thead><tbody>`;
+  MUSCLE_CATEGORIES.forEach(cat => {
+    html += `<tr><td colspan="3" style="background:#faf5e7;padding:4px 8px;color:var(--accent);font-weight:600;">${cat.icon} ${cat.name}</td></tr>`;
+    cat.muscles.forEach(name => {
+      const b = baseT[name], a = adjT[name];
+      html += `<tr>
+        <td style="padding:3px 8px;">${name}</td>
+        <td class="num" style="padding:3px 8px;color:var(--muted);">${b.mev} / ${b.mav} / ${b.mrv}</td>
+        <td class="num" style="padding:3px 8px;font-variant-numeric:tabular-nums;"><b>${a.mev} / ${a.mav} / ${a.mrv}</b></td>
+      </tr>`;
+    });
+  });
+  html += '</tbody></table>';
+  box.innerHTML = html;
+}
+
+// ============ 下次训练建议生成器 ============
+// 候选动作库：① 23 个力量动作直接从共享数据源 EXERCISE_DB 派生
+// （系数 / 疲劳成本同源，不再在这里重复维护，改 EXERCISE_DB 即同步生效）
+// ② 再补几个 EXERCISE_DB 暂未收录的常用辅助动作 —— 用于补全计划生成的肌群覆盖
+// （三角肌中束 / 小腿 / 胫骨前肌 / 腘绳肌-半腱半膜 / 臀中肌等），待并入 EXERCISE_DB 后即可删除。
+const PLAN_MOVES = Object.values(EXERCISE_DB)
+  .filter(e => e.id !== 'kb-low-high-6' && ['下肢推','下肢拉','全身','上肢推','上肢拉','手臂','核心'].includes(e.category))
+  .map(e => ({ name:e.cn, pattern:e.family, fatigueCost:e.fatigueCost, contrib:e.contrib }))
+  .concat([
+    { name:'哑铃侧平举',   pattern:'lateral-raise',  fatigueCost:0.5, contrib:{'三角肌中束':1.0,'斜方肌-上部':0.4} },
+    { name:'过顶三头屈伸', pattern:'elbow-extension',fatigueCost:0.6, contrib:{'肱三头肌-长头':1.0,'肱三头肌-外侧+内侧头':0.5} },
+    { name:'绳索直臂下压', pattern:'elbow-extension',fatigueCost:0.5, contrib:{'肱三头肌-外侧+内侧头':1.0,'肱三头肌-长头':0.3} },
+    { name:'坐姿腿弯举',   pattern:'leg-curl',       fatigueCost:0.5, contrib:{'腘绳肌-半腱+半膜':1.0,'腘绳肌-股二头长头':0.7} },
+    { name:'侧卧蚌式',     pattern:'hip-abduction',  fatigueCost:0.3, contrib:{'臀中肌':1.0,'髋外展肌-TFL':0.7,'髋深层旋转肌':0.5} },
+    { name:'坐姿提踵',     pattern:'plantar-flex',   fatigueCost:0.4, contrib:{'比目鱼肌':1.0,'腓肠肌':0.3} },
+    { name:'站姿提踵',     pattern:'plantar-flex',   fatigueCost:0.5, contrib:{'腓肠肌':1.0,'比目鱼肌':0.5} },
+    { name:'胫骨前肌训练', pattern:'dorsi-flex',     fatigueCost:0.2, contrib:{'胫骨前肌':1.0,'腓骨长短肌':0.5} },
+    { name:'哑铃飞鸟',     pattern:'fly',            fatigueCost:0.6, contrib:{'胸大肌-中下部':1.0,'胸大肌-上部':0.45,'三角肌前束':0.3} }
+  ]);
+
+function renderNextPlan(state, currentRange){
+  let box = document.getElementById('nextPlanBox');
+  if (!box) return;
+  const goal = GOAL_PROFILE[currentGoal];
+
+  // ===== 步骤 1：每肌群打优先级分 =====
+  // priority = MEV 缺口 + 频次惩罚 - 恢复风险
+  function lastTrainedDaysAgo(muscle){
+    const dates = [...state[muscle].sessions].sort();
+    if (!dates.length) return 99;
+    const last = new Date(dates[dates.length-1]);
+    const today = new Date(currentRange.end);
+    return (today - last) / (24*3600*1000);
+  }
+  const priorities = MUSCLE_GROUPS.map(m => {
+    const t = currentTargets[m];
+    const have = state[m].weeklyEqSets;
+    const gap = Math.max(0, t.mev - have);                    // 距 MEV 的缺口（>0 = 不足）
+    const recoveryRatio = have / t.mrv;                        // 接近 MRV 的程度
+    const recoveryPenalty = recoveryRatio > 0.85 ? (recoveryRatio - 0.85) * 30 : 0;
+    const daysIdle = lastTrainedDaysAgo(m);
+    const freqBoost = daysIdle > 7 ? Math.min(3, (daysIdle-7)/3) : 0;
+    const score = gap + freqBoost - recoveryPenalty;
+    return { muscle:m, score, gap, have, recoveryRatio, daysIdle };
+  }).sort((a,b) => b.score - a.score);
+
+  // ===== 步骤 2：每个候选动作打分 =====
+  // exerciseScore = Σ(动作覆盖肌群系数 × 肌群优先级) - 疲劳成本
+  const priorityByMuscle = {};
+  priorities.forEach(p => priorityByMuscle[p.muscle] = p.score);
+
+  const scoredExercises = PLAN_MOVES.map(ex => {
+    let score = 0;
+    const matched = [];
+    for (const m in ex.contrib){
+      const p = priorityByMuscle[m] || 0;
+      if (p > 0) {
+        score += ex.contrib[m] * p;
+        matched.push({ muscle:m, coef:ex.contrib[m], priority:p });
+      }
+    }
+    score -= (ex.fatigueCost || 1.0) * 0.5;  // 疲劳轻惩
+    matched.sort((a,b)=>b.coef*b.priority - a.coef*a.priority);
+    return { ex, score, matched };
+  }).filter(s => s.score > 0).sort((a,b) => b.score - a.score);
+
+  // ===== 步骤 3：选 4-6 个动作，避免疲劳总和过高 + 一动作只贡献一次主肌 =====
+  const picked = [];
+  const usedPrimary = new Set();   // 已经被选过当主肌的肌群（避免重复同主肌）
+  let totalFatigue = 0;
+  const maxFatigue = 5.5;          // 单次训练可承受的总疲劳上限
+  for (const s of scoredExercises){
+    if (picked.length >= 6) break;
+    if (totalFatigue + (s.ex.fatigueCost||1.0) > maxFatigue) continue;
+    // 主肌（coef ≥ 0.9）不能重复
+    const primary = Object.keys(s.ex.contrib).find(m => s.ex.contrib[m] >= 0.9);
+    if (primary && usedPrimary.has(primary)) continue;
+    picked.push(s);
+    if (primary) usedPrimary.add(primary);
+    totalFatigue += (s.ex.fatigueCost||1.0);
+    if (picked.length >= 4 && s.score < (scoredExercises[0]?.score || 0) * 0.3) break;
+  }
+
+  // ===== 步骤 4：每个动作算建议重量（用 RIR 反推）=====
+  function getRef1RM(exerciseName){
+    // 取最近 8 次该动作的 e1RM 中位数 × 0.95（保守）
+    const hist = FLAT.filter(r => r.name === exerciseName && r.w>0 && r.r>0)
+      .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+    if (!hist.length) return null;
+    const orms = hist.map(r=>r.orm).sort((a,b)=>a-b);
+    return orms[Math.floor(orms.length/2)] * 0.95;
+  }
+  function suggestSetReps(ex){
+    const targetReps = Math.round((goal.reps[0] + goal.reps[1]) / 2);
+    const targetRIR = currentGoal==='health' ? 4 : 2;
+    const ref1RM = getRef1RM(ex.name);
+    const sets = currentGoal === 'strength' ? 4 : 3;
+    if (!ref1RM){
+      return { w:null, reps:targetReps, sets, rir:targetRIR, note:'首次做该动作，先从中等重量开始摸索' };
+    }
+    // 反 Epley：重量 = ref1RM / (1 + 0.0333 × (targetReps + targetRIR))
+    const totalReps = targetReps + targetRIR;
+    let w = ref1RM / (1 + 0.0333 * totalReps);
+    w = Math.round(w / 2.5) * 2.5;  // 取整到 2.5kg
+    return {
+      w, reps:targetReps, sets, rir:targetRIR,
+      note:`参考 1RM ≈ ${ref1RM.toFixed(0)} kg，目标 ${targetReps} 次 + RIR ${targetRIR} = 理论最大 ${totalReps} 次`
+    };
+  }
+
+  // ===== 步骤 5：渲染 =====
+  const undertrained = priorities.filter(p => p.gap > 0);
+  const atRisk = priorities.filter(p => p.recoveryRatio > 0.85);
+
+  let html = `<div class="conclusion">
+    <div class="head"><span class="badge">分析输入</span>当前肌群优先级 + 训练目标</div>
+    <p style="font-size:12px;margin:6px 0;">
+      <b>训练目标：</b>${currentGoal}（${goal.reps[0]}–${goal.reps[1]} 次 / ${goal.pct[0]}–${goal.pct[1]}% 1RM / RIR 目标 ${currentGoal==='health'?'3–5':'1–3'}）<br>
+      <b>缺训肌群（低于 MEV）：</b>${undertrained.length} 个 · 最缺：${undertrained.slice(0,4).map(p=>`${p.muscle}（差 ${p.gap.toFixed(1)} 组）`).join('、') || '无'}<br>
+      <b>恢复风险肌群（&gt; 85% MRV）：</b>${atRisk.length ? atRisk.map(p=>`${p.muscle}（${(p.recoveryRatio*100).toFixed(0)}%）`).join('、') : '无 ✅'}
+    </p>
+  </div>`;
+
+  if (picked.length === 0){
+    html += `<div class="conclusion good"><div class="head"><span class="badge">✅</span>本期所有肌群都已达到 MEV</div><p>下次训练可在 MAV 区间内自由组合，重点维持已达到的肌群。</p></div>`;
+    box.innerHTML = html;
+    return;
+  }
+
+  html += `<table class="matrix" style="margin-top:8px;">
+    <thead><tr><th>动作</th><th>主要补的肌群（系数 × 优先级）</th><th class="num">本次建议</th><th>重量推算依据</th></tr></thead><tbody>`;
+  picked.forEach(s => {
+    const sug = suggestSetReps(s.ex);
+    const top3 = s.matched.slice(0,3).map(m => `${m.muscle}（${m.coef.toFixed(1)}×${m.priority.toFixed(1)}）`).join('、');
+    html += `<tr>
+      <td><b>${s.ex.name}</b><br><span style="font-size:10.5px;color:var(--muted);">疲劳成本 ${s.ex.fatigueCost} · 总得分 ${s.score.toFixed(1)}</span></td>
+      <td style="font-size:11.5px;color:var(--ink-2);">${top3}</td>
+      <td class="num"><b>${sug.w?sug.w+' kg':'自重'} × ${sug.reps} × ${sug.sets} 组</b><br><span style="font-size:10.5px;color:var(--accent);">目标 RIR ${sug.rir}</span></td>
+      <td style="font-size:11px;color:var(--muted);">${sug.note}</td>
+    </tr>`;
+  });
+  html += `</tbody></table>
+
+  <div class="conclusion" style="margin-top:10px;">
+    <div class="head"><span class="badge">生成逻辑</span>这次方案是怎么算出来的（决策层）</div>
+    <p style="font-size:12px;margin:4px 0;line-height:1.7;">
+      <b>① 算肌群优先级：</b><code style="background:#f0eadd;padding:1px 4px;">优先级 = MEV缺口 + 频次惩罚 − 恢复风险</code><br>
+      <b>② 算动作得分：</b><code style="background:#f0eadd;padding:1px 4px;">得分 = Σ(动作对肌群的贡献系数 × 该肌群优先级) − 疲劳成本</code><br>
+      <b>③ 选动作：</b>按得分降序；每个主肌（系数≥0.9）只取一次；累计疲劳不超 ${maxFatigue}<br>
+      <b>④ 推重量：</b><code style="background:#f0eadd;padding:1px 4px;">建议重量 = 历史参考1RM × 0.95 / (1 + 0.0333 × (目标次数+目标RIR))</code>，取整到 2.5kg<br>
+      <b>⑤ 参考 1RM 来源：</b>该动作最近 8 次记录的 e1RM 中位数（用中位数避免单次反常值干扰）
+    </p>
+  </div>`;
+  box.innerHTML = html;
+}
+
+// ============ UI 控制 ============
+function setGran(g){
+  currentGran = g;
+  document.querySelectorAll('.gran-tabs button').forEach(b => b.classList.toggle('active', b.dataset.gran === g));
+  selectedPeriod = null;
+  expandedMuscle = null;
+  refresh();
+}
+function setRange(){
+  document.getElementById('rangeInfo').textContent = `共 ${FLAT.filter(r=>r.date>=dateStart&&r.date<=dateEnd).length} 条动作记录`;
+  selectedPeriod = null;
+  expandedMuscle = null;
+  refresh();
+}
+
+// ============ 数据源条 ============
+function updateDataSourceBar(){
+  const info = document.getElementById('dsInfo');
+  if (info){
+    const imported = !!localStorage.getItem(ANALYSIS_HISTORY_KEY);
+    info.innerHTML = `历史${imported?'(已导入)':'(默认)'} <b>${DATA_STATS.history}</b> 条 + 手册输入 <b>${DATA_STATS.handbook}</b> 条 → 去重后 <b>${FLAT.length}</b> 条动作实例 · ${SESSIONS.length} 个训练日`;
+  }
+  const clearBtn = document.getElementById('dsClearImport');
+  if (clearBtn) clearBtn.style.display = localStorage.getItem(ANALYSIS_HISTORY_KEY) ? '' : 'none';
+}
+function reloadData(){
+  rebuildData();
+  dateStart = SESSIONS.length ? SESSIONS[0].date : TODAY_STR;
+  dateEnd = SESSIONS.length ? SESSIONS[SESSIONS.length-1].date : TODAY_STR;
+  const ds = document.getElementById('dateStart'), de = document.getElementById('dateEnd');
+  if (ds) ds.value = dateStart;
+  if (de) de.value = dateEnd;
+  selectedPeriod = null; expandedMuscle = null;
+  updateDataSourceBar();
+  refresh();
+}
+function importHistory(){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const fr = new FileReader();
+    fr.onload = () => {
+      try {
+        const data = JSON.parse(fr.result);
+        let arr = data;
+        // 兼容手册导出的 {logs:{}} 格式 —— 转成行数组
+        if (data && data.logs && !Array.isArray(data)){
+          arr = [];
+          for (const moveId in data.logs){
+            const cn = ID_TO_CN[moveId] || moveId;
+            (data.logs[moveId] || []).forEach(r => {
+              if ((r.note || '').indexOf('历史 · ') === 0) return;
+              arr.push({ date:r.date, name:cn, w:parseFloat(r.weight)||0, r:parseFloat(r.reps)||0, s:parseFloat(r.sets)||0 });
+            });
+          }
+        }
+        if (!Array.isArray(arr) || !arr.length) throw new Error('文件里没有可识别的训练记录');
+        localStorage.setItem(ANALYSIS_HISTORY_KEY, JSON.stringify(arr));
+        reloadData();
+        alert('导入成功：' + arr.length + ' 条记录已作为历史底座');
+      } catch(err){ alert('导入失败：' + err.message); }
+    };
+    fr.readAsText(file);
+  };
+  input.click();
+}
+
+// ============ 启动 ============
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('dateStart').value = dateStart;
+  document.getElementById('dateEnd').value = dateEnd;
+  document.getElementById('dateStart').addEventListener('change', e => { dateStart = e.target.value; setRange(); });
+  document.getElementById('dateEnd').addEventListener('change', e => { dateEnd = e.target.value; setRange(); });
+  document.querySelectorAll('.gran-tabs button').forEach(b => b.addEventListener('click', () => setGran(b.dataset.gran)));
+  // 训练目标切换
+  document.querySelectorAll('.goal-tabs button').forEach(b => b.addEventListener('click', () => {
+    currentGoal = b.dataset.goal;
+    document.querySelectorAll('.goal-tabs button').forEach(x => x.classList.toggle('active', x === b));
+    refresh();
+  }));
+  document.querySelectorAll('.date-bar .quick').forEach(b => b.addEventListener('click', () => {
+    const r = b.dataset.range;
+    if (!SESSIONS.length) return;
+    const max = SESSIONS[SESSIONS.length-1].date;
+    if (r === 'all') { dateStart = SESSIONS[0].date; dateEnd = max; }
+    else if (r === '3m') { const d = new Date(max); d.setMonth(d.getMonth()-3); dateStart = d.toISOString().slice(0,10); dateEnd = max; }
+    else if (r === '1m') { const d = new Date(max); d.setMonth(d.getMonth()-1); dateStart = d.toISOString().slice(0,10); dateEnd = max; }
+    document.getElementById('dateStart').value = dateStart;
+    document.getElementById('dateEnd').value = dateEnd;
+    document.querySelectorAll('.date-bar .quick').forEach(x=>x.classList.toggle('active', x===b));
+    setRange();
+  }));
+  document.querySelector('.date-bar .quick[data-range="all"]').classList.add('active');
+
+  // 数据源条
+  document.getElementById('dsRefresh').addEventListener('click', reloadData);
+  document.getElementById('dsImport').addEventListener('click', importHistory);
+  document.getElementById('dsClearImport').addEventListener('click', () => {
+    if (!confirm('清除导入的历史，恢复成默认历史底座？')) return;
+    localStorage.removeItem(ANALYSIS_HISTORY_KEY);
+    reloadData();
+  });
+  updateDataSourceBar();
+
+  // 底表搜索 / 导出
+  document.getElementById('flatSearch').addEventListener('input', renderFlatTable);
+  document.getElementById('flatExport').addEventListener('click', () => {
+    const rows = FLAT.filter(r => r.date >= dateStart && r.date <= dateEnd);
+    const csv = ['日期,训练号,动作,重量kg,次数,组数,容量,估算1RM,主肌,协同肌']
+      .concat(rows.map(r => [r.date, r.n, r.name, r.w, r.r, r.s, r.vol, r.orm.toFixed(1), r.primary.join('/'), r.secondary.join('/')].join(',')))
+      .join('\n');
+    const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `训练底表-${dateStart}_${dateEnd}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+  });
+
+  // 加载 body-highlighter
+  await loadBodyHighlighter();
+
+  // 初始渲染
+  refresh();
+});
+</script>
+
+</body>
+</html>

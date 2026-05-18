@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FitLab 应用设计文档</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --line-2:#d6cfbe; --accent:#b03a2e; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8; --good:#2d6e3a;
+    --p1:#2f5d8d; --p2:#b03a2e; --p3:#c08a2e;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75; font-size:15px;
+    padding:28px 18px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:1100px; margin:0 auto;}
+  header{text-align:center; margin-bottom:24px;}
+  .tag{font-size:11px; letter-spacing:.32em; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:30px; margin:6px 0 4px; letter-spacing:1px;}
+  header .sub{color:var(--muted); font-size:13.5px;}
+
+  section{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:22px 26px; margin-bottom:18px;
+  }
+  section h2{font-size:20px; color:var(--accent); letter-spacing:.5px; margin-bottom:8px;}
+  section h3{font-size:15px; margin:14px 0 6px; border-left:3px solid var(--accent); padding-left:9px;}
+  section .lead{color:var(--muted); font-size:13px; margin-bottom:12px;}
+  p{margin:7px 0; font-size:14px; color:var(--ink-2);}
+  b{color:var(--ink);}
+  ul,ol{margin:6px 0 6px 22px;} li{font-size:14px; color:var(--ink-2); margin:3px 0;}
+
+  table{width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;}
+  th,td{text-align:left; padding:7px 9px; vertical-align:top; border-bottom:1px solid var(--line);}
+  th{background:#f7f1e3; color:var(--ink-2); font-size:11.5px; font-weight:600;}
+  .num{text-align:right; font-variant-numeric:tabular-nums;}
+
+  pre, code{font-family:ui-monospace,SFMono-Regular,'Menlo','Consolas',monospace; font-size:12px;}
+  pre{background:#f7f1e3; padding:12px 14px; border-radius:8px; overflow-x:auto; line-height:1.5; color:var(--ink-2);}
+  code{background:#f7f1e3; padding:1px 6px; border-radius:3px; color:var(--accent);}
+  pre code{background:transparent; padding:0; color:inherit;}
+
+  /* IA tree */
+  .ia-tree{font-family:ui-monospace,SFMono-Regular,monospace; font-size:12.5px; line-height:1.7; background:#fdfaf2; border:1px solid var(--line); border-radius:8px; padding:14px 18px; white-space:pre; overflow-x:auto;}
+
+  /* Phone mockup frames */
+  .phones{display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:14px 0;}
+  .phone{
+    width:340px; flex:none; background:#1f1d1a; border-radius:30px;
+    padding:8px; box-shadow:0 6px 24px rgba(0,0,0,.08);
+  }
+  .phone-inner{
+    background:var(--bg); border-radius:24px; overflow:hidden; min-height:600px;
+    display:flex; flex-direction:column;
+    position:relative;
+  }
+  .phone-statusbar{
+    background:var(--bg); padding:8px 18px 4px;
+    display:flex; justify-content:space-between; font-size:10px; color:var(--ink);
+  }
+  .phone-screen{padding:8px 14px 60px; flex:1; overflow-y:auto;}
+  .phone-screen-name{
+    font-size:10px; color:var(--muted); text-align:center;
+    padding:4px 8px; letter-spacing:.2em; text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .phone-tabbar{
+    position:absolute; bottom:0; left:0; right:0;
+    background:rgba(255,255,255,.9); backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);
+    display:flex; padding:5px 0 14px;
+  }
+  .phone-tabbar .tab{
+    flex:1; text-align:center; font-size:10px; color:var(--muted);
+    line-height:1.3;
+  }
+  .phone-tabbar .tab.active{color:var(--accent);}
+  .phone-tabbar .tab .ico{font-size:18px; display:block;}
+
+  /* Mock UI elements inside phones */
+  .mock-h1{font-size:18px; font-weight:700; padding:10px 0 4px; color:var(--ink);}
+  .mock-h2{font-size:13px; font-weight:700; padding:10px 0 4px; color:var(--accent);}
+  .mock-sub{font-size:11px; color:var(--muted); padding-bottom:8px;}
+  .mock-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; margin:6px 0; font-size:11.5px; color:var(--ink-2);
+  }
+  .mock-card .title{font-weight:700; color:var(--ink); font-size:12.5px;}
+  .mock-card .meta{font-size:10.5px; color:var(--muted);}
+  .mock-card.accent{background:var(--accent-light); border-color:var(--accent);}
+  .mock-card.gold{background:var(--soft-yellow); border-color:#f0e2b8;}
+  .mock-card.blue{background:var(--soft-blue);}
+  .mock-card.green{background:#e3f1e6; border-color:#bcdcc4;}
+
+  .mock-list-item{padding:7px 0; border-bottom:1px solid var(--line); font-size:11.5px; display:flex; align-items:center; gap:8px;}
+  .mock-list-item:last-child{border-bottom:0;}
+  .mock-list-item .ico{width:24px; text-align:center;}
+  .mock-list-item .chev{margin-left:auto; color:var(--muted);}
+
+  .mock-btn{
+    background:var(--accent); color:#fff; border:0; border-radius:8px;
+    padding:9px 14px; font-size:12px; font-weight:600; width:100%;
+    text-align:center; margin:8px 0;
+  }
+  .mock-btn.secondary{background:var(--paper); color:var(--accent); border:1px solid var(--accent);}
+
+  .mock-kpi-strip{display:flex; gap:6px; margin:6px 0;}
+  .mock-kpi{flex:1; background:var(--paper-2); padding:7px 8px; border-radius:8px; text-align:center;}
+  .mock-kpi b{display:block; font-size:14px; color:var(--accent);}
+  .mock-kpi span{font-size:10px; color:var(--muted);}
+
+  .mock-progress{
+    height:6px; background:var(--line); border-radius:3px; margin:6px 0;
+    overflow:hidden;
+  }
+  .mock-progress > div{height:100%; background:var(--accent);}
+
+  .mock-input{
+    width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:7px;
+    font-size:12px; background:var(--paper); margin:4px 0;
+  }
+
+  .mock-chip{display:inline-block; font-size:10px; padding:2px 8px; border-radius:9px; background:var(--accent-light); color:var(--accent); margin-right:3px;}
+  .mock-chip.gray{background:#f1efe8; color:var(--ink-2);}
+
+  /* Flow diagram boxes */
+  .flow{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:8px 0;}
+  .flow-box{
+    background:var(--paper); border:2px solid var(--accent); border-radius:8px;
+    padding:6px 11px; font-size:12px; font-weight:600;
+  }
+  .flow-box.alt{border-color:var(--gold); color:#7a5a1f;}
+  .flow-box.end{border-color:var(--good); color:#2a4a30;}
+  .flow-arrow{color:var(--accent); font-size:18px;}
+
+  /* Priority badges */
+  .pri{
+    display:inline-block; font-size:10px; font-weight:700; padding:2px 8px;
+    border-radius:9px; margin-left:6px;
+  }
+  .pri.p0{background:var(--accent); color:#fff;}
+  .pri.p1{background:var(--gold); color:#fff;}
+  .pri.p2{background:#bcdcc4; color:#2a4a30;}
+
+  .toc{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-bottom:22px;}
+  .toc h2{font-size:14px; color:var(--accent); margin-bottom:10px;}
+  .toc ol{margin-left:20px; font-size:13.5px;}
+  .toc a{color:var(--ink-2); text-decoration:none;}
+  .toc a:hover{color:var(--accent);}
+
+  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:14px;}
+
+  @media (max-width:680px){
+    body{padding:20px 12px;}
+    section{padding:17px 16px;}
+    h1{font-size:23px;}
+    .phones{flex-direction:column; align-items:center;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="tag">PWA · MOBILE-FIRST · DESIGN DOC v1</div>
+  <h1>FitLab · 应用设计文档</h1>
+  <p class="sub">把"原理学习 + 历史训练 + 计划生成 + 多维复盘 + 评估"整合进一个 PWA · 设计文档（先看完，确认后再写代码）</p>
+</header>
+
+<!-- TOC -->
+<div class="toc">
+<h2>目录</h2>
+<ol>
+<li><a href="#vision">应用愿景与定位</a></li>
+<li><a href="#ia">信息架构（IA 树状图 + 5 Tab 设计）</a></li>
+<li><a href="#screens">8 个核心屏 · 线框图</a></li>
+<li><a href="#flows">关键用户流程</a></li>
+<li><a href="#data">数据模型（localStorage Schema）</a></li>
+<li><a href="#migrate">从现有 HTML 系统的迁移路径</a></li>
+<li><a href="#priority">优先级与实施路线图</a></li>
+<li><a href="#tech">技术决策与权衡</a></li>
+</ol>
+</div>
+
+<!-- 1. 愿景 -->
+<section id="vision">
+<h2>1. 应用愿景与定位</h2>
+
+<h3>1.1 一句话</h3>
+<p><b>FitLab 是一款"懂训练科学的"个人健身计划与复盘 PWA</b>——不只是记录"今天练了什么"，而是把每条数据自动放回"训练原理 + 计划 + 评估"的闭环里，帮你看到「设计 → 执行 → 反馈 → 迭代」的全过程。</p>
+
+<h3>1.2 差异化：跟市面健身 App 比，FitLab 独有什么</h3>
+<table>
+<thead><tr><th style="width:25%">维度</th><th>市面主流（Strong / Hevy / Keep）</th><th>FitLab</th></tr></thead>
+<tbody>
+<tr><td>核心功能</td><td>记日志 + 看历史</td><td>记日志 + <b>每个数字自动放进 MEV/MAV/MRV/平衡比率框架做诊断</b></td></tr>
+<tr><td>计划</td><td>用户自己输入或选模板</td><td>基于<b>历史数据 + 目标 + 原理</b>生成，每周自动迭代</td></tr>
+<tr><td>评估</td><td>显示总训练量</td><td>多层级（日/周/月/季/年）<b>对照 MEV/平衡/渐进 3 维诊断</b></td></tr>
+<tr><td>学习</td><td>无 或 视频教程</td><td>内置<b>科学原理库 + 每条原理跟你的真实数据相互链接</b></td></tr>
+<tr><td>个性化</td><td>简单偏好</td><td>3-4 周后<b>用你的实际反馈调整个人 MEV 系数</b></td></tr>
+</tbody>
+</table>
+
+<h3>1.3 用户旅程定位</h3>
+<div class="flow">
+<div class="flow-box">读原理</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">看历史</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">设目标</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">生成计划</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">执行+记录</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box alt">多维复盘</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box end">迭代计划</div>
+</div>
+<p>整个 App 围绕这条主旅程设计——每个屏都对应一个环节。</p>
+
+<h3>1.4 「App 人格」· 像一位专业教练那样工作</h3>
+<p>FitLab 不是"数据看板"——它是一位<b>住在你手机里的专业教练</b>。这个人格设定会贯穿整个产品：</p>
+
+<table>
+<thead><tr><th style="width:22%">维度</th><th style="width:30%">数据看板的做法（NO）</th><th>FitLab 教练人格（YES）</th></tr></thead>
+<tbody>
+<tr>
+<td><b>呈现数据</b></td>
+<td>"Q/H = 1.96"</td>
+<td>"⚠ 你的 Q/H 1.96 超出了健康区间 1.0-1.7——意思是大腿前肌训得比后肌多近 1 倍。<b>这关系到膝韧带</b>"</td>
+</tr>
+<tr>
+<td><b>给计划</b></td>
+<td>"做 3 组×10 次"</td>
+<td>"今天 3 组×10 次。<b>为什么 3 组</b>：这块肌肉的 MEV 门槛是 6 组/周，今天给 3 组、周五再 3 组刚好达标。<b>为什么 10 次</b>：8-12 次能同时刺激力学张力 + 代谢应激"</td>
+</tr>
+<tr>
+<td><b>反馈进步</b></td>
+<td>"杠铃后蹲 +5kg"</td>
+<td>"你后蹲从 27.5 → 32.5 kg。e1RM 从 36 → 43，提升 19%。<b>这是阶段二预期的速度</b>——继续保持每周 +2.5kg 节奏"</td>
+</tr>
+<tr>
+<td><b>发现问题</b></td>
+<td>"3 块肌肉低于 MEV"</td>
+<td>"诊断：3 块肌肉低于 MEV——但只有 <b>三角肌中束</b> 是真问题（计划里只 1 个动作带它）。另 2 块是辅助稳定肌不强求。<b>建议下周</b>：把侧平举从 3 组升 4 组"</td>
+</tr>
+<tr>
+<td><b>调整计划</b></td>
+<td>"修改计划：[确认]"</td>
+<td>"我建议给你的计划加 1 个动作（俯卧腿弯举），原因是修复 Q/H 失衡。<b>这会影响</b>：C 课从 6 个动作变 7 个，时间从 45 → 48 分。要应用吗？[预览影响] [应用] [跳过]"</td>
+</tr>
+</tbody>
+</table>
+
+<h3>1.5 实现教练人格的三个机制</h3>
+
+<table>
+<thead><tr><th style="width:18%">机制</th><th style="width:30%">出现位置</th><th>怎么呈现</th></tr></thead>
+<tbody>
+<tr>
+<td><b>💡 教练说</b></td>
+<td>所有数据点旁边（KPI、平衡数字、MEV 状态等）</td>
+<td>小图标，点开弹层：① 这个数据是什么意思 ② 系统怎么算出来的 ③ 用了什么原理（链到学习 tab）④ 你该做什么</td>
+</tr>
+<tr>
+<td><b>📋 周/月解读</b></td>
+<td>计划周视图顶部、复盘每个时段顶部</td>
+<td>1-2 段话总结："这周计划的设计目的是 X / 这周训练里观察到 Y / 建议下周做 Z"</td>
+</tr>
+<tr>
+<td><b>🔄 修复方案</b></td>
+<td>复盘里发现问题 → 一键跳到此屏</td>
+<td>显示：发现的问题 → 系统建议的调整 → 影响预览 → 一键应用到当前计划</td>
+</tr>
+</tbody>
+</table>
+
+<p><b>关键设计哲学</b>：所有评估结果都附"为什么"+"怎么办"。让用户每用一次 App 都<b>带走一点训练知识</b>——这是数据看板永远做不到的事。</p>
+
+<h3>1.6 计划生成方法论 · 一个好的初始计划不应需要"修复"</h3>
+
+<div class="mock-card gold" style="margin-bottom:14px; padding:13px 16px;">
+<b>诚实声明 + 修订设计：</b>之前的设计里"复盘 → 修复方案 → 应用到计划"流程<b>有一个根本逻辑问题</b>——如果教练给的初始计划<b>从设计阶段</b>就包含 MEV 缺口和平衡失衡，那这个教练就不够专业。<br><br>
+<b>正确的拆分应该是：</b>
+<ul style="margin-top:6px;">
+<li><b>计划级问题</b>（结构性）→ 应该在<b>生成阶段就自检并修掉</b>，<u>不让用户看到</u></li>
+<li><b>执行级问题</b>（偏差）→ 是<b>用户没按计划做到</b>，复盘里给修复建议</li>
+</ul>
+<b>这两类问题需要不同的处理路径</b>。下面把这事讲清楚。
+</div>
+
+<h4>1.6.1 一个"专业教练级"计划生成算法</h4>
+<p>计划生成 = <b>约束求解（constraint optimization）</b>问题。不是"挑动作 + 排时间"那么简单。</p>
+
+<table>
+<thead><tr><th style="width:18%">输入</th><th>来源</th></tr></thead>
+<tbody>
+<tr><td><b>训练目标</b></td><td>用户选（增肌/力量/耐力/健康）→ 决定 MEV/MAV/MRV 倍数</td></tr>
+<tr><td><b>个人 MEV 系数</b></td><td>无历史→默认 1.0× / 有历史→评估面板算出（如 1.3×）</td></tr>
+<tr><td><b>训练频率</b></td><td>用户选（2-5 次/周）→ 决定课型数量</td></tr>
+<tr><td><b>单次时长</b></td><td>用户选（30/45/60/75 分钟）→ 决定每课型最多 N 个动作</td></tr>
+<tr><td><b>历史水平</b></td><td>从训练日志自动算 e1RM / 无历史→保守值</td></tr>
+<tr><td><b>动作偏好</b></td><td>用户排除（如膝伤不深蹲）/ 设备约束</td></tr>
+</tbody>
+</table>
+
+<table style="margin-top:10px;">
+<thead><tr><th style="width:18%">硬约束（必须满足）</th><th>软约束（尽量满足）</th></tr></thead>
+<tbody>
+<tr>
+<td>
+✓ 每个"主肌"周量 ≥ MEV × 个人系数<br>
+✓ 单次训练 ≤ 时长上限<br>
+✓ 同一肌肉两次训练间隔 ≥ 24h<br>
+✓ 用户排除的动作不出现
+</td>
+<td>
+~ 10 个平衡比率落在健康区间<br>
+~ 主肌优先训练频率 ≥2 次/周<br>
+~ 复合动作优先于孤立<br>
+~ 多个动作总疲劳 ≤ 单课承受
+</td>
+</tr>
+</tbody>
+</table>
+
+<table style="margin-top:10px;">
+<thead><tr><th style="width:18%">输出</th><th>验收标准（系统自检）</th></tr></thead>
+<tbody>
+<tr>
+<td><b>带阶段周期的完整训练计划</b></td>
+<td>
+① 跑 8.2 评估：所有"主肌" ≥ MEV ✓<br>
+② 跑 11 评估：≥ 7/10 平衡比率在区间内<br>
+③ 时间检查：每课 ≤ 用户预算<br>
+④ 全部通过 → 交付给用户<br>
+⑤ 部分通过 → 进入"权衡协商"步（见 1.6.3）
+</td>
+</tr>
+</tbody>
+</table>
+
+<h4>1.6.2 算法逻辑（概念伪代码）</h4>
+<pre><code>function generatePlan(inputs) {
+  // 1. 算每块肌肉的目标周量（MEV × 个人系数）
+  const targets = computePersonalTargets(inputs);
+
+  // 2. 构造候选动作池（按目标 + 排除项过滤）
+  const candidates = EXERCISE_DB.filter(matchesGoal &amp;&amp; notExcluded);
+
+  // 3. 解约束问题：选最少动作满足所有 MEV
+  let movements = solveCoverageILP(candidates, targets);
+  //    优先选高 fatigueCost 的复合动作（一个动作覆盖多块肌肉）
+  //    每块肌肉至少有 1 个 contrib ≥ 0.5 的动作
+
+  // 4. 分配到课型（频率分摊）
+  let courses = assignToCourses(movements, inputs.frequency);
+  //    Schoenfeld 2016：主肌 ≥ 2 次/周
+
+  // 5. 检查平衡 + 时间
+  let plan = { phases, courses, progressions };
+  const eval = evaluatePlan(plan);
+
+  // 6. 自检
+  if (eval.mevPass &amp;&amp; eval.balancePass &amp;&amp; eval.timePass) {
+    return { plan, status: 'ready' };
+  }
+
+  // 7. 不通过 → 协商
+  return {
+    plan,
+    status: 'tradeoffs',
+    issues: eval.issues,
+    options: suggestRelaxations(eval.issues)
+  };
+}</code></pre>
+
+<h4>1.6.3 当硬/软约束冲突时——"权衡协商"</h4>
+<p>有些约束天然冲突，不可能全满足：</p>
+<ul>
+<li>例：增肌目标 + 时长 30 分/次 + 6 课型 → 时间不够把 42 块肌肉都覆盖到 MEV</li>
+<li>例：增肌目标 + 上身美观偏好 → 上身/下身比天然 &gt; 1.5（违反"客观平衡"区间）</li>
+</ul>
+
+<p>这时系统应该<b>明确告诉用户冲突</b>，让用户做选择：</p>
+
+<table>
+<thead><tr><th style="width:25%">权衡选项</th><th>影响</th></tr></thead>
+<tbody>
+<tr><td>① 增加训练时长 30 → 45 分</td><td>能覆盖到 MEV，但单次更长</td></tr>
+<tr><td>② 接受部分肌肉不达 MEV（小腿/腹斜等）</td><td>这些肌肉作为"维持"状态</td></tr>
+<tr><td>③ 增加频率 3 → 4 次/周</td><td>每次可短，但总时间多</td></tr>
+<tr><td>④ 接受上身/下身比偏高</td><td>对"上身美观"导向用户可接受</td></tr>
+</tbody>
+</table>
+
+<p><b>"协商"是设计的关键</b>——系统不替用户做这种价值权衡，而是把<b>权衡的代价</b>讲清楚让用户决定。</p>
+
+<h4>1.6.4 计划级问题 vs 执行级问题 · 这是 2 个不同的流程</h4>
+<table>
+<thead><tr><th style="width:18%">类型</th><th style="width:34%">什么时候发现</th><th>怎么处理</th></tr></thead>
+<tbody>
+<tr style="background:#e3f1e6;">
+<td><b>计划级</b><br>（结构性）</td>
+<td>计划生成时，<b>系统自检</b>就发现</td>
+<td>① 系统自动修补（加动作）<br>② 用户看不到——除非是"权衡冲突"<br>③ 永远不出现在「复盘→修复方案」</td>
+</tr>
+<tr style="background:#fbe7e1;">
+<td><b>执行级</b><br>（偏差）</td>
+<td>训练 N 周后复盘，发现实际表现 ≠ 计划预期</td>
+<td>① "复盘 → 教练建议"<br>② 例：RIR 经常 ≥4 → 强度不够 → 改重量；3 周没渐进 → 减载 1 周；个人 MEV 与默认偏差 → 调系数</td>
+</tr>
+</tbody>
+</table>
+
+<h4>1.6.5 关于现有 30 节 HTML 训练计划（坦白）</h4>
+<p>当前 <code>30节课训练计划.html</code> 里的 W5+/W6+ 补充动作（俯卧腿弯举、坐姿提踵、侧平举升组）——<b>本质是"计划级问题"</b>：</p>
+<ul>
+<li>那个计划是手工设计的早期版本，<b>未经过"生成→自检→修补"循环</b></li>
+<li>所以才需要后续的 8.3 "修复方案" 把漏洞补回去</li>
+<li>如果用 1.6.1 描述的算法生成，<b>第一稿就应该已经包含这 3 个动作</b>——它们不应该是"修复"，它们应该是"基础"</li>
+</ul>
+<p><b>新 App 里的计划生成必须避免这一类计划级缺陷</b>。所以 Wizard 第 5 步会强制运行自检，不通过就回到调整环节。</p>
+
+</section>
+
+<!-- 2. IA -->
+<section id="ia">
+<h2>2. 信息架构</h2>
+
+<div class="mock-card gold" style="margin-bottom:14px;">
+<b>v2 修订（基于反馈）：</b>砍到 <b>3 个 Tab</b>，中间「计划」为默认入口、最常用。两边「复盘」和「我的」分别承载"过去看数据"和"参考+设置"。<br>
+<b>训练记录</b>是从「计划」点开当节进入的<b>子页</b>（不是顶层 tab），采用<b>动作卡片堆叠</b>形式，每卡片含输入区。
+</div>
+
+<h3>2.1 底部 3 Tab 总览</h3>
+<table>
+<thead><tr><th style="width:14%">Tab</th><th style="width:14%">主要任务</th><th style="width:26%">高频用例</th><th>核心子屏</th></tr></thead>
+<tbody>
+<tr><td><b>📊 复盘</b><br>(左)</td><td>过去看数据</td><td>每周日/月底/季末看总结、看趋势</td><td>时间维度切换器 · 训练量/MEV/平衡/PR/身体趋势</td></tr>
+<tr><td><b>📋 计划</b><br>(中 · 默认)</td><td>计划 + 当下执行</td><td>训练当天看今天该做什么、点进去记录</td><td>当前计划 · 今日卡 · 训练记录子页（动作卡片）· 评估 · 新建计划</td></tr>
+<tr><td><b>👤 我的</b><br>(右)</td><td>参考 + 设置</td><td>查原理、设新目标、改设置、记体重</td><td>身体数据 · 目标 · 训练原理 · 肌肉图鉴 · 动作库 · 设置 · 数据导入</td></tr>
+</tbody>
+</table>
+
+<h3>2.2 为什么是这 3 个？</h3>
+<ul>
+<li><b>时间方向区分</b>：复盘=向后（看过去）/ 计划=现在（执行中）/ 我的=超时间（资源+配置）——天然 3 分</li>
+<li><b>使用频率排序</b>：计划每天/每周开 → 应居中；复盘每周/每月看 → 左；我的偶尔改 → 右</li>
+<li><b>认知负担最小</b>：手指自然到中间，最常用的不需要找</li>
+</ul>
+
+<h3>2.3 完整 IA 树状图（v2）</h3>
+<div class="ia-tree">FitLab（3 tab PWA）
+│
+├── 📊 复盘（左 Tab · Review）
+│   ├── 顶部：时间维度切换器
+│   │   └── 今日 · 本周 · 本月 · 季度 · 半年 · 年
+│   ├── 4 个核心 KPI 横排（按时间段动态算）
+│   │   └── 训练量/MEV 达成率/渐进个数/身体变化
+│   ├── 训练量趋势图（按周）
+│   ├── MEV 完成率 · 按肌肉/区域
+│   ├── 平衡比率 10 项
+│   ├── 关键 PR（哪个动作刷新了 e1RM）
+│   ├── 身体数据趋势（体重/围度）
+│   └── 横向对比（两期比较）
+│
+├── 📋 计划（中 Tab · 默认 · Plan）
+│   ├── 顶部：今天 · 课型 X · 第 N 节 [开始训练]
+│   │   └── 点击 → 训练记录子页 ★
+│   ├── 本周其它训练
+│   ├── 后续 N 周（可折叠列表）
+│   ├── 计划评估子页（4 维反馈）
+│   │   ├── 8.2 健康检查
+│   │   ├── 8.3 决策表
+│   │   ├── 11 平衡评估
+│   │   └── 13 当周表现
+│   ├── 计划库（active/历史/放弃）
+│   ├── 新建计划 5 步 Wizard
+│   └── 当节训练记录子页 ★（关键）
+│       ├── Header（带返回 + 进度条）
+│       ├── 动作卡片堆叠（6-7 张）
+│       │   └── 每卡：动作名 + 计划 + 多组输入 + 自评 + 备注
+│       ├── 训练结束按钮
+│       └── Post-session 总结
+│
+└── 👤 我的（右 Tab · Profile + 资源）
+    ├── 身体数据
+    │   ├── 体重时间序列
+    │   ├── 体脂率
+    │   └── 围度（胸/腰/臂/腿）
+    ├── 目标
+    │   ├── 当前
+    │   ├── 已达成
+    │   └── 已放弃
+    ├── 训练原理（科普）
+    │   ├── 底层生理学 0.1-0.8
+    │   └── 训练原理 1-10
+    ├── 肌肉图鉴
+    ├── 动作库（按肌肉/难度筛选）
+    ├── 设置
+    │   ├── 单位 (kg/lb)
+    │   ├── 计划起始日
+    │   └── 个人 MEV 系数
+    ├── 数据导入（照片 OCR/CSV/JSON）
+    ├── 数据导出（JSON 备份）
+    └── 关于 + 反馈
+</div>
+
+<h3>2.4 各 Tab 内的"页面层级"约定</h3>
+<table>
+<thead><tr><th style="width:18%">层级</th><th style="width:25%">访问方式</th><th>例子</th></tr></thead>
+<tbody>
+<tr><td>L1 · Tab 首屏</td><td>底部 tab 点击</td><td>计划 tab 首屏（今日卡 + 本周）</td></tr>
+<tr><td>L2 · 子页</td><td>从 L1 点击进入，右上角 ← 返回</td><td>训练记录页、计划评估页、平衡评估页、原理详情</td></tr>
+<tr><td>L3 · 弹层</td><td>覆盖 L2，全屏 modal</td><td>添加新组数、4 维自评展开、记录体重</td></tr>
+</tbody>
+</table>
+<p><b>导航约定</b>：返回按钮在左上角；底部 3 tab 始终可见（除非在 L3 弹层中）。</p>
+
+</section>
+
+<!-- 3. 屏幕设计（按 Tab 组织） -->
+<section id="screens">
+<h2>3. 屏幕设计（按 Tab 组织 · 完整版）</h2>
+<p class="lead">下面把每个 Tab 下的所有屏列清楚——总共 <b>14 个屏</b>。每屏有：用途 · 进入路径 · 关键元素 · 线框图 · 状态。<b>已有完整线框图</b>用 ⭐ 标，<b>待补线框图</b>的只列设计要点。</p>
+
+<h3>3.0 通用约定</h3>
+<table>
+<thead><tr><th style="width:18%">约定</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><b>底部 3 Tab</b></td><td>📊 复盘 · 📋 计划（默认）· 👤 我的。始终可见，除非在 L3 弹层</td></tr>
+<tr><td><b>L1 Tab 首屏</b></td><td>从底部 tab 点击进入</td></tr>
+<tr><td><b>L2 子页</b></td><td>从 L1 点击进入。左上角有 ← 返回。底部 tab 仍可见</td></tr>
+<tr><td><b>L3 弹层</b></td><td>覆盖全屏。底部 tab 不可见。一般是模态对话框</td></tr>
+<tr><td><b>颜色编码</b></td><td>🔴 红 accent = 进行中/重要 · 🟢 绿 good = 完成/达标 · 🟡 黄 gold = 教练说</td></tr>
+<tr><td><b>编号</b></td><td>R = 复盘 / P = 计划 / M = 我的。如 P2 = 计划 Tab 第 2 屏</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================================== -->
+<!-- 3.1 复盘 Tab -->
+<!-- ============================================================== -->
+<h3 style="background:#eef3f8; color:var(--p1); padding:8px 12px; border-left:0;">📊 3.1 复盘 Tab（4 个屏）</h3>
+
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:10%">屏</th><th style="width:25%">名称</th><th style="width:14%">层级</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td><b>R1</b> ⭐</td><td>复盘首屏</td><td>L1 Tab 首屏</td><td>多时间维度切换 · 完整下滑评估</td></tr>
+<tr><td><b>R2</b> ⭐</td><td>教练说弹层</td><td>L3 弹层</td><td>解释任何数据点的含义/原理/行动建议</td></tr>
+<tr><td><b>R3</b> ⭐</td><td>执行调整建议</td><td>L2 子页</td><td>基于实际执行数据建议调整（仅执行级问题）</td></tr>
+<tr><td><b>R4</b></td><td>横向对比（Phase C）</td><td>L2 子页</td><td>比较两个时间段的训练状态变化</td></tr>
+</tbody>
+</table>
+
+<!-- 复盘框架 -->
+<h4 style="background:var(--soft-yellow); color:#7a5a1f; padding:10px 14px; border-radius:8px; border:1px solid #f0e2b8; margin-top:18px;">复盘的底层逻辑：所有时段都是「目标/假设 vs 实际」对比</h4>
+
+<p>复盘不是"展示这段时间的数据"——是<b>把当初计划阶段定的目标和假设拿出来，对比实际执行的结果，看哪些一致、哪些偏离、为什么</b>。每个时段（日/周/月/季/半年/年）都用<b>同一个 6 段模板</b>，只是数据粒度和聚合周期不同。</p>
+
+<table style="font-size:13px;">
+<thead><tr><th style="width:14%">复盘 6 段模板</th><th>每段回答什么</th></tr></thead>
+<tbody>
+<tr><td><b>① 周期定位</b></td><td>我现在在哪个计划里？哪个阶段？这阶段在干什么？</td></tr>
+<tr><td><b>② 当初假设</b></td><td>设计这阶段时假设的：容量（每动作多少组）/ 强度（RIR 范围）/ 重量（起步 N kg，渐进 +M）/ 训练量预测（每肌肉应达 X 组）/ 平衡比率预测</td></tr>
+<tr><td><b>③ 实际表现</b></td><td>完成 N/总数 · 每动作实际 vs 预期 · 每块肌肉实际训练量 + RIR 分布 · 平衡比率实际 · 身体数据变化</td></tr>
+<tr><td><b>④ 一致 vs 偏离</b></td><td>✓ 按预期：哪些<br>⚠ 偏离：哪些 / 偏离方向（高了/低了）/ 偏离幅度</td></tr>
+<tr><td><b>⑤ 教练解读</b></td><td>偏离的原因（个人 MEV 偏离 / RIR 不到位 / 状态问题）<br>是否需要执行调整（不是改计划设计）<br>下期重点关注</td></tr>
+<tr><td><b>⑥ 前瞻</b></td><td>接下来阶段做什么 · 距离里程碑还多远</td></tr>
+</tbody>
+</table>
+
+<h4>不同时段展示什么？</h4>
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:11%">时段</th><th style="width:24%">①周期定位</th><th>②当初假设 vs ③实际 vs ④一致偏离 · 重点展示</th></tr></thead>
+<tbody>
+<tr>
+<td><b>今日</b></td>
+<td>W几第几节·当前阶段</td>
+<td>
+本节 6 动作的：计划 [重量×次×组×RIR] vs 实际记录<br>
+本节对每块肌肉的贡献（contrib×组数）<br>
+是否有 PR · 用时
+</td>
+</tr>
+<tr style="background:#fff8e3;">
+<td><b>本周</b></td>
+<td>W几·阶段名·阶段任务</td>
+<td>
+3 节完成度 · 主复合渐进追踪（本周最佳 vs 上周）<br>
+<b>每块肌肉实际训练量 vs 阶段预期</b>（不只是 MEV 静态值）<br>
+平衡比率本周状态 vs 计划预测<br>
+身体数据本周变化
+</td>
+</tr>
+<tr>
+<td><b>本月</b></td>
+<td>对应哪几周·哪个阶段</td>
+<td>
+阶段任务完成度（如阶段一目标：建立动作模式 → 完成度？）<br>
+4 周累积训练量趋势<br>
+每块肌肉的"月平均周量" vs MEV<br>
+e1RM 增长（哪些动作真长了）<br>
+身体数据 30 天变化
+</td>
+</tr>
+<tr>
+<td><b>季度</b></td>
+<td>跨多少计划 · 哪些阶段</td>
+<td>
+当季完成的目标 · 未完成的目标<br>
+跨阶段 e1RM 增长曲线<br>
+当季 PR 列表<br>
+训练习惯（频率稳定度）<br>
+身体数据季度变化
+</td>
+</tr>
+<tr>
+<td><b>半年</b></td>
+<td>2 个季度</td>
+<td>跨多个计划周期的主复合长期增长 · 累计 PR · 是否方向偏移</td>
+</tr>
+<tr>
+<td><b>年度</b></td>
+<td>整年训练总结</td>
+<td>年度训练习惯 · 主要里程碑 · 身体长期变化 · 下一年方向</td>
+</tr>
+</tbody>
+</table>
+
+<h4>「肌肉训练情况」的深度展示</h4>
+<p>不能只显示"达 MEV 的肌肉数"——要深入到每块的<b>4 个维度</b>：</p>
+<table style="font-size:13px;">
+<thead><tr><th style="width:18%">维度</th><th>展示什么</th></tr></thead>
+<tbody>
+<tr><td><b>① 实际组数</b></td><td>本期实际给这块肌肉做了多少有效组（contrib × 组数加总）</td></tr>
+<tr><td><b>② 阶段预期</b></td><td>当初设计这阶段时<b>预期它应达到多少</b>（不是绝对 MEV——阶段一是 MEV×60%、阶段二是 MEV+、阶段三是 MAV、减载是 MEV×50%）</td></tr>
+<tr><td><b>③ 强度（avg RIR）</b></td><td>这块肌肉的相关动作的<b>平均 RIR</b>——衡量"训练量是否真有效"。RIR 经常 ≥4 → 实际"有效组数"打折</td></tr>
+<tr><td><b>④ 达成度 + 偏离原因</b></td><td>✓ 达预期 / 🟡 接近 / 🔴 偏离 + 教练解读为什么</td></tr>
+</tbody>
+</table>
+
+<p>例子（某块肌肉在本周复盘里展示）：</p>
+<pre style="background:#f7f1e3; padding:11px 14px; border-radius:6px; font-size:12.5px; line-height:1.7;">
+胸大肌-上部
+─────────────────────
+①实际 4.2 组/周
+②阶段预期 6 组（阶段一 = MEV×60% → 期望 ~3.6，实际超出 ✓）
+③平均 RIR 3.1（处于阶段一目标 RIR 3-4 内 ✓）
+④达成度 ✓ 阶段一预期内 · 主训上斜哑铃推稳定推进
+
+教练注：现在按 MEV 静态值看是 70%，但 <b>对阶段一来说已经过线</b>。
+W4 起阶段二目标提到 MEV+ (6 组)，那时再追踪。</pre>
+<p>这才是真正的复盘——<b>把数据放回计划的"时期假设"里看</b>，而不是脱离上下文地说"达 MEV / 不达 MEV"。</p>
+
+
+<h4>R1 ⭐ 复盘首屏（L1）· 按 6 段模板展开</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>每周/月/季 打开，<b>把当初计划假设拿出来对比实际</b>。结构化展示"目标-假设-实际-偏离-解读-前瞻"</td></tr>
+<tr><td><b>进入路径</b></td><td>底部 tab 点 📊 复盘</td></tr>
+<tr><td><b>6 段顺序</b></td><td>
+顶部：时间维度切换 + 教练 1 段总结<br>
+① 周期定位（你在哪）<br>
+② 当初假设（卡片：阶段任务 / 容量 / 强度 / 训练量预测）<br>
+③ 实际表现（完成度 KPI / 主复合渐进表 / <b>每块肌肉深度展开</b> / 平衡比率 / 身体数据）<br>
+④ 一致 vs 偏离（✓ 列表 / ⚠ 列表 + 偏离幅度）<br>
+⑤ 教练解读（顶部已给）+ 跳 R3 执行调整<br>
+⑥ 前瞻（下阶段重点 + 里程碑距离）
+</td></tr>
+<tr><td><b>关键升级</b></td><td>
+<b>不再用静态 MEV 当唯一标尺</b>——展示"阶段预期"（如阶段一只期望 60% MEV）。每块肌肉的判断基于<b>阶段预期</b>而不是绝对 MEV
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>21:48</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">R1 · 本周复盘（按 6 段展开）</div>
+<div class="phone-screen">
+
+<!-- 标题 + 时段切换 -->
+<div class="mock-h1">复盘</div>
+<div style="display:flex; gap:4px; margin:6px 0; font-size:10.5px; overflow-x:auto;">
+<span class="mock-chip">今日</span>
+<span class="mock-chip" style="background:var(--accent); color:#fff;">本周</span>
+<span class="mock-chip gray">本月</span>
+<span class="mock-chip gray">季度</span>
+<span class="mock-chip gray">半年</span>
+<span class="mock-chip gray">年</span>
+</div>
+
+<!-- 教练总结 -->
+<div class="mock-card gold" style="padding:11px 13px;">
+<div style="font-size:11px; font-weight:700; color:#a87018;">👨‍🏫 教练说</div>
+<div style="font-size:11.5px; margin-top:4px;">
+本周（W3）阶段一收尾，<b>大方向符合预期</b>——3/3 节完成，主复合 4/5 渐进，所有主肌都达到了阶段一预期。<br>
+<b>1 个执行偏差</b>：你 RIR 经常 ≥4，强度比假设的低，下周可适度加重。
+</div>
+</div>
+
+<!-- ① 周期定位 -->
+<div class="mock-h2">① 周期定位</div>
+<div class="mock-card" style="padding:9px 12px; font-size:11.5px;">
+<div><b>计划</b>：30 节增肌（W1 → W10）</div>
+<div><b>当前</b>：W3 · 第 7-9 节 · <b>阶段一 重建适应</b> 最后一周</div>
+<div style="color:var(--muted); margin-top:3px;">阶段一任务：建立动作模式 + 肌肉感知</div>
+</div>
+
+<!-- ② 当初假设 -->
+<div class="mock-h2">② 当初的假设（计划生成时定的）</div>
+<table style="font-size:11px;">
+<tbody>
+<tr><td><b>容量</b></td><td>每动作 2 组</td></tr>
+<tr><td><b>强度</b></td><td>RIR 3-4</td></tr>
+<tr><td><b>重量</b></td><td>历史 10RM × 85%（即起步保守）</td></tr>
+<tr><td><b>训练量预测</b></td><td>主肌达 MEV × 60% 即合格</td></tr>
+<tr><td><b>平衡比率</b></td><td>胸/背 ≥0.5、Q/H ≤2.0、其它正常</td></tr>
+</tbody>
+</table>
+
+<!-- ③ 实际表现 -->
+<div class="mock-h2">③ 实际表现</div>
+<div class="mock-kpi-strip">
+<div class="mock-kpi"><b>3/3</b><span>节完成</span></div>
+<div class="mock-kpi"><b>4/5</b><span>主复合渐进</span></div>
+<div class="mock-kpi"><b>3.1</b><span>平均 RIR</span></div>
+<div class="mock-kpi"><b>−0.2</b><span>体重 kg</span></div>
+</div>
+
+<div style="font-size:11px; color:var(--ink); margin-top:8px;"><b>主复合渐进追踪</b></div>
+<table style="font-size:10.5px;">
+<thead><tr style="background:#f7f1e3;"><th>动作</th><th class="num">W1</th><th class="num">W3</th><th>变化</th></tr></thead>
+<tbody>
+<tr><td>后蹲</td><td class="num">25</td><td class="num">27.5</td><td><span style="color:var(--good);">↑+2.5</span></td></tr>
+<tr><td>RDL</td><td class="num">28</td><td class="num">30</td><td><span style="color:var(--good);">↑+2.0</span></td></tr>
+<tr><td>卧推</td><td class="num">15</td><td class="num">17.5</td><td><span style="color:var(--good);">↑+2.5</span></td></tr>
+<tr><td>划船</td><td class="num">25</td><td class="num">27.5</td><td><span style="color:var(--good);">↑+2.5</span></td></tr>
+<tr><td>推举</td><td class="num">15</td><td class="num">15</td><td><span style="color:#a87018;">→ 持平</span></td></tr>
+</tbody>
+</table>
+
+<div style="font-size:11px; color:var(--ink); margin-top:8px;"><b>每块肌肉 · 实际 vs 阶段预期</b><span style="font-size:10px; color:var(--muted);">（点击展开按区域）</span></div>
+
+<div class="mock-card" style="padding:8px 11px;">
+<div style="font-size:11px; font-weight:700; color:var(--p2);">胸（4 块） <span style="float:right; font-size:10px; color:var(--good);">✓ 阶段预期内</span></div>
+<table style="font-size:10px; margin-top:4px;">
+<thead><tr style="background:#f7f1e3;"><th>肌肉</th><th class="num">实际</th><th class="num">阶段预期</th><th class="num">RIR</th><th>判断</th></tr></thead>
+<tbody>
+<tr><td>胸大肌-上部</td><td class="num">4.2</td><td class="num">3.6 (MEV×60%)</td><td class="num">3.1</td><td style="color:var(--good);">✓</td></tr>
+<tr><td>胸大肌-中下部</td><td class="num">5.0</td><td class="num">3.6</td><td class="num">2.9</td><td style="color:var(--good);">✓</td></tr>
+<tr><td>胸小肌</td><td class="num">2.4</td><td class="num">1.2</td><td class="num">—</td><td style="color:var(--good);">✓</td></tr>
+<tr><td>前锯肌</td><td class="num">5.3</td><td class="num">2.4</td><td class="num">—</td><td style="color:var(--good);">✓</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="mock-card" style="padding:8px 11px;">
+<div style="font-size:11px; font-weight:700; color:var(--p2);">背（6 块）<span style="float:right; font-size:10px; color:var(--good);">✓</span></div>
+<div style="font-size:10.5px; color:var(--muted);">5 块达预期 · 大圆肌略低（预期 3.6 实际 3.2）</div>
+</div>
+
+<div class="mock-card" style="padding:8px 11px;">
+<div style="font-size:11px; font-weight:700; color:var(--p2);">肩（4 块）<span style="float:right; font-size:10px; color:#a87018;">🟡 1 偏低</span></div>
+<div style="font-size:10.5px; color:var(--muted);">三角中束 2.5/4.8 预期 → W4 起会随侧平举升组改善</div>
+</div>
+
+<a style="font-size:11px; color:var(--accent);">展开剩余 7 个区域 ›</a>
+
+<div style="font-size:11px; color:var(--ink); margin-top:8px;"><b>平衡比率 · 本周</b></div>
+<div style="font-size:10.5px;">
+胸/背 0.52（预期 ≥0.5 ✓）· Q/H 1.96（预期 ≤2.0 ✓）· 其它 8 项 ✓
+</div>
+
+<!-- ④ 一致 vs 偏离 -->
+<div class="mock-h2">④ 一致 vs 偏离</div>
+<div class="mock-card green" style="padding:9px 12px;">
+<b>✓ 按预期 4 项</b><br>
+<span style="font-size:11px;">完成度 / 主复合渐进 / 体重微降 / 平衡比率全合格</span>
+</div>
+<div class="mock-card gold" style="padding:9px 12px;">
+<b>⚠ 偏离 1 项</b><br>
+<span style="font-size:11px;">平均 RIR 3.1 vs 预期 3-4（偏高一点意味着强度可以再上一档）</span>
+</div>
+
+<!-- ⑤ 教练解读 + ⑥ 前瞻 -->
+<div class="mock-card accent" style="padding:11px 13px; margin-top:12px;">
+<div style="font-size:12px; font-weight:700;">⑤ 教练建议 · ⑥ 前瞻</div>
+<div style="font-size:11px; margin:4px 0;">
+RIR 偏离不影响阶段一通过——动作模式已立稳。<br>
+<b>W4 起进入阶段二</b>：处方 RIR 1-3、3 组、重量推到历史 10RM。<br>
+<b>下个里程碑</b>：W6 引体进入弹力带辅助。
+</div>
+<button class="mock-btn" style="margin-top:6px;">看完整执行调整 →</button>
+</div>
+
+</div>
+<div class="phone-tabbar">
+<div class="tab active"><span class="ico">📊</span>复盘</div>
+<div class="tab"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>R2 ⭐ 教练说弹层（L3）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>点击任何数据点旁的 💡 触发。教练用 4 段话解释这个数据：什么意思 / 为什么 / 算法 / 你该做什么</td></tr>
+<tr><td><b>进入路径</b></td><td>从 R1 / P1 / P5 / 任何屏的 💡 图标点击</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① 标题：关于「XX」(数据点名)<br>
+② "这个数字什么意思"段<br>
+③ "为什么这是问题（或不是）"段——配科学依据<br>
+④ "系统怎么算的"段——展示计算公式 + 用的数据<br>
+⑤ "你该做什么"段——具体行动<br>
+⑥ 底部：📚 跳到原理 · 跳到论文 · "明白"按钮关闭
+</td></tr>
+</tbody>
+</table>
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>21:50</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">R2 · 教练说弹层</div>
+<div class="phone-screen" style="padding:0;">
+<div style="background:rgba(31,29,26,.6); padding:16px 14px; min-height:600px;">
+<div style="background:var(--paper); border-radius:14px; padding:16px 18px; margin-top:60px;">
+<div style="display:flex; align-items:baseline; gap:8px;">
+<span style="font-size:24px;">👨‍🏫</span>
+<div style="flex:1;"><div style="font-size:13px; font-weight:700;">关于「胸/背 = 0.52」</div><div style="font-size:10px; color:var(--muted);">教练解读</div></div>
+<span style="font-size:18px; color:var(--muted);">✕</span>
+</div>
+<div style="margin-top:12px; font-size:12.5px; line-height:1.6; color:var(--ink-2);">
+<b style="color:var(--ink);">这个数字什么意思？</b><br>
+胸训练量 ÷ 背训练量 = 0.52。说明你拉的量是推的近 2 倍。
+</div>
+<div style="margin-top:10px; font-size:12.5px; line-height:1.6; color:var(--ink-2);">
+<b style="color:var(--ink);">为什么这是问题（或不是）？</b><br>
+传统建议 0.6-1.2（Cools 2007）。但你的 0.52<b>对久坐人群其实是好纠偏</b>——反向偏拉是 Janda 姿势学派推荐方向。
+</div>
+<div style="margin-top:10px; font-size:12.5px; line-height:1.6; color:var(--ink-2);">
+<b style="color:var(--ink);">系统怎么算的？</b><br>
+胸 19.4 / 背 36.9 = 0.52
+</div>
+<div style="margin-top:10px; font-size:12.5px; line-height:1.6; color:var(--ink-2);">
+<b style="color:var(--ink);">你该做什么？</b><br>
+不修，除非出现圆肩或肩痛
+</div>
+<div class="mock-card gold" style="margin-top:10px; padding:7px 11px;">📚 <a style="color:var(--accent); font-size:11px;">原理 8 平衡比率</a> · <a style="color:var(--accent); font-size:11px;">Cools 2007</a></div>
+<button class="mock-btn" style="margin-top:10px;">明白</button>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+
+<h4>R3 ⭐ 执行调整建议（L2）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>从复盘里发现执行偏差 → 这屏给具体调整方案 + 影响预览 + 一键应用</td></tr>
+<tr><td><b>进入路径</b></td><td>R1 底部红色大卡 "看完整建议" 点击</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① 教练总览（顶部黄卡 · 强调"只处理执行偏差，不修计划设计"）<br>
+② 每个调整项独立卡：观察 → 含义 → 建议 → 影响预览 → 跳过/应用<br>
+③ 底部"一键应用所有"按钮<br>
+④ 底部说明：<b>看到平衡问题为什么不在这？因为那是计划设计阶段的权衡，要改去新建/编辑计划</b>
+</td></tr>
+<tr><td><b>这屏出现的内容</b></td><td>
+✓ 个人 MEV 系数偏离 / RIR 经常偏高 / 主复合渐进慢 / 训练频率被破坏 / 体重失控
+</td></tr>
+<tr><td><b>这屏<u>不</u>出现的内容</b></td><td>
+✗ "缺哪块肌肉训练量"（→ 该在生成时自检）<br>
+✗ "胸/背比失衡"（→ 该是生成时已接受的权衡）<br>
+✗ "上身/下身偏高"（→ 同上）
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>21:58</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">R3 · 执行调整建议</div>
+<div class="phone-screen">
+<div style="display:flex; align-items:baseline; gap:8px;">
+<span style="color:var(--accent); font-size:14px;">← 复盘</span>
+<div class="mock-h1" style="flex:1;">执行调整</div>
+</div>
+<div class="mock-sub">基于你 4 周实际表现 · 仅执行偏差</div>
+
+<div class="mock-card gold">
+<div style="font-size:11px; font-weight:700; color:#a87018;">👨‍🏫 总览</div>
+<div style="font-size:11.5px; margin-top:4px;">
+计划本身是教练在生成阶段做过自检的。这里展示的是 4 周里"实际 ≠ 预期"的偏差——调整未来几周的执行参数，<b>不是修计划本身</b>。
+</div>
+</div>
+
+<div class="mock-card accent" style="padding:11px 13px;">
+<div class="title">调整 #1 · 你的个人 MEV 比默认高</div>
+<div style="font-size:11.5px; margin:6px 0;">
+<b>观察</b>：4 周主复合只 1/5 渐进，但量已 ≥ 默认 MEV。<br>
+<b>推断</b>：你需要更多刺激（个人 MEV ×1.3）。
+</div>
+<div class="meta" style="background:var(--paper-2); padding:7px 10px; border-radius:6px;">影响：未来计划目标 MEV 自动 ×1.3</div>
+<div style="display:flex; gap:5px; margin-top:6px;">
+<button class="mock-btn secondary" style="flex:1; padding:6px;">跳过</button>
+<button class="mock-btn" style="flex:2; padding:6px;">应用 →</button>
+</div>
+</div>
+
+<div class="mock-card accent" style="padding:11px 13px;">
+<div class="title">调整 #2 · RIR 经常 ≥4</div>
+<div style="font-size:11.5px; margin:6px 0;">
+<b>观察</b>：60% 组数 RIR ≥4（应是 1-3）。<br>
+<b>含义</b>：强度不够，<b>"有效组数"实际比记录少 30%</b>。
+</div>
+<div class="meta" style="background:var(--paper-2); padding:7px 10px; border-radius:6px;">影响：未来 3 周主复合 +5% 重量</div>
+<div style="display:flex; gap:5px; margin-top:6px;">
+<button class="mock-btn secondary" style="flex:1; padding:6px;">跳过</button>
+<button class="mock-btn" style="flex:2; padding:6px;">应用 →</button>
+</div>
+</div>
+
+<div class="mock-btn" style="background:var(--good);">一键应用所有 2 项</div>
+
+<div class="mock-card" style="padding:9px 12px; margin-top:14px;">
+<div class="title" style="font-size:11.5px;">📌 提示</div>
+<div style="font-size:10.5px; margin-top:4px;">
+看到"上身/下身 1.93 不平衡"想知道为什么没在这里？那是<b>计划设计阶段你已接受的权衡</b>。要改它去 <b>新建/编辑计划</b>。
+</div>
+</div>
+</div>
+<div class="phone-tabbar">
+<div class="tab active"><span class="ico">📊</span>复盘</div>
+<div class="tab"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>R4 横向对比（Phase C · 待补线框）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>比较两个时间段（如 W1-3 vs W4-7、Q1 vs Q2）的训练状态变化——MEV 达标数对比、平衡比率变化、身体数据变化</td></tr>
+<tr><td><b>进入路径</b></td><td>R1 底部"横向对比"按钮 → 选两个时间段</td></tr>
+<tr><td><b>关键元素</b></td><td>双列对比表格 · 每列一个时段 · 行=指标 · 视觉化箭头 ↑↓→</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================================== -->
+<!-- 3.2 计划 Tab -->
+<!-- ============================================================== -->
+<h3 style="background:#fce6e2; color:var(--accent); padding:8px 12px; border-left:0;">📋 3.2 计划 Tab（8 个屏 · 默认入口 · 最常用）</h3>
+
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:10%">屏</th><th style="width:25%">名称</th><th style="width:14%">层级</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td><b>P1</b> ⭐</td><td>计划首屏</td><td>L1 Tab 首屏</td><td>今日卡（醒目）+ 本周 + 后续 + 入口</td></tr>
+<tr><td><b>P2</b> ⭐</td><td>训练记录子页</td><td>L2 子页</td><td>动作卡片堆叠 · 当节训练核心交互</td></tr>
+<tr><td><b>P3</b> ⭐</td><td>单张动作卡（展开态）</td><td>L2 子页一部分</td><td>当前进行中的动作卡完整状态</td></tr>
+<tr><td><b>P4</b> ⭐</td><td>Post-session 总结</td><td>L2 子页</td><td>训练完成后立即反馈 · KPI + 肌肉贡献 + PR</td></tr>
+<tr><td><b>P5</b> ⭐</td><td>周视图（带教练评估）</td><td>L2 子页</td><td>看某周计划详情 + 教练为什么这样设计</td></tr>
+<tr><td><b>P6</b></td><td>计划评估</td><td>L2 子页</td><td>查看 8.2 健康检查 + 11 平衡评估（嵌入式呈现）</td></tr>
+<tr><td><b>P7</b> ⭐</td><td>新建计划 Wizard 自检</td><td>L2 子页（Wizard 5/5）</td><td>系统自检 + 权衡协商 + 应用</td></tr>
+<tr><td><b>P8</b></td><td>矩阵视图 / 计划库</td><td>L2 子页</td><td>看动作×30 节矩阵；切换历史计划</td></tr>
+</tbody>
+</table>
+
+<h4>P1 ⭐ 计划首屏（L1）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>打开 App 的默认入口。1 眼知道今天该做什么；1 点击进入训练</td></tr>
+<tr><td><b>进入路径</b></td><td>底部 tab 点 📋 计划（默认就在这里）</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① 顶部今日大卡（红色突出 · "开始训练"按钮）<br>
+② 本周其它 sessions（已完成绿/未来灰）<br>
+③ 后续 N 周（可折叠列表）<br>
+④ 入口：计划评估 · 矩阵 · 计划库 · 新建计划
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>9:41</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">P1 · 计划首屏（默认入口）</div>
+<div class="phone-screen">
+<div class="mock-h1">我的计划</div>
+<div class="mock-sub">30 节增肌 · W1 第 2 节 · 周三</div>
+<div class="mock-card accent" style="border:2px solid var(--accent); padding:14px 14px;">
+<div class="title" style="font-size:14px;">📅 今天 · 课型 B 上肢推+拉</div>
+<div class="meta" style="margin:3px 0;">阶段 1 · 重建适应 · 6 动作 · ~45 分</div>
+<div style="font-size:11px; margin-top:6px; color:var(--ink-2);">
+卧推 · 划船 · 推举 · 上斜哑铃 · 弯举 · 侧平举
+</div>
+<button class="mock-btn" style="margin-top:8px;">开始训练 →</button>
+</div>
+<div class="mock-h2">本周</div>
+<div class="mock-card green" style="padding:8px 12px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--good);">✓</span><b>W1 第 1 节 · 课型 A</b><span style="margin-left:auto; font-size:10px; color:var(--muted);">周一已完成</span></div>
+</div>
+<div class="mock-card" style="padding:8px 12px; opacity:.7;">
+<div style="display:flex; gap:6px;"><span style="color:var(--muted);">○</span><b>W1 第 3 节 · 课型 C</b><span style="margin-left:auto; font-size:10px;">周五 2 天后</span></div>
+</div>
+<div class="mock-h2">后续</div>
+<div class="mock-card" style="padding:8px 12px;"><b>W2 · 第 4-6 节</b><span style="margin-left:auto; font-size:10px; color:var(--muted); float:right;">展开 ›</span></div>
+<div class="mock-card" style="padding:8px 12px;"><b>W3-7 · 第 7-21 节</b> <span style="margin-left:auto; font-size:10px; color:var(--muted); float:right;">主训段 ›</span></div>
+<div class="mock-card" style="padding:8px 12px;"><b>W8-10 · 第 22-30 节</b> <span style="margin-left:auto; font-size:10px; color:var(--muted); float:right;">强化+减载 ›</span></div>
+<div class="mock-h2">入口</div>
+<div class="mock-list-item"><span class="ico">📋</span> 计划评估（8.2 + 11）<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">📊</span> 矩阵视图<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">🗂️</span> 计划库<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">➕</span> 新建计划<span class="chev">›</span></div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab active"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>P2 ⭐ 训练记录子页（L2）· 核心交互</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>当节训练的全流程交互。每个动作一张卡，依次完成</td></tr>
+<tr><td><b>进入路径</b></td><td>P1 今日卡的"开始训练"按钮</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① Header（带 ← 返回 + 进度条 + 计时器）<br>
+② 6-7 张动作卡堆叠（按计划顺序）<br>
+③ 卡三态：✓ 已完成（折叠 1 行）· ⚡ 进行中（展开+输入区）· ○ 未开始（折叠 半透明）<br>
+④ 进行中卡内：<b>动作要点 + 数字 drum picker + 4 维自评（具体文案）+ 备注</b>（详见 P3）<br>
+⑤ 底部：完成本节训练按钮（仅全部 ✓ 时激活）
+</td></tr>
+<tr><td><b>关键规则</b></td><td>
+✓ 同时只 1 张"进行中"<br>
+✓ 顺序不强制——可以跳过某张先做其它<br>
+✓ "+ 添加一组"允许超出计划组数<br>
+✓ 输入区只有"组数表"必填，自评/备注可折叠<br>
+✓ <b>所有数字（kg / 次 / RIR）用滚动选择器，不用键盘输入</b>
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>10:18</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">P2 · 训练记录子页</div>
+<div class="phone-screen">
+<div style="display:flex; align-items:baseline; gap:8px; padding-bottom:6px; border-bottom:1px solid var(--line);">
+<span style="color:var(--accent); font-size:14px;">← 返回</span>
+<div style="flex:1; text-align:center;">
+<div style="font-size:13px; font-weight:700;">第 2 节 · 课型 B</div>
+<div style="font-size:10px; color:var(--muted);">1/6 · 用时 8 分</div>
+</div>
+</div>
+<div class="mock-progress" style="margin:8px 0;"><div style="width:17%;"></div></div>
+
+<div class="mock-card green" style="padding:9px 11px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--good);">✓</span><b>杠铃卧推</b><span style="margin-left:auto; font-size:10px;">15kg·10·2 · RIR 3</span></div>
+</div>
+
+<div class="mock-card accent" style="border:2px solid var(--accent); padding:10px 12px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--accent);">⚡</span><b>杠铃俯身划船</b><span style="margin-left:auto; font-size:10px;">2/6</span></div>
+<div class="meta">计划: 25kg × 10 × 2 · RIR 3-4</div>
+<table style="width:100%; font-size:10.5px; margin-top:5px;">
+<thead><tr><th>组</th><th class="num">kg</th><th class="num">次</th><th class="num">RIR</th><th></th></tr></thead>
+<tbody>
+<tr><td>1</td><td class="num">25</td><td class="num">10</td><td class="num">3</td><td>✓</td></tr>
+<tr><td>2</td><td><input class="mock-input" style="padding:3px; font-size:10.5px;" value="25"></td><td><input class="mock-input" style="padding:3px; font-size:10.5px;" placeholder="10"></td><td><input class="mock-input" style="padding:3px; font-size:10.5px;" placeholder="3"></td><td>—</td></tr>
+</tbody>
+</table>
+<button class="mock-btn secondary" style="padding:4px 8px; font-size:10px; margin:4px 0; width:auto;">+ 添加一组</button>
+<div style="padding:6px 0; font-size:11px; border-top:1px dashed var(--line); margin-top:5px;">▾ 自评 4 维<span style="margin-left:8px; color:var(--muted); font-size:10px;">神经● 力线● 幅度● 容量●</span></div>
+<div style="font-size:11px;">▾ 备注</div>
+<button class="mock-btn" style="margin-top:8px;">完成此动作 →</button>
+</div>
+
+<div class="mock-card" style="padding:8px 11px; opacity:.5;">
+<div style="display:flex; gap:6px;"><span>○</span><b>站姿杠铃推举</b><span style="margin-left:auto; font-size:10px; color:var(--muted);">空杆·8-10·2</span></div>
+</div>
+<div class="mock-card" style="padding:8px 11px; opacity:.5;">
+<div style="display:flex; gap:6px;"><span>○</span><b>上斜哑铃卧推</b></div>
+</div>
+<div class="mock-card" style="padding:8px 11px; opacity:.4;">
+<div style="display:flex; gap:6px;"><span>○</span><b>杠铃弯举</b></div>
+</div>
+<div class="mock-card" style="padding:8px 11px; opacity:.4;">
+<div style="display:flex; gap:6px;"><span>○</span><b>哑铃侧平举</b></div>
+</div>
+
+<div class="mock-btn secondary" style="opacity:.5;">完成本节训练（1/6）</div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab active"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>P3 ⭐ 单张动作卡（展开态详情）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>放大看 P2 里当前进行中的动作卡的所有控件</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① 动作名 + 主肌/协同标签<br>
+② <b>动作要点（cues）</b>——从 EXERCISE_DB 自动展示 3-4 条注意事项<br>
+③ 计划: 25kg × 10 × 2 · RIR 3-4<br>
+④ 实际记录表（组/kg/次/RIR）—— <b>所有数字用滚动选择器 drum picker</b>，不用键盘<br>
+⑤ + 添加一组按钮<br>
+⑥ ▾ 4 维自评 —— <b>每维用 5 档具体描述</b>（不是"较好/中"），下拉选项见下<br>
+⑦ ▾ 备注 textarea<br>
+⑧ 完成此动作按钮
+</td></tr>
+<tr><td><b>4 维自评具体文案</b><br>（沿用动作手册原版）</td><td>
+<b>神经感知</b>：L0 几乎完全感觉不到 / L1 偶尔模糊感觉到 / L2 大部分时间清晰 / L3 全程清晰感觉发力 / L4 能引导到具体分区<br>
+<b>力线控制</b>：L0 需镜子/视频纠正 / L1 需主动注意才稳 / L2 主动注意下稳定 / L3 不刻意也能保持 / L4 大重量下仍完美<br>
+<b>完整幅度</b>：L0 只能半幅度 / L1 大部分幅度，末端难 / L2 完整幅度末端略不稳 / L3 完整幅度流畅 / L4 全幅度+慢离心稳<br>
+<b>容量耐受</b>：L0 1 组就掉质量 / L1 2-3 个有效组 / L2 4-5 个有效组 / L3 6+ 有效组稳 / L4 多动作日仍保质
+</td></tr>
+<tr><td><b>数字输入</b></td><td>
+<b>不用键盘</b>。重量/次数/RIR 都用<b>滚动选择器 drum picker</b>（类似 iOS 时间选择器）：<br>
+• 重量：以 1kg 步进，预选范围 0-200kg<br>
+• 次数：1-50 整数<br>
+• RIR：0-5 整数<br>
+原因：减少触屏精确输入的烦躁，训练中手汗也能操作
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>10:22</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">P3 · 单张动作卡（含要点 + drum picker + 具体自评）</div>
+<div class="phone-screen">
+<div style="display:flex; gap:8px; padding-bottom:6px; border-bottom:1px solid var(--line);">
+<span style="color:var(--accent); font-size:14px;">←</span>
+<div style="flex:1; text-align:center; font-size:13px; font-weight:700;">第 2 节 课型 B</div>
+</div>
+
+<div class="mock-card accent" style="border:2px solid var(--accent); padding:12px 14px; margin-top:14px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--accent);">⚡</span><b style="font-size:14px;">杠铃俯身划船</b></div>
+<div class="meta">计划: 25kg × 10 × 2 · RIR 3-4</div>
+<div class="meta" style="font-size:10.5px;">主肌：背阔肌 · 菱形肌 / 协同：斜方中下 · 肱二头</div>
+
+<!-- 动作要点 ⭐ 新加 -->
+<div style="margin-top:8px; padding:8px 10px; background:var(--soft-blue); border-radius:6px; font-size:10.5px;">
+<b style="color:var(--ink); font-size:11px;">▾ 动作要点</b>
+<ul style="margin:4px 0 0 16px; line-height:1.5;">
+<li>髋铰链俯身 45° · 背平稳定</li>
+<li>肘贴身向后拉，到肋骨下沿</li>
+<li>顶峰夹紧肩胛 1 秒</li>
+<li>离心 2 秒下放，控制不松手</li>
+</ul>
+</div>
+
+<!-- 实际记录 + drum picker -->
+<div style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--line);">
+<div style="font-size:11px; margin-bottom:4px;"><b>实际记录</b><span style="font-size:9.5px; color:var(--muted); margin-left:6px;">点数字滚动选择</span></div>
+<table style="width:100%; font-size:11px;">
+<thead><tr style="background:#f7f1e3;"><th>组</th><th class="num">kg</th><th class="num">次</th><th class="num">RIR</th></tr></thead>
+<tbody>
+<tr><td>1</td><td class="num">25</td><td class="num">10</td><td class="num">3</td></tr>
+<tr style="background:var(--accent-light);"><td>2</td>
+<td class="num"><b style="font-size:13px; border-bottom:2px solid var(--accent);">27.5</b></td>
+<td class="num"><b style="font-size:13px;">10</b></td>
+<td class="num"><b style="font-size:13px;">2</b></td></tr>
+</tbody>
+</table>
+
+<!-- Drum picker 示意 -->
+<div style="margin-top:6px; padding:6px 10px; background:#1f1d1a; border-radius:8px; color:#fff;">
+<div style="font-size:10px; color:#999; margin-bottom:3px;">↕ 滚动选 · 重量 (kg)</div>
+<div style="text-align:center; font-size:14px; line-height:1.8;">
+<span style="color:#666;">25</span><br>
+<span style="color:#aaa;">26</span><br>
+<span style="color:#fff; font-weight:700; font-size:18px; background:rgba(255,255,255,.1); padding:2px 16px; border-radius:4px;">27.5</span><br>
+<span style="color:#aaa;">29</span><br>
+<span style="color:#666;">30</span>
+</div>
+</div>
+
+<button class="mock-btn secondary" style="padding:4px 8px; font-size:10px; margin:6px 0;">+ 添加第 3 组</button>
+</div>
+
+<!-- 4 维自评 - 用具体文案 ⭐ -->
+<div style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--line);">
+<div style="font-size:11px; margin-bottom:6px;"><b>▾ 4 维自评</b></div>
+
+<div style="font-size:10.5px; line-height:1.7;">
+<div style="display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px dashed var(--line);">
+<b style="width:62px;">神经感知</b>
+<select style="flex:1; padding:3px 6px; font-size:10.5px; border:1px solid var(--line); border-radius:5px;">
+<option>L3 · 全程清晰感觉发力</option>
+</select>
+</div>
+
+<div style="display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px dashed var(--line);">
+<b style="width:62px;">力线控制</b>
+<select style="flex:1; padding:3px 6px; font-size:10.5px; border:1px solid var(--line); border-radius:5px;">
+<option>L3 · 不刻意也能保持</option>
+</select>
+</div>
+
+<div style="display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px dashed var(--line);">
+<b style="width:62px;">完整幅度</b>
+<select style="flex:1; padding:3px 6px; font-size:10.5px; border:1px solid var(--line); border-radius:5px;">
+<option>L2 · 完整幅度末端略不稳</option>
+</select>
+</div>
+
+<div style="display:flex; align-items:center; gap:6px; padding:4px 0;">
+<b style="width:62px;">容量耐受</b>
+<select style="flex:1; padding:3px 6px; font-size:10.5px; border:1px solid var(--line); border-radius:5px;">
+<option>L3 · 6+ 有效组稳</option>
+</select>
+</div>
+</div>
+</div>
+
+<!-- 备注 -->
+<div style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--line); font-size:11px;">
+<b>▾ 备注</b><br>
+<textarea class="mock-input" style="font-size:10.5px; height:36px;" placeholder="可选：今天感觉..."></textarea>
+</div>
+
+<button class="mock-btn" style="margin-top:8px;">✓ 完成此动作</button>
+</div>
+
+<p style="font-size:11px; color:var(--muted); padding:8px;">说明：<br>• 蓝色"动作要点"框来自 EXERCISE_DB.cues 字段，每个动作不同<br>• 黑色 drum picker = iOS 风格滚动选择器，点重量数字弹出，上下滚动选值<br>• 自评下拉用的是<b>具体动作描述</b>（不是"较好/中"），便于在训练当下判断</p>
+
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab active"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>P4 ⭐ Post-session 总结（L2）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>训练完成后即时反馈，强化"完成感"+ 教育用户每节的训练价值</td></tr>
+<tr><td><b>进入路径</b></td><td>P2 完成本节训练按钮</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① 🎉 标题（X 节完成）<br>
+② 用时 + 完成动作数<br>
+③ KPI（有效组数 · 平均 RIR · 是否有 PR）<br>
+④ 本节对每块肌肉的贡献（带 contrib 系数计算）<br>
+⑤ PR 提示（如有）<br>
+⑥ 下一节预告<br>
+⑦ 完成 → 返回 P1 / 看本周复盘
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>11:05</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">P4 · Post-session 总结</div>
+<div class="phone-screen">
+<div style="text-align:center; padding:14px 0;">
+<div style="font-size:38px;">🎉</div>
+<div class="mock-h1" style="margin:6px 0;">第 2 节完成！</div>
+<div class="mock-sub">用时 42 分钟 · 6/6 动作</div>
+</div>
+<div class="mock-kpi-strip">
+<div class="mock-kpi"><b>18</b><span>有效组</span></div>
+<div class="mock-kpi"><b>2.4</b><span>均 RIR</span></div>
+<div class="mock-kpi"><b>+5kg</b><span>主复合</span></div>
+</div>
+<div class="mock-h2">本节肌肉贡献</div>
+<div style="font-size:11.5px;">
+<div style="display:flex; padding:4px 0; border-bottom:1px solid var(--line);"><span>胸大肌-中下部</span><span style="margin-left:auto;">+3.5 组</span></div>
+<div style="display:flex; padding:4px 0; border-bottom:1px solid var(--line);"><span>背阔肌</span><span style="margin-left:auto;">+3.0 组</span></div>
+<div style="display:flex; padding:4px 0; border-bottom:1px solid var(--line);"><span>三角肌中束</span><span style="margin-left:auto;">+3.6 组</span></div>
+<div style="display:flex; padding:4px 0;"><span style="color:var(--muted);">…其它 12 块</span></div>
+</div>
+<div class="mock-h2">PR 提示</div>
+<div class="mock-card green">🏆 杠铃俯身划船 27.5kg×10（旧 25kg×10）<br><span style="font-size:11px;">e1RM 33 → 37</span></div>
+<div class="mock-h2">下一节</div>
+<div class="mock-card" style="padding:8px 12px;"><b>W1 第 3 节 · 课型 C</b><div class="meta">周五 2 天后 · 6 动作</div></div>
+<div class="mock-btn">完成 · 返回计划</div>
+<div class="mock-btn secondary">查看本周复盘 →</div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab active"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>P5 ⭐ 周视图（L2 · 带教练评估）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>看某周（W1-W10 任一）的完整计划详情 + 教练解释设计目的 + 该周预测完成度</td></tr>
+<tr><td><b>进入路径</b></td><td>P1 后续训练里点某周 / P8 矩阵里点某列</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① Header（W几 · 哪几节 · 阶段）<br>
+② 👨‍🏫 教练 1 段：这周设计目的 + 关键变化<br>
+③ 周内 3 节卡片<br>
+④ 本周训练量预测（完成 MEV 数）<br>
+⑤ 进入完整评估 / 下一周
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>14:32</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">P5 · 周视图（带教练评估）</div>
+<div class="phone-screen">
+<div style="display:flex; gap:8px;">
+<span style="color:var(--accent); font-size:14px;">←</span>
+<div class="mock-h1" style="flex:1;">W5 · 第 13-15 节</div>
+</div>
+<div class="mock-sub">阶段 2 · 增肌主训 · 关键周</div>
+
+<div class="mock-card gold" style="padding:11px 13px;">
+<div style="font-size:11px; font-weight:700; color:#a87018;">👨‍🏫 这周设计目的</div>
+<div style="font-size:11.5px; margin-top:4px;">
+进入阶段二第 2 周。<b>3 个关键变化</b>：<br>
+① 升 3 组（每动作）→ 进入 MEV 甜区<br>
+② 侧平举升 4 组（修三角中束 MEV）<br>
+③ C 课新加俯卧腿弯举 2×12（修 Q/H 失衡）<br>
+这些都是计划生成时自检后已带的——不是事后修补。
+</div>
+</div>
+
+<div class="mock-h2">W5 三节</div>
+<div class="mock-card" style="padding:10px 12px;">
+<div class="title">第 13 节 · 课型 A</div>
+<div class="meta">周一 · 下肢+核心 · 6 动作</div>
+</div>
+<div class="mock-card accent" style="padding:10px 12px;">
+<div class="title">第 14 节 · 课型 B</div>
+<div class="meta">周三 · 上肢推+拉 · 6 动作（含侧平举 4 组）</div>
+</div>
+<div class="mock-card" style="padding:10px 12px;">
+<div class="title">第 15 节 · 课型 C</div>
+<div class="meta">周五 · 7 动作（+ 俯卧腿弯举）</div>
+</div>
+
+<div class="mock-h2">本周训练量预测</div>
+<div class="mock-card">
+<div style="font-size:11.5px;">完成 W5 后预计：</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:4px;">
+<div style="background:#e3f1e6; padding:5px 8px; border-radius:6px; font-size:10.5px;">✅ <b>22 块</b>达 MEV</div>
+<div style="background:#fff8e3; padding:5px 8px; border-radius:6px; font-size:10.5px;">🟡 <b>9 块</b>接近</div>
+</div>
+</div>
+
+<div class="mock-btn">查看 W5 完整评估</div>
+<div class="mock-btn secondary">下一周 W6 →</div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab active"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>P6 计划评估（待补线框）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>查看计划在<b>生成时</b>跑出来的 4 维评估结果——8.2 健康检查、11 平衡评估、13 当周表现快照</td></tr>
+<tr><td><b>进入路径</b></td><td>P1 入口 → 计划评估</td></tr>
+<tr><td><b>关键元素</b></td><td>
+1. 8.2 健康检查（42 块肌肉 ✅🟡🔴⚪ 四桶）<br>
+2. 8.3 决策表（4 块决策，已自动应用）<br>
+3. 11 平衡（10 个比率，含权衡说明）<br>
+4. 每项都带 💡（点开是 R2 教练说弹层）
+</td></tr>
+<tr><td><b>这屏 vs R1</b></td><td><b>P6 显示"计划设计层面"</b>的评估（理论上的）；<b>R1 显示"实际执行"</b>的评估（实测的）。两者会有差异——差异本身就是反馈</td></tr>
+</tbody>
+</table>
+
+<h4>P7 ⭐ 新建计划 Wizard 自检（L2 · 5/5 步）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>Wizard 最后一步——系统自检 + 协商权衡 + 应用</td></tr>
+<tr><td><b>进入路径</b></td><td>P1 新建计划 → 完成前 4 步（目标/频率/历史/偏好）→ 自动到这步</td></tr>
+<tr><td><b>关键元素</b></td><td>
+① 教练总结（自检概况）<br>
+② 4 项自检结果（MEV / 平衡 / 时间 / 频率）✓ or ⚠<br>
+③ 系统自动加的补充动作说明<br>
+④ 权衡协商区（Radio 选择）<br>
+⑤ 应用 / 看预览 / 回上一步
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>14:22</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">P7 · Wizard 5/5 系统自检</div>
+<div class="phone-screen">
+<div style="display:flex; gap:8px;">
+<span style="color:var(--accent); font-size:14px;">←</span>
+<div class="mock-h1" style="flex:1;">新建计划</div>
+</div>
+<div class="mock-sub">5/5 · 系统自检 + 协商</div>
+<div class="mock-progress"><div style="width:100%; background:var(--good);"></div></div>
+
+<div class="mock-card gold">
+<div style="font-size:11px; font-weight:700; color:#a87018;">👨‍🏫 自检完成</div>
+<div style="font-size:11.5px; margin-top:4px;">合格，但有 2 个权衡需要你决定。</div>
+</div>
+
+<div class="mock-card green" style="padding:8px 12px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--good);">✓</span><b>MEV 覆盖</b><span style="margin-left:auto; font-size:10px;">主肌全 ≥ MEV</span></div>
+</div>
+<div class="mock-card green" style="padding:8px 12px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--good);">✓</span><b>平衡比率</b><span style="margin-left:auto; font-size:10px;">8/10</span></div>
+</div>
+<div class="mock-card green" style="padding:8px 12px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--good);">✓</span><b>时间</b><span style="margin-left:auto; font-size:10px;">45-50 分/课</span></div>
+</div>
+<div class="mock-card green" style="padding:8px 12px;">
+<div style="display:flex; gap:6px;"><span style="color:var(--good);">✓</span><b>频率</b><span style="margin-left:auto; font-size:10px;">主肌 ≥2/周</span></div>
+</div>
+
+<div class="mock-card" style="padding:9px 12px;">
+<div class="title" style="color:var(--accent);">⚙ 自动补充了 2 个动作</div>
+<div style="font-size:11px; margin-top:4px;">
+• 俯卧腿弯举 进 C 课（修腘绳半腱半膜）<br>
+• 坐姿提踵 进 A 课（修比目鱼肌）
+</div>
+</div>
+
+<div class="mock-h2">⚠ 2 个权衡</div>
+
+<div class="mock-card" style="padding:11px 13px;">
+<div class="title" style="font-size:12px;">上身/下身比 = 1.6</div>
+<div style="font-size:11px;">区间 0.5-1.3。<b>增肌取向天然偏高</b>。</div>
+<div style="font-size:11px;">
+<input type="radio" checked> <b>接受（推荐）</b><br>
+<input type="radio"> 加下身动作<br>
+<input type="radio"> 改频率 3 → 4 次/周
+</div>
+</div>
+
+<div class="mock-card" style="padding:11px 13px;">
+<div class="title" style="font-size:12px;">胸/背比 = 0.65</div>
+<div style="font-size:11px;">勉强 ✓。<b>对久坐人群是好纠偏</b>。</div>
+<div style="font-size:11px;">
+<input type="radio" checked> <b>接受（推荐）</b><br>
+<input type="radio"> 加上斜哑铃推
+</div>
+</div>
+
+<div class="mock-btn">应用此计划 →</div>
+<div class="mock-btn secondary">先看 30 节预览</div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab active"><span class="ico">📋</span>计划</div>
+<div class="tab"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>P8 矩阵视图 / 计划库（待补线框）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>用途</b></td><td>
+矩阵：动作 × 30 节的表格视图，看整体趋势<br>
+计划库：当前活跃 + 历史已完成 + 已放弃
+</td></tr>
+<tr><td><b>关键元素</b></td><td>
+矩阵：行=动作 / 列=session / 格=重量·组×次 / 颜色按阶段<br>
+计划库：每个计划一张卡（状态+起止日期+完成 N/30）
+</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================================== -->
+<!-- 3.3 我的 Tab -->
+<!-- ============================================================== -->
+<h3 style="background:#f1efe8; color:var(--ink); padding:8px 12px; border-left:0;">👤 3.3 我的 Tab（5 个屏 · 资源 + 配置）</h3>
+
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:10%">屏</th><th style="width:25%">名称</th><th style="width:14%">层级</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td><b>M1</b> ⭐</td><td>我的首屏</td><td>L1 Tab 首屏</td><td>Profile + 入口 grid（身体/目标/原理/图鉴/动作库/设置/导入）</td></tr>
+<tr><td><b>M2</b> ⭐</td><td>训练原理</td><td>L2 子页</td><td>16 条原理列表（生理学 0.1-0.8 + 训练 1-10）</td></tr>
+<tr><td><b>M3</b> ⭐</td><td>身体数据</td><td>L2 子页</td><td>体重 + 体脂 + 围度 + 趋势图 + 录入</td></tr>
+<tr><td><b>M4</b></td><td>目标</td><td>L2 子页</td><td>当前/已达成/已放弃 目标管理</td></tr>
+<tr><td><b>M5</b></td><td>设置 + 导入/导出</td><td>L2 子页</td><td>单位、计划起始日、MEV 系数、JSON 备份</td></tr>
+</tbody>
+</table>
+
+<h4>M1 ⭐ 我的首屏（L1）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>关键元素</b></td><td>
+① Profile 摘要卡（身高体重年龄 + 当前 MEV 系数）<br>
+② "追踪" 2 列网格：身体数据 + 目标<br>
+③ "学习与参考" 3 列网格：训练原理 + 肌肉图鉴 + 动作库<br>
+④ "设置与数据"列表：个人设置 / 导入 / 导出 / 关于
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>20:01</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">M1 · 我的首屏</div>
+<div class="phone-screen">
+<div class="mock-h1">我的</div>
+<div class="mock-sub">Sebastian · 30 节增肌进行中</div>
+<div class="mock-card" style="padding:10px 12px;">
+<div style="display:flex; gap:8px;">
+<div style="width:36px; height:36px; background:var(--accent-light); border-radius:50%; display:flex; align-items:center; justify-content:center;">👤</div>
+<div><div class="title">72.3 kg · 175 cm</div><div class="meta">个人 MEV 系数：1.0×</div></div>
+</div>
+</div>
+<div class="mock-h2">追踪</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+<div class="mock-card" style="padding:10px; text-align:center;"><div style="font-size:22px;">🏃</div><div class="title" style="font-size:11.5px;">身体数据</div></div>
+<div class="mock-card" style="padding:10px; text-align:center;"><div style="font-size:22px;">🎯</div><div class="title" style="font-size:11.5px;">目标</div><div class="meta" style="font-size:9.5px;">2 个进行中</div></div>
+</div>
+<div class="mock-h2">学习与参考</div>
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;">
+<div class="mock-card" style="padding:10px; text-align:center;"><div style="font-size:22px;">📚</div><div class="title" style="font-size:11px;">训练原理</div></div>
+<div class="mock-card" style="padding:10px; text-align:center;"><div style="font-size:22px;">🫀</div><div class="title" style="font-size:11px;">肌肉图鉴</div></div>
+<div class="mock-card" style="padding:10px; text-align:center;"><div style="font-size:22px;">💪</div><div class="title" style="font-size:11px;">动作库</div></div>
+</div>
+<div class="mock-h2">设置与数据</div>
+<div class="mock-list-item"><span class="ico">⚙️</span> 个人设置<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">📥</span> 数据导入<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">📤</span> 数据导出<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">ℹ️</span> 关于<span class="chev">›</span></div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab"><span class="ico">📋</span>计划</div>
+<div class="tab active"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>M2 ⭐ 训练原理（L2）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>关键元素</b></td><td>
+① 分类 tabs（全部/生理学/训练量/恢复）<br>
+② 16 条列表：底层 0.1-0.8 + 训练原理 1-10<br>
+③ 每条带图标和短描述，点开进详情<br>
+④ 详情屏会有"看我的数据怎么用这条"跳转
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>20:08</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">M2 · 训练原理列表</div>
+<div class="phone-screen">
+<div style="display:flex; gap:8px;">
+<span style="color:var(--accent); font-size:14px;">← 我的</span>
+<div class="mock-h1" style="flex:1;">训练原理</div>
+</div>
+<div class="mock-sub">16 条 · 底层 6 + 训练 10</div>
+<div style="display:flex; gap:4px; margin:6px 0; font-size:10.5px;">
+<span class="mock-chip">全部</span>
+<span class="mock-chip gray">生理学</span>
+<span class="mock-chip gray">训练量</span>
+<span class="mock-chip gray">恢复</span>
+</div>
+<div class="mock-h2">底层生理学 0.x</div>
+<div class="mock-list-item"><span class="ico">🧬</span> 0.1 肌肉怎么长大<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">⚡</span> 0.2 三大机制<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">🔄</span> 0.3 MPS 36-48h<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">🏋️</span> 0.4 重量+次数+RIR<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">🧠</span> 0.5 神经适应<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">⏱️</span> 0.6 间隔黄金区<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">📏</span> 0.7 组数怎么算<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">📋</span> 0.8 42 块 MEV 表<span class="chev">›</span></div>
+<div class="mock-h2">训练原理 1-10</div>
+<div class="mock-list-item"><span class="ico">①</span> MEV/MAV/MRV<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">②</span> 剂量-反应<span class="chev">›</span></div>
+<div class="mock-list-item"><span class="ico">③-⑩</span> 等等<span class="chev">›</span></div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab"><span class="ico">📋</span>计划</div>
+<div class="tab active"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>M3 ⭐ 身体数据（L2）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>关键元素</b></td><td>
+① 顶部 KPI（最近体重 · 体脂 · 30 天瘦体重变化）<br>
+② 体重 90 天趋势 SVG 折线图<br>
+③ 围度对比表（胸/腰/臂/腿）<br>
+④ "+ 记录新数据"按钮（弹 L3 输入框）
+</td></tr>
+</tbody>
+</table>
+
+<div class="phones">
+<div class="phone"><div class="phone-inner">
+<div class="phone-statusbar"><span>20:14</span><span>5G ▮▮▮</span></div>
+<div class="phone-screen-name">M3 · 身体数据</div>
+<div class="phone-screen">
+<div style="display:flex; gap:8px;">
+<span style="color:var(--accent); font-size:14px;">← 我的</span>
+<div class="mock-h1" style="flex:1;">身体数据</div>
+</div>
+<div class="mock-kpi-strip">
+<div class="mock-kpi"><b>72.3</b><span>体重 kg</span></div>
+<div class="mock-kpi"><b>18.2%</b><span>体脂</span></div>
+<div class="mock-kpi"><b>+0.5</b><span>瘦体重 30d</span></div>
+</div>
+<div class="mock-h2">体重 · 90 天</div>
+<svg viewBox="0 0 300 80" style="width:100%; height:80px;">
+<polyline points="10,55 40,52 70,48 100,45 130,42 160,40 190,38 220,35 250,33 280,32" fill="none" stroke="#b03a2e" stroke-width="2"/>
+<line x1="10" x2="280" y1="55" y2="55" stroke="#eee"/>
+</svg>
+<div style="font-size:10px; color:var(--muted); text-align:center;">3 个月增 1.2 kg · 符合计划目标</div>
+<div class="mock-h2">围度</div>
+<div style="font-size:11.5px;">
+<div style="display:flex; padding:4px 0;"><span>胸围</span><span style="margin-left:auto;">102.5 cm <span style="color:var(--good);">+0.5</span></span></div>
+<div style="display:flex; padding:4px 0;"><span>腰围</span><span style="margin-left:auto;">78.0 cm <span style="color:var(--good);">−1.0</span></span></div>
+<div style="display:flex; padding:4px 0;"><span>臂围</span><span style="margin-left:auto;">33.5 cm <span style="color:var(--good);">+0.5</span></span></div>
+<div style="display:flex; padding:4px 0;"><span>大腿围</span><span style="margin-left:auto;">56.0 cm <span style="color:var(--good);">+1.0</span></span></div>
+</div>
+<div class="mock-btn">+ 记录新数据</div>
+<div class="mock-btn secondary">完整历史</div>
+</div>
+<div class="phone-tabbar">
+<div class="tab"><span class="ico">📊</span>复盘</div>
+<div class="tab"><span class="ico">📋</span>计划</div>
+<div class="tab active"><span class="ico">👤</span>我的</div>
+</div>
+</div></div>
+</div>
+
+<h4>M4 目标（待补线框）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>关键元素</b></td><td>
+当前 / 已达成 / 已放弃 三段<br>
+每个当前目标卡：名称 + 进度条 + 截止日 + 下个里程碑<br>
+"+ 新增目标" 按钮 → 选模板（动作 PR / 体重 / 围度 / 完成训练 N 节）→ 设阈值与截止日
+</td></tr>
+</tbody>
+</table>
+
+<h4>M5 设置 + 导入/导出（待补线框）</h4>
+<table style="font-size:13px;">
+<tbody>
+<tr><td style="width:18%"><b>关键元素</b></td><td>
+① 单位（kg/lb）<br>
+② 计划起始日<br>
+③ 个人 MEV 系数<br>
+④ 主题（亮色/暗色）<br>
+⑤ 数据导入（照片 OCR / CSV / JSON）<br>
+⑥ 数据导出（备份为 JSON）<br>
+⑦ 关于 + 反馈
+</td></tr>
+</tbody>
+</table>
+
+<h3 style="margin-top:20px;">3.4 关键设计点</h3>
+<ul>
+<li><b>计划居中</b>：打开 App 默认在计划 tab，今日卡用红色突出，1 点击进训练</li>
+<li><b>动作卡三态</b>：✓ 折叠 / ⚡ 展开输入 / ○ 折叠半透明。同时只 1 张进行中</li>
+<li><b>动作卡内必含 4 区</b>：① 要点（cues 自动从 DB 加载）② 实际记录（drum picker）③ 4 维自评（具体描述选项）④ 备注</li>
+<li><b>所有数字 drum picker</b>，不用键盘——避免训练时手汗输入烦躁</li>
+<li><b>4 维自评用具体文案</b>：每档是"具体场景描述"（如"完整幅度末端略不稳"）而不是"较好/中"——便于训练当下快速判断</li>
+<li><b>训练记录子页</b>是 Plan 子页（L2），底部 tab 仍可见</li>
+<li><b>所有数据点带 💡</b>：点开 R2 弹层，教练 4 段解释</li>
+<li><b>复盘按 6 段模板展开</b>：周期定位 / 当初假设 / 实际 / 一致偏离 / 教练解读 / 前瞻——所有时段同模板</li>
+<li><b>每块肌肉判断基于"阶段预期"</b>而不是绝对 MEV——阶段一只期望 60% MEV，达了就 ✓</li>
+<li><b>计划级 vs 执行级问题严格分流</b>：计划级 → 生成时自检（P7）/ 执行级 → 复盘里出现（R3）</li>
+<li><b>计划评估 P6 vs 复盘 R1 的差别</b>：P6 = 设计层（理论上的）/ R1 = 实测（实际的）。差异本身就是反馈</li>
+<li><b>每周顶部</b>有教练 1 段"这周设计目的"——让用户理解为什么</li>
+</ul>
+
+</section>
+
+<!-- 4. 用户流程 -->
+<section id="flows">
+<h2>4. 关键用户流程</h2>
+
+<h3>4.1 训练当天（最高频，~3 次/周）</h3>
+<div class="flow">
+<div class="flow-box">打开 App</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">P1 计划首屏</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">开始训练</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">P2 逐动作记录</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box end">P4 Post-session</div>
+</div>
+<p>关键体验点：① 打开 App <b>默认在计划 tab P1</b>，立刻看到今天要做什么；② P2 记录页<b>预填计划数据，只需改实际值</b>；③ 完成后<b>自动到 P4 Post-session 总结</b>（含本节肌肉贡献 + PR 提示），不需要专门打开复盘。</p>
+
+<h3>4.2 周日晚复盘 + 执行调整（中频，~1 次/周）</h3>
+<div class="flow">
+<div class="flow-box">打开 App</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">复盘 Tab</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">下滑看完整评估</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box alt">点 💡 看教练说</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box alt">看建议执行调整</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">看影响预览</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box end">一键应用</div>
+</div>
+<p>关键体验：<b>复盘里出现的建议只处理"执行偏差"</b>——RIR 偏高、渐进慢、个人 MEV 系数偏离默认等。<b>不会出现"修计划设计缺陷"的内容</b>，因为计划在生成阶段已经自检合格。设计层问题如要改，进 4.3 流程（新建/编辑计划）。</p>
+
+<h3>4.3 新计划生成（低频，~每 2-3 个月 1 次）</h3>
+<div class="flow">
+<div class="flow-box">训练 Tab</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">+ 新建计划</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">5 步 Wizard</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box alt">系统生成</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">Review/调整</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box end">激活并归档前计划</div>
+</div>
+
+<h3>4.4 历史数据导入（一次性，新用户首次使用）</h3>
+<div class="flow">
+<div class="flow-box">我的</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">数据导入</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box alt">选择源（照片/CSV/JSON）</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">系统提取+匹配</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">用户确认</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box end">导入完成</div>
+</div>
+<p>关键：照片导入用本地 OCR + LLM 抽取（如调用 Claude / GPT-4o），CSV 用拖入。<b>导入后用户能看到"这些数据怎么进了你的训练量统计"</b>——透明性是关键。</p>
+
+<h3>4.5 长期复盘（季度/半年/年）</h3>
+<div class="flow">
+<div class="flow-box">复盘 Tab</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">选时间段</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">总体训练量/平衡/PR 变化</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box">跨期对比</div>
+<span class="flow-arrow">→</span>
+<div class="flow-box end">看下一阶段建议</div>
+</div>
+</section>
+
+<!-- 5. 数据模型 -->
+<section id="data">
+<h2>5. 数据模型（localStorage Schema）</h2>
+<p class="lead">从现有 <code>gym_handbook_v3</code> 扩展。所有数据存在本地一个 key 里，方便 export/import。</p>
+
+<pre><code>// localStorage key: 'fitlab_v1'
+{
+  "version": 1,
+  "lastUpdated": "2026-05-13T14:22:31Z",
+
+  // ============ 用户档案 ============
+  "profile": {
+    "name": "...",
+    "gender": "M|F",
+    "birthYear": 1991,
+    "height_cm": 175,
+    "units": "kg|lb",
+    "weekStart": "Mon"
+  },
+
+  // ============ 身体数据时间序列 ============
+  "bodyData": {
+    "weight": [
+      {"date": "2026-05-13", "kg": 72.3, "note": null}
+    ],
+    "bodyFat": [
+      {"date": "2026-05-01", "pct": 18.2, "method": "scale"}
+    ],
+    "measurements": [
+      {"date": "2026-05-01", "chest": 102.5, "waist": 78.0,
+       "arm_l_relaxed": 33.5, "arm_r_relaxed": 33.5,
+       "thigh_l": 56.0, "thigh_r": 56.0, "hip": null}
+    ],
+    "photos": [
+      {"date": "2026-05-01", "angle": "front|side|back", "uri": "..."}
+    ]
+  },
+
+  // ============ 目标 ============
+  "goals": [
+    {
+      "id": "goal_001",
+      "name": "1 个 strict 引体",
+      "category": "milestone",
+      "targetValue": 1, "currentValue": 0, "unit": "reps",
+      "startDate": "2026-05-13", "deadline": "2026-07-22",
+      "status": "active|achieved|abandoned",
+      "achievedDate": null,
+      "relatedPlanId": "plan_2026_05",
+      "createdAt": "2026-05-13T..."
+    }
+  ],
+
+  // ============ 训练计划库 ============
+  "plans": [
+    {
+      "id": "plan_2026_05",
+      "name": "30 节增肌",
+      "template": "hypertrophy_30session_v1",
+      "goalIds": ["goal_001", "goal_002"],
+      "startDate": "2026-05-13", "endDate": "2026-07-22",
+      "status": "active|completed|abandoned",
+      "structure": {
+        "phases": [
+          {"name": "重建适应", "weeks": [1,2,3], "setsMultiplier": 2, "rirRange": [3,4]},
+          {"name": "主训", "weeks": [4,5,6,7], "setsMultiplier": 3, "rirRange": [1,3]},
+          {"name": "强化", "weeks": [8,9], "setsMultiplier": 3, "rirRange": [0,2]},
+          {"name": "减载", "weeks": [10], "setsMultiplier": 2, "rirRange": [3,4], "weightMultiplier": 0.7}
+        ],
+        "courses": {
+          "A": ["back-squat","rdl","hip-thrust","pullup","pallof","supp-calf-standing"],
+          "B": ["bench-press","bb-row","ohp","incline-db","bb-curl","supp-db-lateral-raise"],
+          "C": ["front-squat","db-row","dip","walking-lunge","face-pull","supp-clamshell"]
+        },
+        "weeklyAdds": {
+          "5": {"C": ["supp-leg-curl"]},
+          "6": {"A": ["supp-calf-seated"]}
+        },
+        "movementProgressions": {
+          "back-squat": {"start": 27.5, "peak": 40.0},
+          "...": "..."
+        }
+      },
+      "createdAt": "2026-05-13T..."
+    }
+  ],
+
+  // ============ 训练日志（按 movement id 索引）============
+  "trainingLogs": {
+    "back-squat": [
+      {
+        "id": "log_001",
+        "date": "2026-05-13",
+        "planId": "plan_2026_05",
+        "sessionN": 1,
+        "weight": 27.5, "reps": 10, "sets": 2,
+        "rir": 3,
+        "note": "感觉良好",
+        // 4 维自评
+        "e_neural": 4, "e_form": 5, "e_rom": 4, "e_volume": 3
+      }
+    ]
+  },
+
+  // ============ 课次/天主观感受 ============
+  "sessionNotes": [
+    {
+      "date": "2026-05-13", "planId": "plan_2026_05", "sessionN": 1,
+      "energy": 4, "sleep": 5, "soreness": 2, "mood": 4,
+      "freeText": "..."
+    }
+  ],
+
+  // ============ 个性化设置 ============
+  "personalization": {
+    "mevFactor": 1.0,
+    "mevOverrides": {"背阔肌": 12},
+    "preferredCourseDayOfWeek": {"A": "Mon", "B": "Wed", "C": "Fri"}
+  },
+
+  // ============ 历史导入元数据 ============
+  "imports": [
+    {"date": "2026-05-01", "source": "photos", "records": 29, "method": "ocr"}
+  ],
+
+  // ============ 系统设置 ============
+  "settings": {
+    "notificationsEnabled": true,
+    "darkMode": false,
+    "primaryGoal": "hypertrophy"
+  }
+}</code></pre>
+
+<h3>5.1 计算视图（不存储，运行时算）</h3>
+<ul>
+<li><b>每周训练量</b>：<code>Σ (logs.sets × EXERCISE_DB[id].contrib[muscle])</code> over date range</li>
+<li><b>MEV 完成率</b>：<code>weeklyVolume[muscle] / (MUSCLE_TARGETS[muscle].mev × personalization.mevFactor)</code></li>
+<li><b>平衡比率</b>：基于"category → muscles"映射后求和</li>
+<li><b>渐进核对</b>：本周最佳 weight × reps vs 上周</li>
+<li><b>e1RM</b>：<code>weight × (1 + 0.0333 × reps)</code></li>
+</ul>
+</section>
+
+<!-- 6. 迁移路径 -->
+<section id="migrate">
+<h2>6. 从现有 HTML 系统的迁移路径</h2>
+
+<table>
+<thead><tr><th style="width:25%">现有</th><th style="width:32%">新位置</th><th>处理方式</th></tr></thead>
+<tbody>
+<tr><td><b>index.html</b></td><td>替换为新 PWA shell（3-tab）</td><td>重写</td></tr>
+<tr><td><b>健身动作手册-手机版.html</b></td><td>动作库 → 我的 M (M5 内引用)<br>训练记录 → 计划 P2</td><td>拆分：动作库纳入"我的"参考；记录功能进 P2 训练记录子页</td></tr>
+<tr><td><b>健身动作手册.html</b>（电脑版）</td><td>退役</td><td>所有功能并入 PWA</td></tr>
+<tr><td><b>分析.html</b></td><td>复盘 Tab → R1 复盘首屏</td><td>按时间维度拆分（多时段聚合到 R1，下滑展开）</td></tr>
+<tr><td><b>肌肉图鉴.html</b></td><td>我的 → 肌肉图鉴</td><td>嵌入</td></tr>
+<tr><td><b>30 节课训练计划.html</b></td><td>计划 Tab → P1/P5/P6/P8（拆 4 个屏）</td><td>分别成屏：P1 总览 / P5 周视图 / P6 评估 / P8 矩阵+计划库</td></tr>
+<tr><td><b>计划原理科普.html</b></td><td>我的 → M2 训练原理</td><td>每条原理一个详情屏，添加"看我的数据"跳转</td></tr>
+<tr><td><b>训练数据库.js</b></td><td>保留</td><td>共享数据层，新结构里仍是核心</td></tr>
+<tr><td><b>训练事实Summary网页版.html</b></td><td>退役</td><td>它的内容已经被复盘 Tab 全覆盖，不再独立存在</td></tr>
+</tbody>
+</table>
+
+<h3>6.1 数据迁移</h3>
+<p>首次启动新 App 时：</p>
+<ol>
+<li>检测 <code>gym_handbook_v3</code> 是否存在</li>
+<li>若存在，读取 → 转换为 <code>fitlab_v1</code> 结构</li>
+<li>历史 logs 全部继承</li>
+<li>提示用户："已迁移 N 条记录"</li>
+</ol>
+</section>
+
+<!-- 7. 优先级 / 路线图 -->
+<section id="priority">
+<h2>7. 优先级与实施路线图</h2>
+
+<h3>7.1 三阶段 MVP 路线（v2 · 3 tab 设计）</h3>
+<table>
+<thead><tr><th style="width:14%">阶段</th><th style="width:14%">范围</th><th style="width:30%">核心功能</th><th>验证标准</th></tr></thead>
+<tbody>
+<tr>
+<td><b>Phase A（MVP）</b><br>约 2 周<span class="pri p0">P0 必做</span></td>
+<td>3 tab PWA + 训练核心闭环</td>
+<td>• 3 Tab shell + Hash 路由<br>• 计划 Tab 首屏（今日卡 + 本周）<br>• <b>训练记录子页（动作卡片堆叠）</b><br>• Post-session 总结<br>• 复盘 - 今日 + 本周<br>• 我的 - 入口 grid + 设置</td>
+<td>能一周三次按今日卡 → 训练记录 → 完成全流程，复盘能立即看本周数据</td>
+</tr>
+<tr>
+<td><b>Phase B</b><br>约 2 周<span class="pri p1">P1 重要</span></td>
+<td>多维复盘 + 计划评估 + 个人配置</td>
+<td>• 复盘 - 月/季/年<br>• 计划评估子页（8.2/8.3/11）<br>• 矩阵视图<br>• 我的 - 身体数据屏<br>• 我的 - 目标屏<br>• 我的 - 个人 MEV 系数</td>
+<td>能看月度/季度数据、能设并跟进目标、能看到计划评估</td>
+</tr>
+<tr>
+<td><b>Phase C</b><br>约 2 周<span class="pri p2">P2 加分</span></td>
+<td>智能生成 + 数据导入 + 高阶</td>
+<td>• 新建计划 5 步 Wizard<br>• 数据导入向导（照片 OCR / CSV / JSON）<br>• 跨期对比<br>• 通知/提醒<br>• 计划库（历史/已放弃）<br>• 导出 PDF<br>• 学习内容嵌入（不再跳出）</td>
+<td>能自动生成新计划、能从照片导入老数据</td>
+</tr>
+</tbody>
+</table>
+
+<h3>7.2 按"用户价值密度"排序的功能列表</h3>
+<ol>
+<li><b>首页今日卡 + 训练记录</b><span class="pri p0">P0</span> · 每次打开 App 的核心</li>
+<li><b>本周复盘（4 维反馈）</b><span class="pri p0">P0</span> · 每周一次的反思时刻</li>
+<li><b>当前计划视图（卡片）</b><span class="pri p0">P0</span> · 训练日找当节</li>
+<li><b>学习 - 原理列表</b><span class="pri p0">P0</span> · 现有 HTML 可直接嵌入</li>
+<li><b>身体数据快速记录</b><span class="pri p0">P0</span> · 体重一栏</li>
+<li><b>新建计划 Wizard</b><span class="pri p1">P1</span> · 替代当前手工设计</li>
+<li><b>月/季度/年复盘</b><span class="pri p1">P1</span> · 长期视图</li>
+<li><b>计划评估面板（8.2/11）</b><span class="pri p1">P1</span> · 决策辅助</li>
+<li><b>目标管理</b><span class="pri p1">P1</span> · 长期方向</li>
+<li><b>个性化 MEV</b><span class="pri p1">P1</span> · 用 3-4 周数据调整</li>
+<li><b>数据导入（照片 OCR）</b><span class="pri p2">P2</span> · 新用户上手</li>
+<li><b>跨期对比</b><span class="pri p2">P2</span> · 高阶分析</li>
+<li><b>导出 PDF 报告</b><span class="pri p2">P2</span> · 周/月报</li>
+<li><b>跨设备同步（GitHub Gist / iCloud）</b><span class="pri p2">P2</span> · 多设备</li>
+</ol>
+</section>
+
+<!-- 8. 技术决策 -->
+<section id="tech">
+<h2>8. 技术决策与权衡</h2>
+
+<h3>8.1 PWA 技术选型</h3>
+<table>
+<thead><tr><th style="width:25%">决策点</th><th style="width:35%">选择</th><th>原因 / 权衡</th></tr></thead>
+<tbody>
+<tr><td>前端框架</td><td><b>Vanilla JS + Web Components</b>，或可选 Vue 3 SFC（单文件组件）</td><td>避免重型构建工具，保持"打开就能改"的简洁。Vue 3 也兼容 PWA 直接加载</td></tr>
+<tr><td>状态管理</td><td>统一 reactive store（自实现 / Vue ref / Zustand）</td><td>所有屏共享 fitlab_v1 数据；变更立刻反映</td></tr>
+<tr><td>路由</td><td>Hash routing（<code>#/home</code>, <code>#/train/plan</code>）</td><td>无需服务器配置；PWA 加到主屏后能直接路由</td></tr>
+<tr><td>数据存储</td><td>localStorage（主） + IndexedDB（照片）</td><td>主数据约 100KB-1MB 足以放 localStorage；照片放 IndexedDB</td></tr>
+<tr><td>UI 组件</td><td>自写 + 共享 CSS variables</td><td>保持"健身系统"暖米色调；没第三方 UI 库依赖</td></tr>
+<tr><td>PWA Manifest</td><td>standalone + 单页</td><td>添加到主屏后无浏览器 UI</td></tr>
+<tr><td>Service Worker</td><td>cache static assets（HTML/CSS/JS） + offline first</td><td>无网络也能查所有屏</td></tr>
+<tr><td>同步</td><td><b>暂不做</b>（导出/导入 JSON 即可）</td><td>避免引入服务器；后续可加 GitHub Gist 同步</td></tr>
+</tbody>
+</table>
+
+<h3>8.2 文件结构（一个 HTML + 多个模块）</h3>
+<pre><code>fitlab/
+├── index.html              # PWA shell（包含 tab bar + router 容器）
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service Worker
+├── styles/
+│   └── app.css             # 共享样式
+├── data/
+│   └── training-db.js      # 现有 训练数据库.js 演化
+├── lib/
+│   ├── store.js            # 状态管理
+│   ├── router.js           # Hash router
+│   ├── compute.js          # MEV/平衡/e1RM 等计算
+│   └── migrate.js          # 数据迁移工具
+└── screens/                # 每个屏一个文件
+    ├── home.js
+    ├── train-today.js
+    ├── train-plan.js
+    ├── train-matrix.js
+    ├── train-cards.js
+    ├── train-eval.js
+    ├── train-wizard.js
+    ├── review-week.js
+    ├── review-month.js
+    ├── review-year.js
+    ├── learn-principles.js
+    ├── learn-muscles.js
+    ├── profile-body.js
+    ├── profile-goals.js
+    └── profile-settings.js</code></pre>
+
+<h3>8.3 不做的事（明确拒绝）</h3>
+<ul>
+<li><b>不做服务器后端</b>——保持纯本地，数据归用户</li>
+<li><b>不做账号系统</b>——本地存储 + 备份/同步即可</li>
+<li><b>不做 AR/AI 教练视频</b>——内容已重，不增加新模态</li>
+<li><b>不做社交/排行榜</b>——个人工具，不是社区</li>
+<li><b>不做付费功能</b>——这是个人项目</li>
+</ul>
+</section>
+
+<!-- 总结 -->
+<section>
+<h2>9. 总结：这套设计在解决什么问题</h2>
+<p>现有的 6+ 个 HTML 文件解决了"分析过去 + 设计未来"的内容问题，但<b>用户旅程是断裂的</b>——每次都要在多个文件间跳，没有统一的"今天该干什么"入口、没有跨多个时间维度的复盘。</p>
+<p>FitLab 把这些内容<b>整合进一个 PWA</b>：</p>
+<ul>
+<li>每次打开<b>都从"今天"开始</b>，知道接下来 30 秒该做什么</li>
+<li><b>训练记录</b>与<b>原理学习</b>直接相连——记录时遇到不懂的概念点过去看，看完原理跳回自己数据看怎么用</li>
+<li>多时间维度的复盘（日 → 周 → 月 → 季 → 年）让<b>"训练 1 年"</b>这个抽象概念落到具体可看的数据</li>
+<li>每条数据都<b>能溯源到原理</b>——为什么这块肌肉应该练几组、为什么这周该减载——都能从数据点击查原理</li>
+</ul>
+<p>本质上是把"内容 + 数据 + 评估"的关系做成一个<b>有机的、可探索的、个性化的学习+实践闭环</b>，而不是 6 个独立的网页。</p>
+</section>
+
+<footer>FitLab 设计文档 v1 · 等用户 review 后开始 Phase A 实施</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b03a2e">
+<title>FitLab · 版本历史与优化记录</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --accent:#b03a2e; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --good:#2d6e3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.8; font-size:15px;
+    padding:28px 18px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:820px; margin:0 auto;}
+  header{text-align:center; margin-bottom:24px;}
+  .tag{font-size:11px; letter-spacing:.32em; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:28px; margin:6px 0 4px;}
+  header .sub{color:var(--muted); font-size:14px;}
+  section{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:22px 26px; margin-bottom:18px;
+  }
+  section h2{font-size:19px; color:var(--accent); margin-bottom:10px;}
+  section h3{font-size:15px; margin:18px 0 8px; border-left:3px solid var(--accent); padding-left:9px;}
+  p{margin:7px 0; color:var(--ink-2);}
+  b{color:var(--ink);}
+  table{width:100%; border-collapse:collapse; margin:8px 0; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 11px; vertical-align:top; border-bottom:1px solid var(--line);}
+  th{background:#f7f1e3; color:var(--ink-2); font-size:12px; font-weight:600;}
+  .callout{
+    background:#fff8e3; border:1px solid #f0e2b8; border-radius:8px;
+    padding:13px 16px; margin:10px 0; color:#7a5a1f; font-size:13.5px;
+  }
+  .badge{display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:9px; font-weight:600; margin-left:6px;}
+  .badge.done{background:#e3f1e6; color:#2a4a30;}
+  .badge.planned{background:var(--accent-light); color:var(--accent);}
+  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="tag">FITLAB · VERSION HISTORY</div>
+  <h1>版本历史与优化记录</h1>
+  <p class="sub">记录每个版本做了什么、为什么改 · 帮助接手者理解演变，帮自己避免重复犯错</p>
+</header>
+
+<section>
+<h2>记录格式约定</h2>
+<p>每次改动按以下 4 个维度记录：</p>
+<table>
+<thead><tr><th style="width:18%">字段</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><b>版本号</b></td><td>语义化版本（v0.x 设计阶段 / v1.x MVP / v2.x...）</td></tr>
+<tr><td><b>日期</b></td><td>完成日期</td></tr>
+<tr><td><b>改了什么</b></td><td>具体功能/内容变化（多条用列表）</td></tr>
+<tr><td><b>为什么改</b></td><td>触发原因（用户反馈/发现的设计漏洞/新洞察等）。<b>这一栏最重要</b>——它让未来回看时能避免重蹈覆辙</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- v0.x -->
+<section>
+<h2>v0.x · 设计与原型阶段 <span class="badge done">已完成</span></h2>
+
+<h3>v0.1 · 2026-04 · 初版训练系统</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>改了什么</b></td><td>
+• 初版 30 节训练计划（手工设计 · 5 动作/课）<br>
+• 健身动作手册（35 个动作）<br>
+• 训练分析看板<br>
+• 训练数据库.js（共享数据层）
+</td></tr>
+<tr><td><b>为什么改</b></td><td>第一次从零搭起。目标是用一份个性化数据驱动的训练计划解决"健身没效果 + 教练不靠谱"的问题</td></tr>
+</tbody>
+</table>
+
+<h3>v0.2 · 2026-05 · 肌肉表扩展 + 引体进阶</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>改了什么</b></td><td>
+• 肌肉表从 34 块扩到 42 块（颈/胸小/前锯/大圆/肱肌/肱桡/腰方/胫骨后）<br>
+• 加 3 个补全动作（提踵/侧平举/蚌式）<br>
+• 加肌肉图鉴页<br>
+• 加引体向上 10 周渐进路径
+</td></tr>
+<tr><td><b>为什么改</b></td><td>评估初版后发现肌肉覆盖不全 + 引体目标需要具体的进阶路径，不能只是"练习引体"</td></tr>
+</tbody>
+</table>
+
+<h3>v0.3 · 2026-05 · 4 维评估嵌入</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>改了什么</b></td><td>
+• 30 节计划加 4 维评估章节（MEV/平衡/频率/渐进）<br>
+• 加 8.2 健康检查 + 8.3 决策表 + 11 平衡评估<br>
+• 加 13 评估面板（读手册 localStorage 给反馈）
+</td></tr>
+<tr><td><b>为什么改</b></td><td>计划本身需要数据自检——不能凭直觉说"这个计划好"，要看 MEV 覆盖、平衡、频率多个维度是否合格</td></tr>
+</tbody>
+</table>
+
+<h3>v0.4 · 2026-05 · 训练科学原理科普</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>改了什么</b></td><td>
+• 建《计划原理科普》文档：10 条训练原理 + 6 条底层生理学 + 42 块 MEV 完整表<br>
+• 每条原理 7 段：原文/出处/通俗解释/系统应用/真实例子<br>
+• 加个性化 MEV 系数机制（13.5 节）
+</td></tr>
+<tr><td><b>为什么改</b></td><td>意识到自己一直没追问"为什么"。如果连开发者都不能讲清楚原理，用户更没法理解</td></tr>
+</tbody>
+</table>
+
+<h3>v0.5 · 2026-05 · FitLab 应用设计文档</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>改了什么</b></td><td>
+• 起草 FitLab 整合 PWA 设计文档（3 tab IA + 17 屏线框图 + 数据模型 + 路线图）<br>
+• 加教练人格 + 计划生成方法论<br>
+• 明确"计划级 vs 执行级问题"是 2 个流程<br>
+• 给新用户的指南（独立文档）
+</td></tr>
+<tr><td><b>为什么改</b></td><td>
+6 个 HTML 文件已经散乱。需要整合成"一个 App 一个用户旅程"。<br>
+反思：之前的"修复方案"流程逻辑错——好的计划生成应自检合格，不该让用户事后修结构性问题
+</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- v1.x -->
+<section>
+<h2>v1.x · MVP 阶段 <span class="badge planned">规划中</span></h2>
+
+<h3>v1.0 · Phase A · 训练核心闭环</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>计划改动</b></td><td>
+• 3 tab PWA shell + Hash 路由<br>
+• 计划首屏 P1 + 训练记录 P2/P3 + Post-session P4<br>
+• 复盘首屏 R1（本周维度）<br>
+• 我的入口 grid M1 + 设置 M5<br>
+• 数据从 gym_handbook_v3 自动迁移
+</td></tr>
+<tr><td><b>验收标准</b></td><td>能一周三次按 P1 → P2 → P4 完整跑完训练记录闭环；周日打开 R1 看本周复盘</td></tr>
+</tbody>
+</table>
+
+<h3>v1.1+ · 占位</h3>
+<div class="callout">
+v1.0 上线后用 1-2 周收用户反馈，把发现的问题集中在 v1.1 修。这里记录具体每一条 issue 和处理方式。
+</div>
+</section>
+
+<!-- v2.x -->
+<section>
+<h2>v2.x · 多维复盘 + 评估 <span class="badge planned">规划中</span></h2>
+
+<h3>v2.0 · Phase B · 复盘与评估深化</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>计划改动</b></td><td>
+• 多时段复盘（月/季/半年/年）<br>
+• 教练说弹层 R2<br>
+• 执行调整建议 R3<br>
+• 计划评估 P6（健康检查 + 平衡）<br>
+• 周视图 P5（带教练评估）<br>
+• 矩阵视图 P8<br>
+• 身体数据屏 M3 + 目标屏 M4<br>
+• 训练原理嵌入 M2
+</td></tr>
+<tr><td><b>验收标准</b></td><td>能在任一时段（日/周/月/季/年）下滑看完整评估；执行级问题能 1-tap 应用调整</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- v3.x -->
+<section>
+<h2>v3.x · 智能 + 数据导入 <span class="badge planned">规划中</span></h2>
+
+<h3>v3.0 · Phase C · 智能化</h3>
+<table>
+<tbody>
+<tr><td style="width:16%"><b>计划改动</b></td><td>
+• 新建计划 Wizard P7（5 步含自检 + 协商）<br>
+• 数据导入向导（照片 OCR / CSV / JSON）<br>
+• 横向对比 R4<br>
+• 跨期 PR 趋势<br>
+• 个性化 MEV 系数自动建议<br>
+• 通知/提醒<br>
+• 导出 PDF 报告
+</td></tr>
+<tr><td><b>验收标准</b></td><td>新用户能从导入老数据 → 自动生成符合自检的计划 → 跑完整周期</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- 未来 / 占位 -->
+<section>
+<h2>占位 · 后续待补</h2>
+<div class="callout">
+<b>每次有新优化时按以下模板加一条：</b>
+<pre style="background:#fff; padding:8px 12px; margin-top:6px; border-radius:6px; font-size:12px;">
+### vX.Y · 日期 · 标题
+| 改了什么 | • 改动 1<br>• 改动 2 |
+| 为什么改 | 触发原因（用户反馈 / 发现的漏洞 / 新洞察） |
+</pre>
+</div>
+</section>
+
+<footer>FitLab 版本历史 · 与"给新用户的指南"分开维护</footer>
+</div>
+</body>
+</html>

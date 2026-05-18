@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b03a2e">
+<title>计划原理科普 · 这套系统背后的训练科学</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --line-2:#d6cfbe; --accent:#b03a2e; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8; --good:#2d6e3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75; font-size:15px;
+    padding:28px 18px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:880px; margin:0 auto;}
+  header{text-align:center; margin-bottom:24px;}
+  .tag{font-size:11px; letter-spacing:.32em; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:28px; margin:6px 0 4px; letter-spacing:1px;}
+  header .sub{color:var(--muted); font-size:13.5px; max-width:560px; margin:6px auto 0;}
+
+  .toc{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:18px 22px; margin-bottom:22px;
+  }
+  .toc h2{font-size:14px; color:var(--accent); letter-spacing:.5px; margin-bottom:10px;}
+  .toc ol{margin-left:20px; font-size:13.5px; color:var(--ink-2);}
+  .toc li{margin:5px 0;}
+  .toc a{color:var(--ink-2); text-decoration:none;}
+  .toc a:hover{color:var(--accent);}
+
+  section{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:22px 24px; margin-bottom:18px;
+  }
+  section h2{font-size:19px; color:var(--accent); letter-spacing:.5px; margin-bottom:6px;}
+  section .oneliner{
+    background:var(--soft-yellow); border-left:4px solid var(--gold); border-radius:4px;
+    padding:9px 13px; margin:8px 0 14px; font-size:13.5px; color:#7a5a1f;
+  }
+  section h3{
+    font-size:14px; margin:14px 0 6px; color:var(--ink);
+    padding:6px 10px; background:#f7f1e3; border-radius:6px;
+    display:inline-block;
+  }
+  p{margin:7px 0; font-size:14px; color:var(--ink-2);}
+  b{color:var(--ink);}
+  ul{margin:6px 0 6px 22px;} li{font-size:14px; color:var(--ink-2); margin:3px 0;}
+
+  blockquote{
+    background:#fdfaf2; border-left:3px solid var(--accent); border-radius:0 6px 6px 0;
+    padding:10px 14px; margin:6px 0; font-size:13.5px; color:var(--ink-2);
+    font-style:italic;
+  }
+  blockquote .cite{display:block; font-style:normal; font-size:11.5px; color:var(--muted); margin-top:6px;}
+  blockquote .cite a{color:var(--gold);}
+
+  .example-box{
+    background:var(--soft-blue); border:1px solid #c5d4e3; border-radius:8px;
+    padding:11px 14px; margin:8px 0; font-size:13px;
+  }
+  .example-box.system{background:#e3f1e6; border-color:#bcdcc4;}
+  .example-box b{color:var(--ink);}
+  .example-box .label{
+    display:inline-block; font-size:10.5px; padding:2px 8px;
+    background:var(--paper); border-radius:8px; margin-right:6px;
+    color:var(--accent); font-weight:700;
+  }
+
+  table{width:100%; border-collapse:collapse; margin:8px 0; font-size:13px;}
+  th,td{text-align:left; padding:7px 9px; vertical-align:top; border-bottom:1px solid var(--line);}
+  th{background:#f7f1e3; color:var(--ink-2); font-size:11.5px; font-weight:600;}
+  .num{text-align:right; font-variant-numeric:tabular-nums;}
+
+  .ref-list{font-size:12px; color:var(--muted); margin-top:10px;}
+  .ref-list a{color:var(--gold);}
+
+  .back-to-top{display:block; text-align:center; margin:10px 0; font-size:11px; color:var(--muted);}
+  .back-to-top a{color:var(--gold); text-decoration:none;}
+
+  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:14px;}
+
+  @media (max-width:680px){
+    body{padding:20px 12px;}
+    section{padding:17px 16px;}
+    h1{font-size:23px;}
+    th,td{padding:5px 6px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header id="top">
+  <div class="tag">TRAINING SCIENCE BEHIND THE PLAN</div>
+  <h1>计划原理科普</h1>
+  <p class="sub">这套系统的"每周练几次、每动作几组、加多少重量、什么时候减载"——背后引用的 10 个训练科学原理 · 原文 + 出处 + 通俗解释 + 在我们系统里的真实例子</p>
+</header>
+
+<!-- 目录 -->
+<div class="toc">
+<h2>目录</h2>
+<p style="font-size:12.5px; color:var(--muted); margin-bottom:8px;"><b>前置基础 · 底层生理学</b>（建议先看完这部分再看下面 10 条原理）</p>
+<ul style="margin-left:20px; font-size:13px; color:var(--ink-2); margin-bottom:10px;">
+<li><a href="#bio1">0.1 肌肉到底是怎么长大的？（结构 + 增长方式）</a></li>
+<li><a href="#bio2">0.2 训练为什么会让肌肉长大？三大机制</a></li>
+<li><a href="#bio3">0.3 训练完之后身体在干嘛？（MPS 36-48h 窗口）</a></li>
+<li><a href="#bio4">0.4 为什么重量 + 次数 + RIR 都不可少？</a></li>
+<li><a href="#bio5">0.5 神经适应 vs 真增肌（为什么新手 6 周长得快、秤却没变）</a></li>
+<li><a href="#bio6">0.6 为什么间隔不能太短也不能太长？</a></li>
+<li><a href="#bio7">0.7 「组数」到底怎么算？什么样的 1 组才有用</a></li>
+<li><a href="#bio8">0.8 42 块肌肉的 MEV / MAV / MRV 完整表</a></li>
+</ul>
+<p style="font-size:12.5px; color:var(--muted); margin-bottom:8px;"><b>训练科学的 10 条原理</b>（建立在上面生理学基础上的实践原则）</p>
+<ol>
+<li><a href="#p1">训练量门槛框架（MEV / MAV / MRV）</a> · <i>Israetel / Renaissance Periodization</i></li>
+<li><a href="#p2">周训练量剂量-反应</a> · <i>Schoenfeld 2017 meta 分析</i></li>
+<li><a href="#p3">训练频率（每周 ≥2 次）</a> · <i>Schoenfeld 2016 meta 分析</i></li>
+<li><a href="#p4">渐进超负荷</a> · <i>ACSM 2009 Position Stand</i></li>
+<li><a href="#p5">周期化训练（3 阶段）</a> · <i>Stone et al. / 经典力量训练学</i></li>
+<li><a href="#p6">RIR 强度衡量</a> · <i>Zourdos 2016 / Helms 2018</i></li>
+<li><a href="#p7">有效组数与肌肉贡献系数</a> · <i>EMG 研究综合</i></li>
+<li><a href="#p8">肌肉平衡比率</a> · <i>Cools 2007 · Q/H · Janda 上交叉</i></li>
+<li><a href="#p9">减载与疲劳管理</a> · <i>Helms / RP 框架</i></li>
+<li><a href="#p10">估算 1RM 公式</a> · <i>Epley 1985 / Brzycki 1993</i></li>
+<li><a href="#synth">这些原理是怎么拼起来的</a></li>
+<li><a href="#read">附录：进一步阅读</a></li>
+</ol>
+</div>
+
+<!-- 0. 引子 -->
+<section>
+<h2>0. 这份文档是什么</h2>
+<p>这套训练系统里说"每块肌肉每周做到 MEV"、"3 次/周比 1 次更优"、"每周 +2.5kg"、"W10 减载 30%"……这些说法背后<b>都有具体的论文 + 数据</b>。这页把它们一次性讲清。</p>
+<p>每条原理都按 7 段写：<b>① 一句话总结</b> · <b>② 原文引用（直接 quote 原始论文）</b> · <b>③ 出处（带 PubMed 链接）</b> · <b>④ 我们怎么用</b> · <b>⑤ 为什么选这个</b> · <b>⑥ 给非专业人的解释</b> · <b>⑦ 教科书例子 + 我们系统里的真实例子</b>。</p>
+<p>读完之后你会知道：这套训练计划不是"凭感觉"或"网红教练说"，每个数字都能追溯到具体的科学依据。</p>
+</section>
+
+<!-- ============== 前置基础：底层生理学 ============== -->
+
+<section style="background:#fdfaf2; border-color:var(--line-2);">
+<h2 style="color:var(--gold);">底层生理学 · 在讲"原理"之前，先讲"身体里到底在发生什么"</h2>
+<p>下面 10 条训练原理都是"<b>怎么做</b>"——3 次/周、3 组/动作、+2.5kg/周……但要真正理解为什么这么做有用，得先看一眼身体内部：</p>
+<ul>
+<li>肌肉<b>到底是什么</b>、它怎么"变大"？</li>
+<li>训练为什么能"让肌肉变大"？身体里在发生什么反应？</li>
+<li>为什么必须达到一定的<b>重量 + 次数</b>？为什么不行轻一点多做几次？</li>
+<li>为什么需要<b>间隔</b>？两次训练之间，身体在干什么？</li>
+<li>为什么需要<b>持续 6 周以上</b>才能看到肌肉真的长大？</li>
+</ul>
+<p>这一节回答这些<b>"为什么"</b>。回答了之后，10 条训练原理就不只是规则，而是<b>建立在生理学上的可推导结论</b>。</p>
+</section>
+
+<!-- 0.1 肌肉结构 -->
+<section id="bio1">
+<h2>0.1 肌肉到底是怎么长大的？</h2>
+<div class="oneliner"><b>一句话：</b>"增肌"不是肌纤维数量变多，是<b>每根肌纤维变粗</b>——里面的"收缩单元"叫肌原纤维，训练让它们变多变粗，从而整块肌肉看起来变大。</div>
+
+<h3>身体里的肌肉结构（从大到小）</h3>
+<table>
+<thead><tr><th style="width:18%">层级</th><th style="width:32%">是什么</th><th>大小 / 数量</th></tr></thead>
+<tbody>
+<tr><td><b>肌肉</b>（比如胸大肌）</td><td>由几百根"肌束"组成</td><td>~10-30 cm 长</td></tr>
+<tr><td><b>肌束</b>（fascicle）</td><td>多根肌纤维捆成的束</td><td>每肌肉 100-1000 束</td></tr>
+<tr><td><b>肌纤维</b>（muscle fiber）</td><td>一个超长的细胞（多核）</td><td>~10-30 cm 长 × 50-100 μm 粗</td></tr>
+<tr><td><b>肌原纤维</b>（myofibril）</td><td>肌纤维内部的"收缩链条"</td><td>每肌纤维 1000-2000 条</td></tr>
+<tr><td><b>肌节</b>（sarcomere）</td><td>肌原纤维上的最小收缩单位（actin + myosin）</td><td>2-3 μm 长，无数个串联</td></tr>
+</tbody>
+</table>
+
+<h3>"增肌"到底是哪一层变大？</h3>
+<p>主要是<b>肌原纤维变多+变粗</b>（叫 <i>肌原纤维型肥大 / Myofibrillar Hypertrophy</i>）。具体过程：</p>
+<ol>
+<li>训练后，<b>新的 actin/myosin 蛋白被合成出来</b>，填进现有肌原纤维 → 肌原纤维变粗</li>
+<li>当一条肌原纤维粗到一定程度，它会<b>纵向分裂</b>变成两条 → 肌原纤维数量变多</li>
+<li>这两步加起来 → 整根肌纤维的直径变大 → 整块肌肉看起来变粗</li>
+</ol>
+
+<h3>那"肌纤维数量"会变多吗？</h3>
+<p>基本<b>不会</b>（这叫 hyperplasia，在人类中证据非常薄弱）。所以你练 10 年的胸大肌和你 18 岁时的胸大肌，<b>肌纤维数量基本一样</b>——只是每根变粗了 50-100%。</p>
+
+<h3>还有一种"假增肌"</h3>
+<p><b>肌浆型肥大（Sarcoplasmic Hypertrophy）</b>——肌纤维里的"水和营养液"（肌浆）量增加，让肌肉看起来胀大但力量没怎么变。这是健美界俗称"泵感"的来源。它确实存在但贡献远小于肌原纤维型肥大。</p>
+
+<h3>关键角色：卫星细胞（Satellite Cells）</h3>
+<p>肌纤维是<b>多核细胞</b>——一根肌纤维里有几百个细胞核。每个核管理一段区域（叫 myonuclear domain）的蛋白合成。当肌纤维需要变粗时，<b>"核数量不够"会成为瓶颈</b>——这时候卫星细胞被激活、融合进肌纤维、贡献新的细胞核。</p>
+<p>这就是为什么<b>训练造成的微损伤其实是好事</b>——损伤激活卫星细胞 → 卫星细胞融合 → 增加 myonuclear domain → 支撑更多蛋白合成 → 真正的长期增肌。</p>
+
+<blockquote>
+"Skeletal muscle hypertrophy is the result of increased myofibrillar protein synthesis exceeding protein breakdown, supported by satellite cell-mediated addition of myonuclei when fibers grow beyond ~17% of baseline size."
+<span class="cite">—— Snijders, T. et al. (2015). "Satellite cells in human skeletal muscle plasticity." <a href="https://pubmed.ncbi.nlm.nih.gov/26557081/" target="_blank" rel="noopener">Front Physiol, 6:283. PMID 26557081</a></span>
+</blockquote>
+
+<div class="example-box">
+<span class="label">通俗类比</span>
+肌肉 = 一捆电缆 / 肌纤维 = 一根电缆 / 肌原纤维 = 电缆里的铜丝 / 肌节 = 铜丝上的导电单元。"练得更粗壮" = <b>不是新加电缆</b>，而是每根电缆里的铜丝<b>变多变粗</b>，整根电缆就粗了。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.2 三大机制 -->
+<section id="bio2">
+<h2>0.2 训练为什么会让肌肉长大？三大机制</h2>
+<div class="oneliner"><b>一句话：</b>训练通过 3 种方式触发肌肉"长肉信号"——<b>力学张力</b>（最主要）+ <b>代谢应激</b> + <b>肌肉损伤</b>。三者协同决定增肌效果。</div>
+
+<h3>原文引用（这是肌肥大科学的奠基论文）</h3>
+<blockquote>
+"Three primary factors are responsible for initiating hypertrophic response to exercise: mechanical tension, muscle damage, and metabolic stress. Mechanical tension is widely considered the most important factor, as it directly stimulates intracellular signaling pathways (specifically mTOR) that lead to muscle protein synthesis."
+<span class="cite">—— Schoenfeld, B.J. (2010). "The mechanisms of muscle hypertrophy and their application to resistance training." <a href="https://pubmed.ncbi.nlm.nih.gov/20847704/" target="_blank" rel="noopener">J Strength Cond Res, 24(10), 2857-72. PMID 20847704</a></span>
+</blockquote>
+
+<h3>机制 1：力学张力（Mechanical Tension）— 最重要</h3>
+<p><b>是什么</b>：肌纤维在承受重量时被拉伸 + 同时主动收缩，产生的力学应力。</p>
+<p><b>身体感知</b>：肌纤维细胞膜上有<b>力学感受器</b>（mechanosensors，如 integrin、titin、focal adhesion kinase）。它们感受到张力 → 启动 <b>mTORC1 信号通路</b> → 增加肌肉蛋白合成（MPS）。</p>
+<p><b>怎么获得</b>：用<b>足够大的重量</b>（≥65% 1RM）让肌肉承受高张力。</p>
+<p><b>例子</b>：杠铃后蹲 80kg×5 次比 40kg×20 次产生更多力学张力——尽管两者总训练量差不多。</p>
+
+<h3>机制 2：代谢应激（Metabolic Stress）</h3>
+<p><b>是什么</b>：训练过程中肌肉细胞内堆积乳酸、H⁺、Pi（无机磷酸盐）、肌酸等代谢副产物 + 细胞膨胀（cell swelling）。</p>
+<p><b>身体感知</b>：代谢物堆积 → 全身激素（如生长激素 GH、IGF-1）短期飙升 + 细胞内信号通路被激活 + 招募高阈值快肌纤维（因为慢肌已经累了）。</p>
+<p><b>怎么获得</b>：<b>持续时间够长 + 次数中等（8-15 次）</b>。组间歇短（60-90 秒）放大效应。"练到泵感"就是这个机制。</p>
+<p><b>例子</b>：哑铃弯举 12 kg × 12 次 × 3 组、间歇 60 秒 → 二头肌"涨爆了" = 代谢应激最强。</p>
+
+<h3>机制 3：肌肉损伤（Muscle Damage）</h3>
+<p><b>是什么</b>：训练（尤其离心 / 拉长状态发力）导致<b>肌纤维微撕裂</b>。这是延迟性肌肉酸痛（DOMS）的来源。</p>
+<p><b>身体感知</b>：微损伤 → 炎症反应 → <b>卫星细胞被激活、融合进肌纤维</b>（贡献新的细胞核） + 修复蛋白合成。</p>
+<p><b>怎么获得</b>：<b>离心阶段慢</b>（下放重量时 2-3 秒）、<b>动作大幅度</b>（到肌肉拉长位）、<b>新动作或不熟悉的角度</b>。</p>
+<p><b>例子</b>：第一次做罗马尼亚硬拉，第二天腘绳肌酸痛 3 天 = 肌肉损伤+修复在进行。</p>
+
+<h3>三者如何协同？</h3>
+<table>
+<thead><tr><th style="width:14%">重量区间</th><th style="width:14%">力学张力</th><th style="width:14%">代谢应激</th><th style="width:14%">肌肉损伤</th><th>整体增肌效率</th></tr></thead>
+<tbody>
+<tr><td><b>1-5 次</b>（重）</td><td>★★★ 最高</td><td>★ 弱</td><td>★★ 中</td><td>力量为主，增肌偏弱</td></tr>
+<tr><td><b>6-12 次</b>（中重）</td><td>★★★ 高</td><td>★★ 中</td><td>★★ 中</td><td><b>★★★ 增肌最优区间</b></td></tr>
+<tr><td><b>13-25 次</b>（中轻）</td><td>★★ 中</td><td>★★★ 最高</td><td>★★ 中</td><td>★★ 仍能增肌</td></tr>
+<tr><td><b>30+ 次</b>（极轻）</td><td>★ 弱</td><td>★★★ 高</td><td>★ 弱</td><td>主要练耐力</td></tr>
+</tbody>
+</table>
+<p>这就是为什么大多数计划用 <b>8-12 次</b>作为增肌处方——三个机制都能拿到中-高刺激。</p>
+
+<div class="example-box system">
+<span class="label">系统的例子</span>
+30 节卡片里"组×次"普遍是 <b>8-10 次（增肌主训段）</b> + <b>RIR 1-3</b>——这是为了让<b>力学张力（重量大）+ 代谢应激（次数够）+ 损伤（最后几次开始接近力竭，离心还有控制）</b>三机制都被触发。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.3 MPS 曲线 -->
+<section id="bio3">
+<h2>0.3 训练完之后身体在干嘛？（MPS 36-48h 窗口）</h2>
+<div class="oneliner"><b>一句话：</b>训练完不是立刻就长——是触发了<b>肌肉蛋白合成（MPS）的上升曲线</b>，这条曲线持续 36-48 小时，期间身体在用蛋白质材料"修复 + 加厚"肌纤维。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Following a bout of resistance exercise, muscle protein synthesis (MPS) is elevated above basal levels for approximately 24-48 hours, with a peak typically occurring 4-24 hours post-exercise. The magnitude of MPS elevation is dose-dependent on training stimulus intensity and volume."
+<span class="cite">—— Phillips, S.M. et al. (1997). "Mixed muscle protein synthesis and breakdown after resistance exercise in humans." <a href="https://pubmed.ncbi.nlm.nih.gov/9252485/" target="_blank" rel="noopener">Am J Physiol, 273(1 Pt 1), E99-107. PMID 9252485</a></span>
+</blockquote>
+<blockquote>
+"Anabolic signaling (including mTORC1 phosphorylation, ribosomal biogenesis) peaks 1-6 hours post-exercise. Translation into protein synthesis follows over 24-48 hours, with full MPS recovery to baseline typically within 48-72 hours in trained individuals."
+<span class="cite">—— Burd, N.A. et al. (2010). "Resistance exercise volume affects myofibrillar protein synthesis and anabolic signalling molecule phosphorylation." <a href="https://pubmed.ncbi.nlm.nih.gov/20847704/" target="_blank" rel="noopener">J Physiol, 588(16), 3119-30.</a></span>
+</blockquote>
+
+<h3>训练完 48 小时身体在干什么</h3>
+<table>
+<thead><tr><th style="width:12%">时间</th><th style="width:23%">在发生什么</th><th>实际体感</th></tr></thead>
+<tbody>
+<tr><td><b>0-30 分</b></td><td>力学应激信号产生 / mTOR 通路激活 / 肌糖原暂时耗尽</td><td>泵感最强、有力竭感</td></tr>
+<tr><td><b>1-4 小时</b></td><td>蛋白合成机器开始上调 / 雷帕霉素靶蛋白磷酸化达峰</td><td>身体感觉热、食欲上升</td></tr>
+<tr><td><b>4-24 小时</b></td><td>MPS 峰值（基线 +100-150%）/ 卫星细胞被激活</td><td>开始有酸感（DOMS）</td></tr>
+<tr><td><b>24-36 小时</b></td><td>MPS 仍 +50-80% 基线 / 损伤修复进行中</td><td>DOMS 最强 / 感觉累</td></tr>
+<tr><td><b>36-48 小时</b></td><td>MPS +20-40% / 修复接近完成</td><td>酸感消退、能再训</td></tr>
+<tr><td><b>48-72 小时</b></td><td>MPS 回归基线（除非新刺激来）</td><td>完全恢复，肌肉略微增大</td></tr>
+</tbody>
+</table>
+
+<h3>这条曲线决定了"训练频率"</h3>
+<p>如果你<b>一周只训一次胸</b>：</p>
+<ul>
+<li>训练后 36-48h "MPS 高峰窗口"打开 → 长一点点</li>
+<li>之后 5 天 MPS 回基线 → 维持不长</li>
+<li>下一次训练再开一次窗口</li>
+<li><b>每周长肉时间 ≈ 36-48 小时</b></li>
+</ul>
+<p>如果你<b>一周训两次胸</b>（间隔 ~3 天）：</p>
+<ul>
+<li>第 1 次训完打开窗口 36-48h</li>
+<li>窗口关上后 ~24-36h 休息</li>
+<li>第 2 次训练又打开 36-48h</li>
+<li><b>每周长肉时间 ≈ 72-96 小时</b>，几乎翻倍</li>
+</ul>
+<p>这就是<b>原理 3（频率 ≥2 次/周更优）</b>的生理学依据。Schoenfeld 2016 meta 看到的统计学结果，本质就是这条 MPS 时序曲线。</p>
+
+<div class="example-box">
+<span class="label">通俗类比</span>
+肌肉长大像建筑工地 = 你训练一次像"下达施工令"，工人开工 48 小时。之后工人就下班了——继续放着不管，肌肉只是"维持"。<b>下次施工令必须在前一次工人下班后再下</b>——太早下令工人累垮（过度训练）；太晚下令工人都走光了（维持期太长）。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.4 重量 + 次数 + RIR -->
+<section id="bio4">
+<h2>0.4 为什么重量 + 次数 + RIR 都不可少？</h2>
+<div class="oneliner"><b>一句话：</b>不是任意一个就行——<b>重量决定力学张力</b>、<b>次数决定代谢应激</b>、<b>RIR 决定运动单元招募是否完整</b>。少了任何一个，肌肥大信号就不全。</div>
+
+<h3>关键原理：Henneman 运动单元尺寸法则（1965）</h3>
+<blockquote>
+"Motor units are recruited in order from smallest to largest. Low-threshold (slow-twitch, type I) units are recruited first for light efforts; only as force demands increase or as fatigue accumulates do high-threshold (fast-twitch, type II) units engage."
+<span class="cite">—— Henneman, E. (1965). "Functional significance of cell size in spinal motoneurons." <a href="https://pubmed.ncbi.nlm.nih.gov/14283180/" target="_blank" rel="noopener">J Neurophysiol, 28, 560-80. PMID 14283180</a></span>
+</blockquote>
+
+<h3>这个法则的含义</h3>
+<p>肌肉里有两类肌纤维：</p>
+<table>
+<thead><tr><th style="width:24%">纤维类型</th><th style="width:24%">运动单元阈值</th><th>谁先被招募</th></tr></thead>
+<tbody>
+<tr><td><b>I 型（慢肌、红肌）</b></td><td>低阈值</td><td>轻负荷、低力量需求时<b>先用</b></td></tr>
+<tr><td><b>II 型（快肌、白肌）</b></td><td>高阈值</td><td>只在<b>大力量需求</b>或<b>慢肌累了之后</b>才被招募</td></tr>
+</tbody>
+</table>
+<p><b>关键</b>：II 型（快肌）<b>增肌潜力比 I 型大 2-3 倍</b>。所以"练到把 II 型纤维招出来"才是增肌核心。</p>
+
+<h3>怎么招募到 II 型纤维？</h3>
+<p>两条路：</p>
+<ol>
+<li><b>用大重量</b>（≥85% 1RM）— 力量需求直接超过 I 型能力，II 型被立刻招募</li>
+<li><b>用中重量练到接近力竭</b>（RIR ≤2）— I 型先做完 → 累了 → II 型才被招出来接力</li>
+</ol>
+<p>这就是为什么 <b>"8-12 次 + RIR 1-3"</b>能增肌——既能堆代谢应激，最后几次又能把 II 型招出来。同样总量的"30kg×10 RIR 3" vs "20kg×15 RIR 5" 后者增肌少很多，因为 II 型从未被招到。</p>
+
+<h3>所以三者各自的作用</h3>
+<table>
+<thead><tr><th style="width:18%">变量</th><th style="width:25%">直接控制什么</th><th>缺了它会怎样</th></tr></thead>
+<tbody>
+<tr><td><b>重量</b></td><td>力学张力强度<br>II 型直接招募门槛</td><td>太轻 → 张力不够 → mTOR 信号弱</td></tr>
+<tr><td><b>次数</b></td><td>代谢应激累积<br>组持续时间</td><td>太少 → 累积不够 → 代谢应激信号弱</td></tr>
+<tr><td><b>RIR</b><br>（接近力竭程度）</td><td>是否把 II 型招出来</td><td>RIR &gt;3 持续 → II 型不被招 → 增肌效率折一半</td></tr>
+</tbody>
+</table>
+
+<div class="example-box system">
+<span class="label">系统的例子</span>
+30 节卡片里 Phase 2 处方"3×8-10 RIR 1-3" 是这 3 个变量都设置在<b>增肌最优区</b>——重量（≥70% 1RM）够大、次数（8-10）能制造代谢应激、RIR 1-3 保证 II 型纤维被招到。<br>
+反例：阶段一 W1-3 是 "2×10 RIR 3-4"——这是设计<b>故意降效</b>（建立动作模式期），增肌效率比 Phase 2 低 30-40%，但<b>不是失误</b>，是策略。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.5 神经适应 vs 真增肌 -->
+<section id="bio5">
+<h2>0.5 神经适应 vs 真增肌（为什么新手 6 周长得快、秤却没变）</h2>
+<div class="oneliner"><b>一句话：</b>开始训练的前 4-6 周，<b>力量快速增长但肌肉几乎不变</b>——增的是"神经系统协调能力"。真正的肌肉增厚要 6-10 周才显现。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"During the initial 4-6 weeks of resistance training, strength gains substantially exceed measurable muscle hypertrophy. This dissociation is attributed to neural adaptations: increased motor unit recruitment, improved firing rates, decreased antagonist co-activation, and enhanced inter-muscular coordination."
+<span class="cite">—— Folland, J.P. &amp; Williams, A.G. (2007). "The adaptations to strength training: morphological and neurological contributions." <a href="https://pubmed.ncbi.nlm.nih.gov/17241104/" target="_blank" rel="noopener">Sports Med, 37(2), 145-68. PMID 17241104</a></span>
+</blockquote>
+
+<h3>前 6 周身体在做什么？</h3>
+<ol>
+<li><b>更好招募运动单元</b>——以前 50% 用力只能调出 60% 的肌纤维，现在能调出 80%</li>
+<li><b>放电频率提高</b>——同样数量的肌纤维收缩得更整齐 → 总力量更大</li>
+<li><b>拮抗肌放松</b>——以前练肱二头肌时肱三头肌也在轻微紧张反力（co-activation）；练熟后肱三头放松 → 二头出力更"纯"</li>
+<li><b>跨肌肉协调</b>——后蹲学会用臀+股四+核心一起出力，而不是孤立用股四</li>
+</ol>
+<p>这些都是<b>"软件升级"</b>——肌肉硬件（肌纤维粗细）几乎没变。所以秤上数字、胸围都没变，但你能举起的重量已经显著上升。</p>
+
+<h3>真增肌什么时候开始？</h3>
+<p>大约从<b>第 4-6 周开始</b>有可测量的肌纤维变粗，<b>第 8-12 周才有肉眼/秤上可见的肌肉增大</b>。这就是为什么 30 节课计划设计：</p>
+<ul>
+<li><b>W1-3（神经适应期）</b>：2 组/RIR 3-4，重点是<b>学动作 + 建感知</b>。不期望肌肉立刻变大。</li>
+<li><b>W4-7（真增肌期）</b>：3 组/RIR 1-3，神经系统已经准备好，开始堆刺激让肌肉变粗。</li>
+<li><b>W8-9（强化）</b>：RIR 0-2，最后一波刺激。</li>
+<li><b>W10（减载）</b>：让 9 周累积的疲劳清空，<b>真正的增肌在这周显现</b>——这叫超量恢复。</li>
+</ul>
+
+<div class="example-box">
+<span class="label">通俗类比</span>
+新手训练就像新员工入职 = 前 6 周大部分时间在"熟悉环境、和同事建立默契"（神经适应），<b>真正的产出（增肌）</b>要等熟练后才出来。所以前 6 周你看不到肌肉变大不是失败——是必经阶段。第 12 周往前再回头看才会"哦原来这 3 个月有用"。
+</div>
+
+<div class="example-box system">
+<span class="label">系统的例子</span>
+30 节计划<b>第 2 节"三阶段"</b>的设计完全对应这条生理学——W1-3 不期望增肌、只期望建立动作模式；W4+ 才进入"真增肌窗口"。这就是为什么 8.2 节用 "W6+ 满负荷快照"做评估——因为<b>那是计划真正开始制造增肌信号的时段</b>。前 3 周达不到 MEV 不是 bug，是设计。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.6 间隔时间 -->
+<section id="bio6">
+<h2>0.6 为什么间隔不能太短、也不能太长？</h2>
+<div class="oneliner"><b>一句话：</b>同一块肌肉的两次训练间隔<b>48-72 小时是黄金区</b>——太短 MPS 还没结束就被新疲劳压住；太长 MPS 早回基线、错失"接力"机会。</div>
+
+<h3>把 0.3 的 MPS 时序 + 频率结合起来看</h3>
+<p>同一块肌肉两次训练之间的不同间隔：</p>
+<table>
+<thead><tr><th style="width:14%">间隔</th><th style="width:26%">第 2 次刺激时身体状态</th><th>结果</th></tr></thead>
+<tbody>
+<tr><td><b>&lt; 24 小时</b></td><td>MPS 仍在峰值 / 卫星细胞还在动员 / 肌纤维仍有未修复的微损伤</td><td><span class="bad" style="color:var(--accent);"><b>过度训练</b></span>。新刺激叠加未恢复的疲劳，长期会导致免疫力下降、关节炎症、增肌停滞</td></tr>
+<tr><td><b>24-36 小时</b></td><td>MPS 仍 +50%，但损伤已基本修复</td><td>⚠ 适合<b>同一肌肉的较轻刺激</b>（如"上半周深蹲、下半周高位下拉"——不同肌肉），不适合重复同样大刺激</td></tr>
+<tr><td><b>36-72 小时</b></td><td>MPS 接近基线 / 完全恢复 / 卫星细胞已融合</td><td><span class="ok" style="color:var(--good);"><b>✓ 黄金区</b></span>。第 2 次刺激顺利接力 MPS。一周练 2 次 = 这个间隔</td></tr>
+<tr><td><b>72-168 小时（1 周）</b></td><td>MPS 已回基线很久 / 肌肉"维持不进"</td><td>仍能渐进，但效率低（每周 1 个长肉窗口）</td></tr>
+<tr><td><b>&gt; 168 小时（&gt; 1 周）</b></td><td>开始<b>失去练过的水平</b>（detraining）</td><td><span class="bad" style="color:var(--accent);">⚠</span> 2 周不练肌力开始下降；4 周不练肌肉量开始下降</td></tr>
+</tbody>
+</table>
+
+<h3>原文引用</h3>
+<blockquote>
+"In trained individuals, muscle protein synthesis returns to baseline 24-48 hours post-exercise. Repeated stimulation within this elevated MPS window (i.e., training the same muscle every 48-72 hours) results in superior hypertrophy compared to weekly training of the same volume."
+<span class="cite">—— Damas, F. et al. (2018). "The development of skeletal muscle hypertrophy through resistance training." <a href="https://pubmed.ncbi.nlm.nih.gov/29466268/" target="_blank" rel="noopener">Eur J Appl Physiol, 118(3), 485-500. PMID 29466268</a></span>
+</blockquote>
+
+<h3>为什么我们的计划是周一/周三/周五？</h3>
+<ul>
+<li>周一 A → 周三 B：<b>2 天间隔</b>（A 和 B 不重叠主肌，所以可以更紧）</li>
+<li>周三 B → 周五 C：<b>2 天</b></li>
+<li>周五 C → 下周一 A：<b>3 天</b>（跨周末，自然多 1 天）</li>
+</ul>
+<p>由于 A/B/C <b>主肌错开</b>（A 主下肢、B 主上肢推+拉、C 全身均衡），<b>同一块肌肉</b>的真实间隔通常是 3-7 天：</p>
+<ul>
+<li>股四头肌：A（周一）+ C（周五）→ 间隔 4 天</li>
+<li>胸大肌：B（周三）+ C（周五）→ 间隔 2 天 ⚠ 偏短，但 C 的双杠是中等量，刚好</li>
+<li>背阔肌：A 引体（周一）+ B 划船（周三）+ C 单臂划船（周五）→ 间隔 2-3 天，3 次/周</li>
+</ul>
+
+<div class="example-box system">
+<span class="label">系统的例子</span>
+<b>第 10 节"42 块肌肉频率间隔表"</b>就是把这条生理学量化——每块肌肉显示"出现在哪几个课型 / 平均间隔 / 最长间隔"，并按"恢复是否充分"打 🟢/🟡/🟠/⚪ 评级。<b>那张表本质就是这一节 0.6 在每块肌肉上的具体落实</b>。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.7 组数定义 -->
+<section id="bio7">
+<h2>0.7 「组数」到底怎么算？什么样的 1 组才有用</h2>
+<div class="oneliner"><b>一句话：</b>不是所有"做完一组就算 1 组"——只有<b>足够重 + 足够多次 + 接近力竭</b>的"有效组"（hard set）才能给肌肥大计 1 组。这决定了 8.2 评估的精度。</div>
+
+<h3>科学文献里的"有效组"（Hard Set）定义</h3>
+<blockquote>
+"For the purposes of muscle hypertrophy research, a 'hard set' is operationally defined as a set taken within 4 repetitions of momentary muscular failure (RIR ≤ 4), performed within a hypertrophy-relevant rep range (typically 6-30 reps) using loads ≥ 30% of 1RM."
+<span class="cite">—— Schoenfeld &amp; Grgic (2018). "Evidence-based guidelines for resistance training volume to maximize muscle hypertrophy." <a href="https://pubmed.ncbi.nlm.nih.gov/29466268/" target="_blank" rel="noopener">Strength Cond J, 40(4), 107-12.</a></span>
+</blockquote>
+<blockquote>
+"Total volume counted as 'sets' in dose-response analyses includes only sets performed within ~5 reps of failure. Warm-up sets, very low-effort sets, and sets at ≤30% 1RM are not counted."
+<span class="cite">—— RP / Israetel framework convention, also used in Schoenfeld 2017 meta-analysis methodology.</span>
+</blockquote>
+
+<h3>判断标准 · 这一组算不算？</h3>
+<table>
+<thead><tr><th style="width:18%">条件</th><th style="width:24%">能算 1.0 组</th><th>原因</th></tr></thead>
+<tbody>
+<tr><td><b>负重</b></td><td>≥ 65% 1RM<br>（"能做 6-15 次到力竭"的重量）</td><td>低于 65% 力学张力不够，II 型纤维招不出来；低于 30% 几乎没增肌信号</td></tr>
+<tr><td><b>次数</b></td><td>6-15 次</td><td>少于 6 次偏力量训练；超过 30 次纯耐力，肌肥大信号变弱</td></tr>
+<tr><td><b>RIR（接近力竭度）</b></td><td>≤ 4（还能 4 次以内到力竭）</td><td>RIR &gt; 4 的"很轻松一组"基本不刺激增肌</td></tr>
+<tr><td><b>动作幅度</b></td><td>完整 ROM（从拉长到收紧）</td><td>半幅或"弹"动只刺激中段，增肌效率减半</td></tr>
+</tbody>
+</table>
+
+<h3>常见的"不算 1 组"或"打折计"情况</h3>
+<table>
+<thead><tr><th style="width:30%">情况</th><th>这组算几组？</th></tr></thead>
+<tbody>
+<tr><td><b>热身组</b>（轻重量、感觉很容易）</td><td><b>0 组</b>。热身只为让神经系统就位，不计训练量</td></tr>
+<tr><td><b>20kg×30 次 RIR 5</b>（很轻易）</td><td><b>0-0.3 组</b>。强度低、RIR 大，几乎没增肌信号</td></tr>
+<tr><td><b>50kg×3 次 RIR 0</b>（力竭，但次数极少）</td><td><b>0.5-0.7 组</b>。力学张力够，但代谢应激和总刺激时间不够；偏力量训练</td></tr>
+<tr><td><b>50kg×10 次 RIR 2</b>（标准增肌组）</td><td><b>1.0 组</b>。三大机制都有刺激</td></tr>
+<tr><td><b>50kg×8 次 RIR 0</b>（接近力竭的标准组）</td><td><b>1.0-1.1 组</b>。比 RIR 2 稍强但增肌增益不大</td></tr>
+<tr><td><b>50kg×12 次 RIR 1 + 紧接降组 30kg×8</b>（drop set）</td><td><b>1.5 组</b>。降组算半组（次数稀薄但有代谢应激）</td></tr>
+<tr><td><b>半幅深蹲 60kg×10</b>（只下蹲到 1/2）</td><td><b>0.5-0.7 组</b>。完整 ROM 才能完整刺激</td></tr>
+</tbody>
+</table>
+
+<h3>对照我们 8.2 评估的精度</h3>
+<p><b>当前系统的妥协</b>：8.2 节计算"每块肌肉周组数"时，<b>把动作手册里记录的 sets 数字直接乘以 contrib 系数累加</b>——没有按 RIR/重量/次数<b>再二次打折</b>。所以：</p>
+<ul>
+<li>✓ 如果你的训练都在 8-12 次 × RIR 1-3 这个标准区——结果<b>非常准确</b></li>
+<li>⚠ 如果你做了一堆"20kg×30 次 RIR 5"那种轻易组——8.2 会高估你的实际有效训练量</li>
+<li>⚠ 如果你做了"50kg×3 次"的力量组——8.2 也会按 1.0 计而非 0.5-0.7，<b>稍微高估</b></li>
+</ul>
+
+<div class="example-box">
+<span class="label">通俗类比</span>
+"我跑了 10 km"——是慢跑还是冲刺？走着的"10 km"和冲刺的"10 km"对身体效果完全不同。"我做了 20 组" 也是——RIR 4-5 的 20 组 ≈ RIR 1-2 的 10 组。<b>"做了几组"必须配合"做得多累"才有意义</b>。
+</div>
+
+<div class="example-box system">
+<span class="label">实操建议</span>
+让 8.2 评估更准的最简单办法：<b>动作手册记录时认真填 RIR / 容量耐受自评</b>。RIR 经常 ≥ 4 = 你的"有效组数"实际比记录的少 20-40%；RIR 经常 0-2 = 记录基本就是有效组数。未来系统可以加一个"按 RIR 折扣"的开关让结果更精确。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 0.8 42 块肌肉完整 MEV/MAV/MRV 表 -->
+<section id="bio8">
+<h2>0.8 42 块肌肉的 MEV / MAV / MRV 完整表</h2>
+<div class="oneliner"><b>一句话：</b>下面这张表是<b>系统当前使用的默认值</b>（来自 Israetel/RP 框架 + 我们的微调）。这是<b>起点</b>，不是终点——你训练 4-6 周后应该根据实际反馈微调成"你自己的"数字（见 8.2.6 节）。</div>
+
+<h3>"为什么我胸大肌 MEV 是 6 不是 8？"——数字怎么定的</h3>
+<p>每块肌肉的 MEV/MAV/MRV 基于 4 个因素：</p>
+<ol>
+<li><b>肌肉大小</b>：大肌（背阔 18cm 厚）容纳更多组数；小肌（肩袖几 cm 厚）容易过量</li>
+<li><b>纤维类型</b>：慢肌纤维多（比目鱼）耐操；快肌纤维多（胸大）恢复慢</li>
+<li><b>跨关节角色</b>：主肌（背阔做引体）能给的刺激密度比稳定肌（肩袖）高</li>
+<li><b>RP 团队几千名训练者实战观察</b>反馈调整</li>
+</ol>
+
+<h3>42 块肌肉完整门槛表</h3>
+<table style="font-size:12.5px;">
+<thead><tr>
+<th style="width:25%">肌肉</th>
+<th class="num" style="width:8%">MEV</th>
+<th class="num" style="width:8%">MAV</th>
+<th class="num" style="width:8%">MRV</th>
+<th>简短依据</th>
+</tr></thead>
+<tbody>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>胸（4 块）</b></td></tr>
+<tr><td><b>胸大肌-上部</b></td><td class="num">6</td><td class="num">10</td><td class="num">14</td><td>胸大锁骨头部分，上斜推主肌</td></tr>
+<tr><td><b>胸大肌-中下部</b></td><td class="num">6</td><td class="num">10</td><td class="num">14</td><td>胸大胸骨头部分，平板/下斜推主肌</td></tr>
+<tr><td><b>胸小肌</b></td><td class="num">2</td><td class="num">4</td><td class="num">8</td><td>胸大肌深层，小稳定肌</td></tr>
+<tr><td><b>前锯肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td>肩胛贴胸壁的关键稳定肌</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>背（6 块）</b></td></tr>
+<tr><td><b>背阔肌</b></td><td class="num">10</td><td class="num">18</td><td class="num">25</td><td>最大背肌，引体/划船主肌</td></tr>
+<tr><td><b>菱形肌</b></td><td class="num">6</td><td class="num">12</td><td class="num">18</td><td>肩胛回缩稳定肌</td></tr>
+<tr><td><b>斜方肌-上部</b></td><td class="num">4</td><td class="num">10</td><td class="num">18</td><td>小，独立量可低</td></tr>
+<tr><td><b>斜方肌-中下部</b></td><td class="num">6</td><td class="num">12</td><td class="num">18</td><td>划船/面拉主要参与</td></tr>
+<tr><td><b>竖脊肌</b></td><td class="num">6</td><td class="num">12</td><td class="num">18</td><td>脊柱抗弯稳定肌，硬拉/深蹲协同</td></tr>
+<tr><td><b>大圆肌</b></td><td class="num">6</td><td class="num">10</td><td class="num">16</td><td>背阔肌"小弟"，引体/划船参与</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>肩（4 块）</b></td></tr>
+<tr><td><b>三角肌前束</b></td><td class="num">6</td><td class="num">12</td><td class="num">20</td><td>推动作几乎都参与</td></tr>
+<tr><td><b>三角肌中束</b></td><td class="num">8</td><td class="num">16</td><td class="num">26</td><td>需要独立训（侧平举），MEV 偏高</td></tr>
+<tr><td><b>三角肌后束</b></td><td class="num">8</td><td class="num">16</td><td class="num">26</td><td>小但稳定肩关节关键，MEV 偏高</td></tr>
+<tr><td><b>肩袖肌群</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>稳定肌，量需求低</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>手臂（6 块）</b></td></tr>
+<tr><td><b>肱二头肌</b></td><td class="num">8</td><td class="num">14</td><td class="num">22</td><td>体积小但增肌空间大</td></tr>
+<tr><td><b>肱肌</b></td><td class="num">6</td><td class="num">10</td><td class="num">16</td><td>二头深层，弯举/划船参与</td></tr>
+<tr><td><b>肱桡肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>前臂主肌，握类动作参与</td></tr>
+<tr><td><b>肱三头肌-长头</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>横跨肩肘双关节，过头推主练</td></tr>
+<tr><td><b>肱三头肌-外侧+内侧头</b></td><td class="num">6</td><td class="num">12</td><td class="num">18</td><td>推动作主参与，需独立训量</td></tr>
+<tr><td><b>前臂</b></td><td class="num">6</td><td class="num">12</td><td class="num">20</td><td>握类动作协同，量需求中等</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>腰腹（5 块）</b></td></tr>
+<tr><td><b>腹直肌</b></td><td class="num">6</td><td class="num">14</td><td class="num">25</td><td>前侧腹肌，抗屈训练主肌</td></tr>
+<tr><td><b>腹斜肌</b></td><td class="num">6</td><td class="num">14</td><td class="num">25</td><td>抗旋转主肌</td></tr>
+<tr><td><b>腹横肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td>最深核心稳定肌</td></tr>
+<tr><td><b>髂腰肌（髋屈肌）</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>抬腿/前踢肌肉，多在跑跳中训</td></tr>
+<tr><td><b>腰方肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td>侧向稳定，量需求低</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>大腿前（3 块）</b></td></tr>
+<tr><td><b>股四头肌-外侧+中间头</b></td><td class="num">6</td><td class="num">12</td><td class="num">18</td><td>深蹲/弓步主肌</td></tr>
+<tr><td><b>股直肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>股四"前侧"，跨膝髋</td></tr>
+<tr><td><b>股内侧肌-VMO</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>膝关节稳定关键</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>大腿后（2 块）</b></td></tr>
+<tr><td><b>腘绳肌-股二头长头</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>伸髋主导（RDL/臀推）</td></tr>
+<tr><td><b>腘绳肌-半腱+半膜</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>屈膝主导（腿弯举）</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>臀（3 块）</b></td></tr>
+<tr><td><b>臀大肌-上部</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>臀部上侧，臀推/相扑硬拉训</td></tr>
+<tr><td><b>臀大肌-下部</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>臀部下侧，深蹲/弓步主练</td></tr>
+<tr><td><b>臀中肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>骨盆稳定肌</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>髋（3 块）</b></td></tr>
+<tr><td><b>内收肌群</b></td><td class="num">6</td><td class="num">10</td><td class="num">16</td><td>大腿内侧，深蹲/相扑硬拉协同</td></tr>
+<tr><td><b>髋外展肌-TFL</b></td><td class="num">4</td><td class="num">8</td><td class="num">14</td><td>蚌式/侧抬腿主练</td></tr>
+<tr><td><b>髋深层旋转肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td>稳定肌</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>小腿（5 块）</b></td></tr>
+<tr><td><b>腓肠肌</b></td><td class="num">6</td><td class="num">10</td><td class="num">16</td><td>站姿提踵主练</td></tr>
+<tr><td><b>比目鱼肌</b></td><td class="num">6</td><td class="num">10</td><td class="num">16</td><td>坐姿提踵主练（屈膝才激活）</td></tr>
+<tr><td><b>胫骨前肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td>反向抗踝跖屈，多在跑步训</td></tr>
+<tr><td><b>腓骨长短肌</b></td><td class="num">4</td><td class="num">8</td><td class="num">12</td><td>踝外侧稳定肌</td></tr>
+<tr><td><b>胫骨后肌</b></td><td class="num">4</td><td class="num">6</td><td class="num">10</td><td>足弓稳定肌</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="5"><b>颈（1 块）</b></td></tr>
+<tr><td><b>颈部肌群</b></td><td class="num">4</td><td class="num">6</td><td class="num">12</td><td>健身常规不必单练</td></tr>
+</tbody>
+</table>
+
+<h3>关键观察</h3>
+<ul>
+<li><b>主肌 MEV 通常 6-10</b>（背阔 10、股四 6）——大肌肉容纳量大</li>
+<li><b>小孤立肌 MEV 通常 4-6</b>（肩袖 4、比目鱼 6）——量需要低但<b>不能为 0</b></li>
+<li><b>稳定肌 MEV = 4</b>（腹横、髋深旋、肩袖、腰方肌）——它们的角色就是稳定，不需要"长大"</li>
+<li><b>胸小肌 MEV = 2</b> 是表里最低的——这块小到 4 组就已经够了</li>
+<li><b>三角肌中束/后束 MEV = 8</b> 偏高——因为复合动作几乎不带它，必须靠侧平举/面拉单独练满</li>
+</ul>
+
+<h3>个体化原则：默认值 → 个人值</h3>
+<p>这张表是<b>群体平均</b>。你的个人 MEV 大概率是默认值的 70-150%。判断方向：</p>
+<table>
+<thead><tr><th style="width:34%">你的训练反馈</th><th>你的个人 MEV 可能比默认</th></tr></thead>
+<tbody>
+<tr><td>训练量达到默认 MEV 后<b>明显增肌、力量稳步增长</b></td><td><b>≈ 默认值</b>，按表用即可</td></tr>
+<tr><td>明显<b>低于默认 MEV</b>（如 50-70%）但已经进步、感受到泵感</td><td><b>低于默认</b>，你属"高响应者"或"训练新手"，可暂用默认 60-70% 作为你的个人 MEV</td></tr>
+<tr><td>稳定做到默认 MEV 但 3-4 周后<b>毫无变化</b>，没酸感没泵感</td><td><b>高于默认</b>，需要把训练量推到默认 MAV 才有刺激</td></tr>
+<tr><td>做到默认 MAV+ 但出现关节痛、慢性疲劳、睡不好</td><td>你的个人 MRV 偏低，需要降到 MAV 以下</td></tr>
+</tbody>
+</table>
+
+<div class="example-box system">
+<span class="label">系统的下一步</span>
+<b>第 13 评估面板</b>将来会基于 <b>3-4 周实际记录</b>自动给"个人 MEV 调整建议"——比如"<i>你 4 周里背阔肌实际做了 12 组/周，比默认 MEV 10 多 20%；但近 2 周引体进步停滞——你的个人 MEV 可能是 14-16，建议本期把背阔肌组数推到 14-16</i>"。详见 30 节训练计划的 13.5 节（建设中）。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+
+<!-- 0.7 整体串联 -->
+<section>
+<h2>整体串联：生理学 → 训练原理 → 计划设计</h2>
+<p>讲完 6 条底层生理学后，再回看 10 条训练原理，它们就不只是规则，而是<b>可推导的</b>：</p>
+<table>
+<thead><tr><th style="width:30%">生理学事实</th><th>推导出的训练原理</th></tr></thead>
+<tbody>
+<tr><td>0.2 三机制中力学张力最主要 + 0.4 II 型纤维需要重负荷招募</td><td>→ <b>原理 4（渐进超负荷）</b> + <b>原理 6（RIR ≤3）</b></td></tr>
+<tr><td>0.3 MPS 窗口 36-48h</td><td>→ <b>原理 3（每周 ≥2 次/肌肉）</b></td></tr>
+<tr><td>0.2 三机制需要中等次数堆代谢应激 + 0.4 同时需要力学张力</td><td>→ <b>原理 6（RIR 1-3）+ 增肌 6-12 次</b></td></tr>
+<tr><td>0.3 持续刺激会累积疲劳但 MPS 仍有上限</td><td>→ <b>原理 1 / 2（MEV-MAV-MRV、剂量-反应曲线）</b></td></tr>
+<tr><td>0.5 神经适应 vs 真增肌时间错开</td><td>→ <b>原理 5（周期化 3 阶段：W1-3 是神经、W4+ 才是真增肌）</b></td></tr>
+<tr><td>0.3 + 累积疲劳的非线性 → 长期需要清空</td><td>→ <b>原理 9（减载周）</b></td></tr>
+<tr><td>0.1 肌肉是杠杆系统 + 关节稳定靠双向肌肉</td><td>→ <b>原理 8（平衡比率）</b></td></tr>
+<tr><td>0.4 不同肌肉激活程度不同</td><td>→ <b>原理 7（贡献系数）</b></td></tr>
+</tbody>
+</table>
+<p>所以这套训练计划<b>不是 10 条独立规则</b>——是从生理学事实推导出的<b>逻辑闭环</b>。改任何一条都需要回到生理学层面看是否还成立。</p>
+</section>
+
+<!-- 1. MEV/MAV/MRV -->
+<section id="p1">
+<h2>1. 训练量门槛框架（MEV / MAV / MRV）</h2>
+<div class="oneliner"><b>一句话：</b>每块肌肉每周需要达到一个<b>"最低有效训练量"</b>（MEV）才能开始增肌；继续往上加直到"最佳适应量"（MAV）是高效区；超过"最大可恢复量"（MRV）反而退步。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Training volume that is too low to drive adaptations is described as Maintenance Volume (MV). Above MV is the Minimum Effective Volume (MEV)—the lowest amount of training that drives gains. From MEV up to Maximum Adaptive Volume (MAV), training produces the best gains per unit of work. Beyond MAV but still recoverable is the upper bound called Maximum Recoverable Volume (MRV); past this, training causes more fatigue than adaptation."
+<span class="cite">—— Dr. Mike Israetel, <a href="https://renaissanceperiodization.com/training-volume-landmarks-muscle-growth" target="_blank" rel="noopener">"Training Volume Landmarks for Muscle Growth", Renaissance Periodization</a></span>
+</blockquote>
+
+<h3>出处</h3>
+<p>Israetel, M. et al., Renaissance Periodization. <a href="https://renaissanceperiodization.com/training-volume-landmarks-muscle-growth" target="_blank" rel="noopener">"Training Volume Landmarks for Muscle Growth"</a>。配套书 <i>Scientific Principles of Hypertrophy Training</i>（2021）。</p>
+
+<h3>我们怎么用</h3>
+<p>系统里的 <b>训练数据库.js</b> 给 42 块肌肉每块都标了 MEV / MAV / MRV 三个值。例如背阔肌 <code>{mev: 10, mav: 18, mrv: 25}</code>。8.2 节"健康检查"把每块肌肉的<b>每周有效组数</b>对照这三个门槛着色——✅ ≥MEV / 🟡 70-99% / 🔴 &lt;70% / ⚪ 0。</p>
+
+<h3>为什么选这个</h3>
+<p>① 是<b>最实用的</b>训练量管理框架——给"够 vs 不够"画了具体门槛，不用每次靠感觉。② <b>逐肌肉</b>给数字（不是全身一刀切），更精细。③ 跟 Schoenfeld 2017 的剂量-反应曲线<b>结论一致</b>（见下条），但 RP 把它转化成可执行的训练标准。</p>
+
+<h3>给非专业人解释</h3>
+<p>想象给一块肌肉"喂"组数——少喂它就不长肌肉（&lt;MEV）；喂到刚好它开始长（=MEV）；继续喂得越多长得越快（MEV→MAV）；过了某条线（MRV）它消化不了反而瘦回去。每块肌肉容量不一样：背阔肌"胃口大"（MEV 10），肩袖"胃口小"（MEV 4）。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+<b>三角肌中束</b> MEV = 8 组/周。一周做 4 组 → 1.5 周后掉回原状；做 8 组 → 缓慢长；做 14-16 组（MAV 区间）→ 长得最快；做 26+ 组（MRV）→ 肩疲劳无法恢复，反向退步。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>8.2 节"健康检查"</b>正在执行这个判断。例如<b>胸大肌-上部</b> 当前 4.2 组/周，MEV 6 → 落在 🟡 接近 MEV（70%）。系统给出"按计划做 1-2 周后会过线"的判断，因为我估算时按阶段一保守系数算了。
+</div>
+
+<!-- 深入：这些数字怎么被定义出来的 -->
+<h3 style="background:var(--accent-light); color:var(--accent); margin-top:18px;">⚙ 深入：这些数字到底是怎么定义出来的？</h3>
+<p>这是这套系统里<b>最值得追问的一个问题</b>——既然 8.2、8.3、热力图、评估面板都基于 MEV 做判断，那 MEV 本身可靠吗？背景的"科学性"到底有多硬？</p>
+<p><b>诚实结论先讲：MEV/MAV/MRV 的<u>具体数字</u>不是某个随机对照实验的产物，而是基于"硬数据 + 教练观察 + 理论推演"的<u>实战框架</u>。</b>下面拆开讲。</p>
+
+<h4 style="margin-top:14px; font-size:13.5px; color:var(--ink); font-weight:700;">A · 硬数据这一层：Schoenfeld 2017 剂量-反应曲线</h4>
+<p>"训练量越多增肌越多，但有上限"这条<b>结论</b>是有硬数据的——见原理 2 的 Schoenfeld 2017 meta 分析：</p>
+<ul>
+<li>综合 <b>15 项研究</b> · ~<b>370 名受试者</b> · 训练时长 6-12 周</li>
+<li>统计学显著的<b>剂量-反应关系</b>（P = 0.002，正相关 r = 0.74）</li>
+<li>曲线在<b>每周 ~10 组/肌群</b>附近开始变平</li>
+</ul>
+<p>这一层是<b>真正的实验科学</b>——是 RP/Israetel 框架的<b>地基</b>。任何说"训练量没用"或者"做得越多越好"的人都是反这条数据的。</p>
+
+<h4 style="margin-top:14px; font-size:13.5px; color:var(--ink); font-weight:700;">B · 框架这一层：Israetel/RP 团队的综合（≠ 直接实验）</h4>
+<p>把 Schoenfeld 的"~10 组拐点"<b>转化为可执行的 MEV/MAV/MRV 数字</b>这一步——是 Mike Israetel 和 Renaissance Periodization 团队（2014-2018 间）做的<b>工程化</b>工作。他们的方法是：</p>
+<ol>
+<li>把 Schoenfeld 数据里"~10 组拐点"作为大肌群 MAV 的锚点</li>
+<li>根据<b>肌肉大小</b>调高/调低（大肌如背阔上调到 MAV ~18；小肌如肩袖下调到 MAV ~8）</li>
+<li>根据<b>肌肉纤维类型</b>调整（慢肌纤维多的比目鱼肌承受量更大；快肌纤维多的胸大肌恢复更慢）</li>
+<li>根据<b>训练角色</b>调整（主肌门槛高、辅助稳定肌门槛低）</li>
+<li>把 RP 团队几千名训练者的<b>实战观察</b>反馈进去——哪个肌肉哪个数字让多数训练者出"刚好开始进步"或"刚好开始退步"</li>
+<li>最后定 MEV = MAV × 0.4-0.6 / MRV = MAV × 1.3-1.6 等比例</li>
+</ol>
+<p>所以："胸大肌 MEV = 8 / MAV = 16 / MRV = 26" 这种具体数字 <b>≠ 实验直接测出</b>，<b>= 专家在实验数据 + 教练经验上推出的实战默认值</b>。</p>
+
+<h4 style="margin-top:14px; font-size:13.5px; color:var(--ink); font-weight:700;">C · 个体差异：±30-50% 是正常的</h4>
+<p>这是<b>最关键的限制</b>——MEV/MAV/MRV 的具体数字是<b>群体平均</b>，个体差异显著。</p>
+<blockquote>
+"Individual responses to identical resistance training programs vary dramatically. In a study of 585 subjects performing the same 12-week unilateral arm training, biceps muscle hypertrophy ranged from <b>2% loss to 59% gain</b>—a 60-fold variation."
+<span class="cite">—— Hubal MJ et al. (2005). "Variability in muscle size and strength gain after unilateral resistance training." <a href="https://pubmed.ncbi.nlm.nih.gov/15947721/" target="_blank" rel="noopener">Med Sci Sports Exerc, 37(6), 964-72. PMID 15947721</a></span>
+</blockquote>
+<p>同样的训练，<b>有人涨 59%，有人退 2%</b>——这就是个体差异。所以"你的真实 MEV" 大概率落在框架值的 <b>70-150% 区间</b>。影响因素：</p>
+<ul>
+<li><b>训练年限</b>——新手 MEV 偏低（少量刺激就能长）、老手 MEV 偏高（需要更大刺激）</li>
+<li><b>遗传因素</b>——"高响应者 vs 低响应者"已是公认现象（Hubal 2005、Bouchard et al）</li>
+<li><b>恢复因素</b>——睡眠、营养、压力直接影响你能承受的 MRV 上限</li>
+<li><b>身材大小</b>——体重 80kg 的人 MEV 通常比 60kg 高 20-30%</li>
+</ul>
+
+<h4 style="margin-top:14px; font-size:13.5px; color:var(--ink); font-weight:700;">D · 为什么不同肌肉的数字不一样？</h4>
+<table>
+<thead><tr><th style="width:18%">肌肉类型</th><th>典型 MEV/MAV</th><th>原因</th></tr></thead>
+<tbody>
+<tr><td><b>大主肌</b><br>（背阔、股四、臀大）</td><td class="num">MEV 10-12 / MAV 18-22</td><td>大肌肉 = 工作能力大、恢复快 = 能承受/需要更多组数</td></tr>
+<tr><td><b>中等肌</b><br>（胸大、三角中、肱二头）</td><td class="num">MEV 6-8 / MAV 12-16</td><td>体积中等，多被复合动作和孤立动作同时砸</td></tr>
+<tr><td><b>小孤立肌</b><br>（小腿、前臂、腹斜）</td><td class="num">MEV 4-6 / MAV 8-12</td><td>体积小恢复慢，过量易劳损（小腿尤其）</td></tr>
+<tr><td><b>稳定肌</b><br>（肩袖、腹横、髋深旋）</td><td class="num">MEV 4 / MAV 8</td><td>主要是耐力+稳定功能，不是大力量输出，量不需多</td></tr>
+</tbody>
+</table>
+
+<h4 style="margin-top:14px; font-size:13.5px; color:var(--ink); font-weight:700;">E · 行业使用广泛度</h4>
+<table>
+<thead><tr><th style="width:25%">人群</th><th>对 MEV/MAV/MRV 的态度</th></tr></thead>
+<tbody>
+<tr><td><b>循证健身教练</b><br>（Helms、Israetel、Schoenfeld、Jeff Nippard 等）</td><td>普遍采用作为<b>训练量管理的核心框架</b>。差异主要在具体数字微调，结构都一样</td></tr>
+<tr><td><b>学术研究</b><br>（运动科学论文）</td><td>引用<b>剂量-反应数据</b>（Schoenfeld 2017），但学术上<b>不正式使用 MEV 这套具体数字</b>——因为它没经过随机对照实验直接验证</td></tr>
+<tr><td><b>传统健身房教练</b></td><td>多数<b>不知道这套</b>，仍按"3 组 × 10 次 × 一周一肌群"的 1980s 方案训练</td></tr>
+<tr><td><b>力量举/健美顶级运动员</b></td><td>多数<b>有类似但更个性化的版本</b>——经过多年试错知道"我的胸 MEV 是多少"，不需要框架默认值</td></tr>
+</tbody>
+</table>
+
+<h4 style="margin-top:14px; font-size:13.5px; color:var(--ink); font-weight:700;">F · 所以我们应该怎么看这个评估？</h4>
+<p>诚实的使用方式是这样：</p>
+<ul>
+<li>✅ <b>用 MEV/MAV/MRV 做"训练量结构性诊断"</b>——发现某块肌肉只有 0-2 组/周时，那一定是<b>真问题</b>（远低于任何合理 MEV 估计）</li>
+<li>✅ <b>用它做"阶段间对比"</b>——本期 vs 上期、改前 vs 改后。变化量比绝对值更可靠</li>
+<li>⚠ <b>不要把 ±20% 范围当作可信信号</b>——例如 5.2/8 (65%) vs 5.6/8 (70%) 这种差异基本是框架噪音，不是真区别</li>
+<li>⚠ <b>不要把"达到 MEV"当作"必定增肌"</b>——还需要渐进超负荷、足够强度（RIR）、充分恢复、营养支撑等等</li>
+<li>⚠ <b>个人 MEV 可能比框架值高/低 30-50%</b>——做了一个周期后看实际进步，回头调整自己的 MEV 估计</li>
+</ul>
+
+<div class="example-box system">
+<span class="label">系统里的诚实呈现</span>
+8.2 节没有写"达 MEV = 一定增肌"——写的是"<b>进入能长肌肉的有效刺激区</b>"。8.2.5 热力图按"对 MEV 占比"画色，不画绝对值。8.3 决策表只把"差距 &gt; 30%"的列为"必改"，&lt; 20% 的列为"可忽略"——这就是承认了"框架本身有 ±20% 噪音"。<br>
+<b>把 MEV 当"决策辅助标尺"而不是"科学定律"——这是这套系统对它的合理使用。</b>
+</div>
+
+<p class="ref-list" style="margin-top:10px;">深入阅读：<a href="https://renaissanceperiodization.com/training-volume-landmarks-muscle-growth" target="_blank" rel="noopener">Israetel RP 原文</a>（系统介绍框架推演逻辑）· <a href="https://pubmed.ncbi.nlm.nih.gov/15947721/" target="_blank" rel="noopener">Hubal 2005</a>（个体差异 PMID 15947721）· <a href="https://pubmed.ncbi.nlm.nih.gov/29466268/" target="_blank" rel="noopener">Damas 2018</a>（训练新手 vs 老手响应差异 PMID 29466268）</p>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 2. Dose-response Schoenfeld 2017 -->
+<section id="p2">
+<h2>2. 周训练量剂量-反应</h2>
+<div class="oneliner"><b>一句话：</b>每块肌肉每周做的"组数"越多，肌肉增长越多——但有上限；线性关系大约在每周 10 组以内最明显。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"A graded dose-response relationship was observed, whereby gains in muscle hypertrophy increased with greater volume… A spline model identified the inflection point of weekly volume between approximately 10 sets per muscle per week, beyond which gains begin to plateau."
+<span class="cite">—— Schoenfeld, Ogborn & Krieger (2017). "Dose-response relationship between weekly resistance training volume and increases in muscle mass: a systematic review and meta-analysis." <a href="https://pubmed.ncbi.nlm.nih.gov/27433992/" target="_blank" rel="noopener">J Sports Sci, 35(11), 1073-82. PMID 27433992</a></span>
+</blockquote>
+
+<h3>出处</h3>
+<p>Schoenfeld BJ, Ogborn D, Krieger JW (2017). <i>Journal of Sports Sciences</i>, 35(11), 1073-1082. <a href="https://pubmed.ncbi.nlm.nih.gov/27433992/" target="_blank" rel="noopener">PMID: 27433992</a>。Meta 分析综合 15 项研究，是当代肌肥大训练量讨论的奠基性研究之一。</p>
+
+<h3>我们怎么用</h3>
+<p>这是 RP MEV/MAV 数字的<b>论文依据</b>——MEV 大约定在"开始有意义增肌的最小组数"（多数大肌群 6-10），MAV 在"曲线斜率开始下降"附近（10-18）。8.2 节的诊断、10 节的频率分析、计划的"3 组/动作"都基于这条结论。</p>
+
+<h3>为什么选这个</h3>
+<p>① <b>Meta 分析</b>（综合多个独立研究）比单个研究权威。② <b>剂量-反应曲线</b>而不是"做就够"——给了"再加一组值不值"的判断依据。③ <b>结论简单</b>，对训练计划可直接转化。</p>
+
+<h3>给非专业人解释</h3>
+<p>就像吃饭：1 碗没饱（不增肌），3 碗刚好（MEV），5-6 碗最香长肉最快（MAV），9 碗撑得难受影响下一顿（MRV）。这个研究第一次用数据画出"吃多少 vs 长多少"这条曲线，并发现<b>10 组/肌群/周</b>附近是关键拐点。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+两组人都练胸：A 组每周 5 组、B 组每周 10 组——8 周后 B 组胸围多增 ~30%。但 C 组每周 20 组的人和 B 组差别不大，因为已过了曲线"陡上"段。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>8.3 节"决策表"</b>判断<b>三角肌中束 5.2/8 (65%)</b> 时引用了这条研究：65% &lt; MEV 意味着"在曲线的低段"，加 1 组（从 4 组升 5 组）能让它进入"陡上段"。这是有数据支撑的具体建议，不是拍脑袋。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 3. Frequency Schoenfeld 2016 -->
+<section id="p3">
+<h2>3. 训练频率（每周 ≥2 次更优）</h2>
+<div class="oneliner"><b>一句话：</b>同一块肌肉每周训练 ≥2 次比 1 次效果更好（容量等同的情况下）——所以"周一胸/周二背/周三腿"的传统拆分不如"每周练 2-3 次全身"。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Major findings of this analysis are that when volume is equated, training muscle groups twice a week is more effective than training them once weekly with respect to maximizing muscle growth. There were not sufficient data to make inferences about training frequencies of 3 or more days per week."
+<span class="cite">—— Schoenfeld, Ogborn & Krieger (2016). "Effects of resistance training frequency on measures of muscle hypertrophy: a systematic review and meta-analysis." <a href="https://pubmed.ncbi.nlm.nih.gov/27102172/" target="_blank" rel="noopener">Sports Med, 46(11), 1689-97. PMID 27102172</a></span>
+</blockquote>
+
+<h3>出处</h3>
+<p>Schoenfeld BJ, Ogborn D, Krieger JW (2016). <i>Sports Medicine</i>, 46(11), 1689-1697. <a href="https://pubmed.ncbi.nlm.nih.gov/27102172/" target="_blank" rel="noopener">PMID: 27102172</a>。Meta 分析综合 10 项研究，是"训练频率"这一参数最被引用的研究。</p>
+
+<h3>我们怎么用</h3>
+<p>计划"每周 3 次 A/B/C 轮换"的核心理由就在这——每块主要肌群通过课型重叠都被练到 ≥2 次（背阔肌 A+B+C = 3 次/周；股四头肌 A+C = 2 次/周；胸大肌 B+C = 2 次/周……）。第 10 节"频率间隔表"按这个标准给每块肌肉打 🟢/🟡/🟠/⚪ 评级。</p>
+
+<h3>为什么选这个</h3>
+<p>① 直接<b>挑战了传统"周一胸日"</b>的健身房文化（那是 1980s 健美选手的方案，对自然训练者效果有限）。② <b>容量等同</b>对照——排除了"做得多就好"的干扰，纯比频率影响。③ <b>对业余训练者尤其重要</b>——每周训练时间有限的人，频率优化能直接提升效果。</p>
+
+<h3>给非专业人解释</h3>
+<p>肌肉"长肉的窗口"在练完后 24-72 小时打开，然后关上。一周练 1 次胸 = 每周开 1 次窗口；练 2 次 = 开 2 次窗口。在总量一样的情况下，2 次窗口 &gt; 1 次窗口。所以"每周一次大胸日"不如"每周两次中等胸"。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+两组都做 16 组胸/周：A 组星期一一次性做完 16 组；B 组分两次（每次 8 组）。8 周后 B 组胸大肌增厚更多，因为 2 次"合成代谢窗口"加在一起 &gt; 1 次。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>第 10 节"42 块肌肉频率间隔表"</b>把每块肌肉按"出现在哪几个课型"给评级。例如<b>背阔肌</b>= "ABC"（每周 3 次，平均间隔 2.3 天）→ 🟢 高频；<b>三角肌中束</b>= "B"（每周 1 次）→ 🟡 偏低（这也是 8.3 决策表里说"要追加"的原因）。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 4. Progressive Overload ACSM -->
+<section id="p4">
+<h2>4. 渐进超负荷（Progressive Overload）</h2>
+<div class="oneliner"><b>一句话：</b>想让肌肉持续增长，必须<b>给它持续加难度</b>——重量、次数、组数、关节角度、组间歇任选其一变难，否则身体适应了就停止增长。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Progression is defined as 'the act of moving forward or advancing toward a specific goal' over time… progressive overload [is achieved] by increasing the resistance (load) being lifted, increasing the number of repetitions performed for a specific load, varying the type of exercise stress placed on the muscle… or some combination of these strategies."
+<span class="cite">—— American College of Sports Medicine (2009). "ACSM Position Stand: Progression Models in Resistance Training for Healthy Adults." <a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">Med Sci Sports Exerc, 41(3), 687-708. PMID 19204579</a></span>
+</blockquote>
+
+<h3>出处</h3>
+<p>American College of Sports Medicine (2009). <i>Medicine &amp; Science in Sports &amp; Exercise</i>, 41(3), 687-708. <a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">PMID: 19204579</a>。这是 ACSM 阻力训练领域的官方 Position Stand，是全球力量训练教练资格考试的核心参考文献。</p>
+
+<h3>我们怎么用</h3>
+<p>计划里每个主复合动作都设计了"每周 +2.5kg 或 +1-2 次"的爬升路径。第 12 节"30 节具体计划"的矩阵和 30 张卡片把这条曲线画了出来——例如杠铃后蹲从 W1 的 27.5kg 一路爬到 W9 的 40kg，每周 +2.5kg。这就是渐进超负荷在数字上的体现。</p>
+
+<h3>为什么选这个</h3>
+<p>① <b>ACSM 是权威机构</b>——它的 Position Stand 是教练资格的基础读物。② <b>"渐进"是肌肥大的根本</b>——没有渐进，再多组数也只是消耗。③ ACSM 给出了<b>5 种渐进方式</b>（重量/次数/组数/动作变化/间歇），不死磕"必须加重量"，对训练新手更友好。</p>
+
+<h3>给非专业人解释</h3>
+<p>身体非常擅长适应——你举 20kg 举到能 10 次稳了，再继续举 20kg×10 就只是"维持"，不会增肌。要继续长，下一周必须 22.5kg×10 或 20kg×12——给它一个"它没见过的难度"，它才会再长一点。所以训练手册里要<b>记录</b>——下次知道该用多少。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+两人都做 8 周卧推：A 组每周用 50kg×10×3 组（不变）；B 组每周 +2.5kg。8 周后 A 组维持原状、B 组卧推 1RM 增长 ~15%（也增肌）。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>第 13 节评估面板的"13.3 重量是否按计划渐进"</b>就是检查这条原理——读你<b>实际训练记录</b>，对比"本周最佳 vs 上周最佳"，统计 ↑渐进 / →持平 / ↓退步 的动作数，超过 2 个动作"↓退步"时给警告"恢复不足，本周可考虑降量 10%"。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 5. Periodization -->
+<section id="p5">
+<h2>5. 周期化训练（3 阶段）</h2>
+<div class="oneliner"><b>一句话：</b>不能连续 10 周都"拼命冲量"——疲劳会盖过进步。把训练分成<b>"重建 → 主训 → 强化 → 减载"</b>周期，让身体在每个周期之间兑现疲劳为生长。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Periodization is the planned, systematic variation of training variables (volume, intensity, exercise selection) over time. The goal is to optimize performance and recovery while avoiding overtraining… Linear periodization typically progresses from higher volume/lower intensity (hypertrophy) to lower volume/higher intensity (strength/peak), followed by a deload phase."
+<span class="cite">—— Stone MH, Stone ME, Sands WA. <i>Principles and Practice of Resistance Training</i> (2007). Human Kinetics.</span>
+</blockquote>
+<blockquote>
+"Without scheduled periods of reduced volume, fatigue accumulates faster than fitness, masking gains. A deload week reduces volume by ~30-50% to allow supercompensation."
+<span class="cite">—— Helms, E. et al. (2018). "Application of the Repetitions in Reserve-Based Rating of Perceived Exertion Scale for Resistance Training." <i>Strength Cond J</i>, 40(4), 28-36.</span>
+</blockquote>
+
+<h3>出处</h3>
+<p>经典力量训练学（Stone 2007）+ 现代肌肥大周期化（Israetel <i>Scientific Principles of Hypertrophy Training</i> 2021；Helms <i>The Muscle and Strength Pyramid</i> 2019）。</p>
+
+<h3>我们怎么用</h3>
+<p>计划分 3 阶段：</p>
+<ul>
+<li><b>Phase 1 重建适应（W1-3）</b>：每动作 2 组 / RIR 3-4 / 重量 85-90% 历史水平。任务是把动作模式和肌肉感知重建。</li>
+<li><b>Phase 2 增肌主训（W4-7）</b>：升到 3 组 / RIR 1-3 / 重量到历史水平并往上推。"每周 +2.5kg" 主战场。</li>
+<li><b>Phase 3a 强化（W8-9）</b>：RIR 0-2，主复合可加顶峰组。冲历史新高。</li>
+<li><b>Phase 3b 减载（W10）</b>：组数砍到 2 组 / 重量 -30% / RIR 3-4。主动恢复。</li>
+</ul>
+
+<h3>为什么选这个</h3>
+<p>① <b>线性周期化</b>对业余/中级训练者最合适（高级才上 block / undulating periodization）。② <b>3 阶段结构</b>给了清晰的心理预期——你知道现在"在 Phase 几、该感受什么"。③ <b>必须有减载</b>——这是这条原理对业余健身者最反常识的部分（很多人觉得"减载是偷懒"）。</p>
+
+<h3>给非专业人解释</h3>
+<p>类比"考前复习"：第 1-3 周是"理清思路"（基础）、4-7 周是"主攻知识点"（爬升）、8-9 周是"模拟冲刺"（顶峰）、第 10 周是"考前一天放松"（减载）。一直 100% 复习的人到考前已经累垮了，反不如最后一天休息的人考得好。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+力量举运动员 12 周周期典型走法：8 周积累（5×5）→ 2 周强化（3×3）→ 1 周冲量（1RM 测试）→ 1 周减载。最终 PR 通常出现在第 11-12 周——前 11 周积累的疲劳在减载周清空后兑现。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>第 2 节"三阶段周期"</b>和<b>第 8.4 节"重量随 10 周的设计曲线图"</b>就是这个原理的可视化——6 条主复合动作的工作重量曲线在 W1-3 平、W4-9 匀速上爬、W10 突然回落 30%。这就是"被设计过的训练计划"该有的形状（对照历史 29 节的"锯齿乱跳" = 无设计）。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 6. RIR -->
+<section id="p6">
+<h2>6. RIR 强度衡量（Reps in Reserve）</h2>
+<div class="oneliner"><b>一句话：</b>"还能多做几次"是衡量训练强度最实用的工具——RIR 3-4 = 留 3-4 次余力（保守），RIR 0-1 = 力竭附近（冲）。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"The Repetitions in Reserve (RIR)-based RPE scale provides a reliable and valid method for autoregulating resistance training intensity… Subjects could accurately predict RIR within ±1 rep for sets of 1-10 reps performed at 70-95% 1RM."
+<span class="cite">—— Zourdos, M.C. et al. (2016). "Novel Resistance Training-Specific Rating of Perceived Exertion Scale Measuring Repetitions in Reserve." <a href="https://pubmed.ncbi.nlm.nih.gov/26154168/" target="_blank" rel="noopener">J Strength Cond Res, 30(1), 267-75. PMID 26154168</a></span>
+</blockquote>
+
+<h3>出处</h3>
+<p>Zourdos MC, Klemp A, Dolan C et al. (2016). <i>Journal of Strength and Conditioning Research</i>, 30(1), 267-275. <a href="https://pubmed.ncbi.nlm.nih.gov/26154168/" target="_blank" rel="noopener">PMID: 26154168</a>。Helms 等（2018）后续扩展到 PowerLifting / 增肌训练。</p>
+
+<h3>我们怎么用</h3>
+<p>动作手册的 4 维自评里"<b>容量耐受</b>"实际就是 RIR 估算。Phase 1 处方 RIR 3-4 / Phase 2 RIR 1-3 / Phase 3 强化 RIR 0-2 / Phase 3 减载 RIR 3-4。30 节卡片的"组×次"栏直接标 RIR。第 13 节评估面板会根据你记录的 RIR 给"下一节建议"——RIR &lt;1 持续多次 = 强度可能过头，建议降量。</p>
+
+<h3>为什么选这个</h3>
+<p>① <b>比"% 1RM"更实用</b>——你今天的 1RM 比上周可能差 5-10%（恢复、睡眠、咖啡因都影响），但 RIR 是按今天的状态自适应的。② <b>不需要每次测 1RM</b>（既费时又有受伤风险）。③ <b>可学习</b>——研究显示训练者能精确预测 RIR ±1 次。</p>
+
+<h3>给非专业人解释</h3>
+<p>RIR = "Reps in Reserve" = 这组结束时<b>还能再做几次到力竭</b>。做 30kg×10 时如果你感觉"还能做 3 次到极限" = RIR 3。RIR 越低 = 强度越大。<b>不用每组都死练到力竭</b>——多数组留 1-3 次余力（RIR 1-3）反而对增肌最佳。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+传统训练："今天用 80% 1RM 做 5 组"——但今天没睡好，1RM 实际只有平时 90%。结果你硬上 80%（其实是真实 1RM 的 89%），第 3 组就力竭了。<br>
+RIR 训练："今天每组练到 RIR 2"——你自动用稍轻的重量，做完 5 组都能稳留 2 次余力。<b>自适应到今天的状态，刺激照常给到，但避免了过度疲劳</b>。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>动作手册的训练日志</b>每条记录包含"容量耐受"自评（基本上就是 RIR 估算）。<b>第 13 节评估面板</b>会读这条数据：若上次"杠铃后蹲 32.5kg×8×3 组 / 容量自评勉强"（即 RIR ~0-1），下次系统建议"这次先重复 32.5kg×10 把次数补满，下下次再加 2.5kg"——而不是机械地 +2.5kg。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 7. Effective sets / muscle activation -->
+<section id="p7">
+<h2>7. 有效组数与肌肉贡献系数</h2>
+<div class="oneliner"><b>一句话：</b>"做了 1 组深蹲" ≠ "练了 1 组股四"——一个动作往往同时刺激多块肌肉，需按解剖<b>激活程度打折</b>分配给每块。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Muscle activation, measured by surface EMG, varies substantially between exercises and between muscles within an exercise. For the bench press, pectoralis major activation is ~80-90% of MVIC, while triceps brachii activation is ~50-60% MVIC. For the back squat, vastus lateralis activation reaches ~80-100% MVIC, while gluteus maximus shows ~30-50% depending on depth."
+<span class="cite">—— Summary of EMG findings from Schoenfeld 2010 (squat depth), Schick 2010 (incline vs flat bench), Caterisano 2002 (squat depth & glute activation), McGill (back exercises).</span>
+</blockquote>
+
+<h3>出处</h3>
+<p>多源 EMG（表面肌电图）研究综合。代表性研究：</p>
+<ul>
+<li>Schoenfeld BJ (2010). "Squatting kinematics and kinetics and their application to exercise performance." <i>J Strength Cond Res</i>, 24(12).</li>
+<li>Caterisano A et al. (2002). "The effect of back squat depth on the EMG activity of 4 superficial hip and thigh muscles." <i>J Strength Cond Res</i>, 16(3).</li>
+<li>Schick EE et al. (2010). "A comparison of muscle activation between a Smith machine and free weight bench press." <i>J Strength Cond Res</i>, 24(3).</li>
+</ul>
+
+<h3>我们怎么用</h3>
+<p>训练数据库.js 里每个动作有一个 <code>contrib</code> 字段，记录它对每块肌肉的贡献系数（0-1）。例如：</p>
+<pre style="background:#f7f1e3; padding:8px 12px; border-radius:6px; font-size:11.5px; overflow-x:auto;">'杠铃后蹲': {
+  contrib: { '股四头肌-外侧+中间头': 1.0, '臀大肌-下部': 0.8,
+             '股直肌': 0.5, '内收肌群': 0.4, '竖脊肌': 0.3, ... }
+}</pre>
+<p>第 8.2 节"每块肌肉的周训练量"= Σ (动作组数 × 该动作对这块肌肉的 contrib 系数) across all movements。</p>
+
+<h3>为什么选这个</h3>
+<p>① <b>更精确</b>——传统"主肌/协同肌"是 0/1 二分，没法定量。系数化后可以算"1 组深蹲对每块肌肉算几组"。② <b>能合理把"复合动作"和"孤立动作"放在同一坐标系比较</b>——既可以算"我背阔肌总共多少组"，也可以诊断"我的训练量到底分给了谁"。</p>
+
+<h3>给非专业人解释</h3>
+<p>1 组杠铃后蹲 ≈ 给股四头肌"算 1.0 组" + 给臀大肌"算 0.8 组" + 给内收肌"算 0.4 组" + 给竖脊肌"算 0.3 组"……加起来这一组动作"分给了"7 块肌肉。一周做 3 组深蹲就给股四 3.0 组、臀大肌 2.4 组等。这样一周下来每块肌肉总共"被分到几组"就清楚了。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+"卧推就是练胸"——错。EMG 显示卧推时胸大肌激活 80-90% MVIC、三角肌前束 60% MVIC、三头肌外侧头 50-60%。所以 1 组卧推应该被算为：胸大肌 1.0 组 + 三角前束 0.6 组 + 三头肌 0.5 组。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>8.2 例 2</b> 演示了"背阔肌一周 9.0 组怎么算的"：A 课引体 3 组 × 1.0 + B 课杠铃划船 3 组 × 1.0 + C 课单臂划船 3 组 × 1.0 = 9.0 组。每个动作的 1.0 系数都是有 EMG 依据的。<br>
+<b>8.2 例 1</b> 演示了 1 组深蹲分配给 7 块肌肉的"加权和"。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 8. Balance ratios -->
+<section id="p8">
+<h2>8. 肌肉平衡比率</h2>
+<div class="oneliner"><b>一句话：</b>不同肌肉之间的训练量<b>需要保持一定比例</b>——失衡（比如推 &gt;&gt; 拉、股四 &gt;&gt; 腘绳）会导致姿势问题、关节损伤、动作模式紊乱。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"In overhead athletes with impingement, a deficit in scapular muscle balance—specifically a low ratio of lower trapezius and serratus anterior strength to upper trapezius—is consistently observed. Restoring the pull-to-push training ratio toward 1:1 is a cornerstone of conservative rehabilitation."
+<span class="cite">—— Cools, A.M. et al. (2007). "Rehabilitation of scapular muscle balance: which exercises to prescribe?" <a href="https://pubmed.ncbi.nlm.nih.gov/17567819/" target="_blank" rel="noopener">Am J Sports Med, 35(10), 1744-51. PMID 17567819</a></span>
+</blockquote>
+<blockquote>
+"The hamstring-to-quadriceps (H:Q) strength ratio is a well-established indicator of knee joint stability. A H:Q ratio below 0.6 (i.e., Q:H above 1.7) is associated with increased risk of anterior cruciate ligament injury, particularly in female athletes."
+<span class="cite">—— Coombs, R. &amp; Garbutt, G. (2002). "Developments in the use of the hamstring/quadriceps ratio for the assessment of muscle balance." <i>J Sports Sci Med</i>, 1(3), 56-62.</span>
+</blockquote>
+
+<h3>出处</h3>
+<p>① 推/拉 + 肩袖：Cools AM (2007)。② Q/H 比：Coombs &amp; Garbutt (2002)、Hewett TE 等 ACL 损伤研究系列。③ 上交叉综合症（前/后链）：Page, Frank &amp; Lardner (2010). <i>Assessment and Treatment of Muscle Imbalance: The Janda Approach</i>. Human Kinetics.</p>
+
+<h3>我们怎么用</h3>
+<p>第 11 节"平衡评估"列了 10 个比率，每个有<b>目标区间</b>：胸/背 0.6-1.2、推/拉 0.85-1.2、Q/H 1.0-1.7、上身/下身 0.5-1.3、前链/后链 0.7-1.3 等。把每块肌肉划入对应类别后，求和算比值，对照区间给 ✓/⚠ 判断。</p>
+
+<h3>为什么选这个</h3>
+<p>① <b>从运动医学/康复学</b>来——比起"练大肌肉"，运动医学先思考"练完后会不会受伤"。② <b>给业余训练者最大的价值</b>——业余健身者最常见的问题不是练得不够，是<b>练得偏</b>（胸太多/背太少 → 圆肩；股四多/腘绳少 → 膝痛）。③ <b>10 个比率覆盖全身姿势力学</b>——一次诊断全身平衡。</p>
+
+<h3>给非专业人解释</h3>
+<p>身体是个杠杆系统——每个关节两边都有相反方向的肌肉拉。如果一边练得多另一边少，关节就被"拉偏"了。例如：胸大肌大、背肌弱 → 肩膀被往前拉 → 圆肩 + 头前伸 + 长期颈痛。Q（股四）大、H（腘绳）弱 → 膝盖容易被前向剪切力撕到前交叉韧带（女运动员尤其）。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+"卧推狂"健身者：胸围 110cm、背很薄。8 年训练后 MRI 显示肩袖磨损 + 慢性肩前痛。康复方案 = <b>停胸训 3 个月、只练拉</b>（划船/面拉/引体），让推/拉比率从 1.8 拉回到 1.0。3 个月后疼痛消失。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>11.2 节</b>算出我们计划当前 10 个比率：3 个 ✓ / 7 个 ⚠。其中：
+<ul style="margin-top:4px;">
+<li><b>Q/H 1.96</b>（目标 1.0-1.7）→ <b>必修</b>，因为关系到膝韧带健康。11.4 给的方案是 W5+ 加俯卧腿弯举 2×12，能把 Q/H 推到 1.39。</li>
+<li><b>胸/背 0.52</b>（目标 ≥0.6）→ 对久坐人群<b>反而是健康纠偏</b>（默认前链过强）。除非出现圆肩，可不修。</li>
+</ul>
+看完表你就知道该担心什么、能放心什么。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 9. Deload -->
+<section id="p9">
+<h2>9. 减载与疲劳管理</h2>
+<div class="oneliner"><b>一句话：</b>连续 9 周渐进加量后疲劳会累积到掩盖进步——第 10 周<b>主动降量 30%</b>，让身体把前 9 周的刺激"兑现"为实际增长。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"Deload, also called planned light week, refers to a reduction in training volume and/or intensity for a short period (typically 1 week every 4-8 weeks of intensive training). Mechanistically, deloads allow accumulated fatigue to dissipate while fitness (strength/hypertrophy) is retained—a window during which supercompensation occurs."
+<span class="cite">—— Helms E.R. et al. (2018). "Application of the Repetitions in Reserve-Based RPE Scale for Resistance Training." <i>Strength Cond J</i>, 40(4), 28-36.</span>
+</blockquote>
+<blockquote>
+"The fitness-fatigue paradigm suggests that performance at any given time equals fitness gained minus fatigue accumulated. Without periodic deload, fatigue eventually exceeds fitness gains, masking adaptations and increasing injury risk."
+<span class="cite">—— Bannister model, adapted by Israetel in RP framework (2021).</span>
+</blockquote>
+
+<h3>出处</h3>
+<p>Helms et al. (2018)；Banister's fitness-fatigue impulse-response model；Israetel <i>Scientific Principles of Hypertrophy Training</i> (2021)。</p>
+
+<h3>我们怎么用</h3>
+<p>计划 W10 = 减载周：每动作砍到 2 组（原 3 组）、重量降 ~30%、RIR 3-4（最轻）。这周不冲量、不挑战 PR，纯粹做"主动恢复"。然后从下一个周期再开始爬。</p>
+
+<h3>为什么选这个</h3>
+<p>① <b>对业余训练者最反常识</b>——大多数人把"减载"当"偷懒"，但实际是肌肥大周期的关键收尾。② <b>科学共识</b>——所有主流力量训练 / 肌肥大流派（Israetel / Helms / Wendler / Westside）都包含定期减载。③ <b>实操有数</b>——研究显示减载后 1-2 周内通常出现"超量恢复"，PR 多发于减载后第 1 周。</p>
+
+<h3>给非专业人解释</h3>
+<p>类比手机充电：训练 = 用电、恢复 = 充电。每周累积疲劳 = 电量下降。如果你 9 周都"满负荷用电"，电量会一直在 20% 徘徊（疲劳累积），看起来你没进步。第 10 周突然把"用电"砍掉 70%（减载）——电量瞬间充回 90%。此时再去测一次 PR，你会发现自己其实早就变强了，只是之前一直被"低电量"掩盖。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+力量举训练 12 周周期：W1-9 渐进加量，W9 自感"力量在退"。W10 减载 30%（轻松练）。W11 测 PR 大多数人能<b>突破 W9 的最高纪录</b>——这是 supercompensation（超量恢复）的典型表现。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>第 6 节"30 节课日历"</b>把 W10（S28-30）明确标为"减载"，备注"主动恢复 · 重量降 30% / 2 组 / RIR 3-4"。<br>
+<b>第 8.4 节"重量曲线图"</b>里你能看到主复合动作（后蹲、卧推、硬拉……）在 W9 达到本周期峰值后 W10 突然下落 30%——这就是减载在图上的形状。<br>
+<b>第 8.2.5 热力图</b>里 W10 那一列全部回到黄/橙（容量回到 ~50-65% MEV），印证了"主动减载"不是"训练失败"，是设计。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 10. e1RM -->
+<section id="p10">
+<h2>10. 估算 1RM 公式</h2>
+<div class="oneliner"><b>一句话：</b>不用真去做 1 次极限重量，用"X kg 做了 N 次"反推 1RM——公式 <code>1RM ≈ w × (1 + 0.0333 × r)</code> 在 r=1-10 次时误差 &lt; 5%。</div>
+
+<h3>原文引用</h3>
+<blockquote>
+"For loads at which 10 or fewer repetitions can be performed, the Epley formula [1RM = w × (1 + 0.0333 × r)] provides an accurate estimation of 1RM (R² &gt; 0.95). For loads &gt; 10 reps, accuracy decreases as fatigue and form breakdown become factors."
+<span class="cite">—— Epley, B. (1985). "Poundage Chart." Boyd Epley Workout. Lincoln, NE. Validated by LeSuer DA et al. (1997) and Mayhew JL et al. (1992).</span>
+</blockquote>
+<blockquote>
+"Strength testing—predicting a one-rep max from reps-to-fatigue: 1RM = w / (1.0278 − 0.0278 × r)"
+<span class="cite">—— Brzycki, M. (1993). <i>Journal of Physical Education, Recreation &amp; Dance</i>, 64(1), 88-90.</span>
+</blockquote>
+
+<h3>出处</h3>
+<p>Epley (1985) 是最早的实用 1RM 估算公式之一；Brzycki (1993) 在 JOPERD 期刊上发布的版本是教练教材中最常引用的。后续验证：LeSuer DA et al. (1997) "The Accuracy of Prediction Equations for Estimating 1-RM Performance"。</p>
+
+<h3>我们怎么用</h3>
+<p>训练数据库.js 里有函数 <code>estimate1RM(w, r) = w × (1 + 0.0333 × r)</code>（Epley 版）。第 5 节"起步重量是怎么定的"把你历史训练记录里每个动作的最佳 w × r 反推 1RM，再 ×85-90% 作为起步重量。例如：</p>
+<ul>
+<li>历史 30kg × 10 后蹲 → e1RM ≈ 40kg → Phase 1 起步 = 40 × 87.5% ≈ 35kg → 但你是想增肌不是冲力量，所以再降到<b>25-27kg</b> 让 RIR 留够 3-4 次</li>
+</ul>
+
+<h3>为什么选这个</h3>
+<p>① <b>不用每次测 1RM</b>——既费力又有受伤风险（业余训练者尤其不该频繁做真 1RM 测试）。② <b>历史数据可用</b>——任何"30kg × 10 次"的记录都能反推 e1RM。③ <b>公式准确性高</b>——10 次以内 R² &gt; 0.95，足够训练用。</p>
+
+<h3>给非专业人解释</h3>
+<p>1RM = 你能举起的最大重量（只能做 1 次）。但你训练时通常做 8-12 次，不会真去测 1 次极限。<b>"做了 N 次的重量"和"只能做 1 次的重量"之间有数学关系</b>。这个公式让你不用真测，就能反推。比如：你 60kg 卧推能做 10 次 → 公式估你 1RM ≈ 80kg。教练根据这个 80kg 帮你设置训练重量。</p>
+
+<div class="example-box">
+<span class="label">教科书例子</span>
+力量举运动员定期测试：先做 100kg × 5 次 → e1RM = 100 × (1 + 0.0333 × 5) = 117kg。然后他不用真测 117kg×1，而是按 117kg 来设计未来训练（80% e1RM = 94kg 做 8 次组数等）。下一次他换 105kg × 5 → e1RM = 123kg → 知道自己增长了 5%。
+</div>
+
+<div class="example-box system">
+<span class="label">我们系统的例子</span>
+<b>第 5 节"起步重量是怎么定的"表格</b>里：杠铃后蹲历史最佳 = 30kg×10 → e1RM ≈ 40kg → 起步 = 25-27kg（取 e1RM 的 ~85-90% 再下调一档保 RIR）。<br>
+<b>动作手册</b>里每个动作的"个人最佳 e1RM"也是用这个公式算的，作为追踪进步的指标。
+</div>
+
+<p class="back-to-top"><a href="#top">↑ 回到顶部</a></p>
+</section>
+
+<!-- 综合 -->
+<section id="synth">
+<h2>这些原理是怎么拼起来的？</h2>
+<p>10 个原理不是各自独立——它们形成了一个<b>从"宏观计划设计"到"单组重量决策"的逻辑链条</b>：</p>
+
+<table>
+<thead><tr><th style="width:18%">层级</th><th style="width:35%">解决什么问题</th><th>用到的原理</th></tr></thead>
+<tbody>
+<tr><td><b>战略层<br>（10 周大方向）</b></td><td>这 10 周整体怎么走？什么时候冲、什么时候收？</td><td>原理 5（周期化 3 阶段）+ 原理 9（W10 减载）</td></tr>
+<tr><td><b>周计划层<br>（A/B/C 课型）</b></td><td>一周练几次？怎么分配？</td><td>原理 3（频率 ≥2/周）+ 原理 8（平衡比率）</td></tr>
+<tr><td><b>课程层<br>（每节 6 动作）</b></td><td>这节做哪些动作？每动作几组？</td><td>原理 1（MEV/MAV/MRV）+ 原理 2（剂量-反应）+ 原理 7（贡献系数）</td></tr>
+<tr><td><b>动作层<br>（具体重量）</b></td><td>这个动作今天用多少 kg？</td><td>原理 4（渐进超负荷）+ 原理 10（e1RM 反推）</td></tr>
+<tr><td><b>单组层<br>（这组该做几次）</b></td><td>这组做几次？做多累？</td><td>原理 6（RIR 衡量）</td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:12px;">具体到一个场景——"<b>周三 B 课型 · 杠铃卧推 · 第 2 组</b>"：</p>
+<ul>
+<li>战略：现在是 W5（Phase 2 主训段）→ 处方 3 组 + RIR 1-3（原理 5）</li>
+<li>周计划：B 课，胸大肌每周 2 次（B+C）→ MEV 6+ 达标（原理 3 + 1）</li>
+<li>课程：卧推贡献胸大肌 1.0 系数，3 组 = 3.0 组（原理 7）</li>
+<li>动作：上次 17.5kg×10 RIR 2 完成度好 → 这次 +2.5kg = 20kg（原理 4）</li>
+<li>单组：第 2 组目标 10 次，保留 RIR 1-2 → 做 9-10 次到位即可（原理 6）</li>
+</ul>
+
+<p>这就是为什么这套系统的<b>每一个数字都能追溯到具体原理</b>——不是"凭感觉"也不是"网红教练说"。</p>
+</section>
+
+<!-- 附录 -->
+<section id="read">
+<h2>附录：进一步阅读</h2>
+
+<h3>原文论文（按本文顺序）</h3>
+<ul>
+<li>Israetel, M. <a href="https://renaissanceperiodization.com/training-volume-landmarks-muscle-growth" target="_blank" rel="noopener">"Training Volume Landmarks for Muscle Growth"</a> · Renaissance Periodization</li>
+<li>Schoenfeld BJ et al. (2017). <a href="https://pubmed.ncbi.nlm.nih.gov/27433992/" target="_blank" rel="noopener">"Dose-response relationship between weekly resistance training volume and increases in muscle mass."</a> <i>J Sports Sci</i>, 35(11).</li>
+<li>Schoenfeld BJ et al. (2016). <a href="https://pubmed.ncbi.nlm.nih.gov/27102172/" target="_blank" rel="noopener">"Effects of resistance training frequency on measures of muscle hypertrophy."</a> <i>Sports Med</i>, 46(11).</li>
+<li>ACSM (2009). <a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">"Position Stand: Progression Models in Resistance Training for Healthy Adults."</a> <i>Med Sci Sports Exerc</i>, 41(3).</li>
+<li>Zourdos MC et al. (2016). <a href="https://pubmed.ncbi.nlm.nih.gov/26154168/" target="_blank" rel="noopener">"Novel Resistance Training-Specific Rating of Perceived Exertion Scale Measuring Repetitions in Reserve."</a> <i>J Strength Cond Res</i>, 30(1).</li>
+<li>Cools AM et al. (2007). <a href="https://pubmed.ncbi.nlm.nih.gov/17567819/" target="_blank" rel="noopener">"Rehabilitation of scapular muscle balance."</a> <i>Am J Sports Med</i>, 35(10).</li>
+<li>Coombs R, Garbutt G (2002). "Developments in the use of the hamstring/quadriceps ratio." <i>J Sports Sci Med</i>, 1(3).</li>
+</ul>
+
+<h3>系统性教材</h3>
+<ul>
+<li>Israetel M et al. (2021). <i>Scientific Principles of Hypertrophy Training</i>. Renaissance Periodization. — 综合本文 1/2/5/6/9 条原理的实战手册</li>
+<li>Helms E, Morgan A, Valdez A. (2019). <i>The Muscle and Strength Pyramid: Training</i>. — 力量+肌肥大综合教材，对业余训练者最友好</li>
+<li>Schoenfeld B. (2020). <i>Science and Development of Muscle Hypertrophy</i> (2nd ed). Human Kinetics. — Schoenfeld 本人写的肌肥大科学综述</li>
+<li>Stone MH, Stone ME, Sands WA (2007). <i>Principles and Practice of Resistance Training</i>. Human Kinetics. — 经典力量训练教材</li>
+<li>Page P, Frank C, Lardner R (2010). <i>Assessment and Treatment of Muscle Imbalance: The Janda Approach</i>. — 上交叉/下交叉综合症的康复学经典</li>
+</ul>
+
+<h3>系统内部引用位置</h3>
+<table>
+<thead><tr><th>原理</th><th>系统里在哪里用到</th></tr></thead>
+<tbody>
+<tr><td>1. MEV/MAV/MRV</td><td>8.2 健康检查、训练数据库.js 的 MUSCLE_TARGETS</td></tr>
+<tr><td>2. 剂量-反应</td><td>8.2 诊断、8.3 决策表的 70% 阈值依据</td></tr>
+<tr><td>3. 频率 ≥2/周</td><td>第 4 节 A/B/C 课型设计、第 10 节频率间隔表</td></tr>
+<tr><td>4. 渐进超负荷</td><td>第 12 节 30 节具体计划的"每周 +2.5kg"、13.3 渐进核对</td></tr>
+<tr><td>5. 周期化 3 阶段</td><td>第 2 节阶段表、第 6 节日历</td></tr>
+<tr><td>6. RIR</td><td>动作手册自评、第 12 节卡片、第 13 节"下一节建议"</td></tr>
+<tr><td>7. 贡献系数</td><td>训练数据库.js 的 EXERCISE_DB.contrib 字段、所有"有效组数"计算</td></tr>
+<tr><td>8. 平衡比率</td><td>第 11 节 10 个比率诊断、第 11.4 修复方案</td></tr>
+<tr><td>9. 减载</td><td>第 2 节 Phase 3、第 8.4 重量曲线 W10 -30%</td></tr>
+<tr><td>10. e1RM</td><td>训练数据库.js 的 estimate1RM 函数、第 5 节起步重量</td></tr>
+</tbody>
+</table>
+
+</section>
+
+<footer>本文档基于训练科学原理整理 · 引用论文均带 PubMed 链接可查证 · 仅供个人训练参考，不替代教练或医生建议</footer>
+</div>
+</body>
+</html>

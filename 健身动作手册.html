@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健身动作手册 · 个人训练档案</title>
+<style>
+  :root {
+    --bg: #faf8f3; --paper: #ffffff; --paper-2: #fdfaf2;
+    --ink: #1f1d1a; --ink-2: #4a463f; --muted: #8a857a;
+    --line: #e8e3d8; --line-2: #d6cfbe;
+    --accent: #b03a2e; --accent-2: #d65a4a; --accent-light: #fbe7e1;
+    --gold: #c08a2e; --soft-yellow: #fff8e3; --soft-blue: #eef3f8;
+    --good: #2d6e3a; --good-light: #e3f1e6;
+    --skin: #f4e3c8; --skin-line: #b89570;
+    --muscle-base: #dec7a4; --muscle-line: #9c7c52;
+    --muscle-prim: #c8462c; --muscle-sec: #ec8d6a;
+    --sidebar-w: 290px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7; font-size: 15px;
+  }
+  .layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
+
+  /* ============ Sidebar ============ */
+  .sidebar {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: var(--paper); border-right: 1px solid var(--line);
+    padding: 22px 18px 28px; font-size: 13.5px;
+  }
+  .brand { font-size: 16px; font-weight: 700; letter-spacing: 2px; color: var(--accent); margin: 0 0 2px; }
+  .brand-sub { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 16px; }
+
+  .bw-block {
+    background: var(--soft-yellow); border: 1px solid #f0e2b8;
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 18px;
+  }
+  .bw-block label { display: block; font-size: 11.5px; color: var(--ink-2); margin-bottom: 4px; }
+  .bw-block input {
+    width: 100%; border: 1px solid var(--line-2); border-radius: 6px;
+    padding: 5px 8px; font-size: 14px; background: white; color: var(--ink); font-family: inherit;
+  }
+  .bw-block input:focus { outline: 1px solid var(--accent); }
+  .bw-block .hint { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  .nav-section { margin-bottom: 14px; }
+  .nav-section h5 {
+    font-size: 10.5px; letter-spacing: 2px; color: var(--muted);
+    margin: 12px 0 4px; text-transform: uppercase;
+    padding-bottom: 3px; border-bottom: 1px solid var(--line);
+  }
+  .nav-section a {
+    display: block; color: var(--ink-2); text-decoration: none;
+    padding: 3px 6px; border-radius: 4px; border-left: 2px solid transparent;
+    font-size: 13.5px; line-height: 1.5;
+  }
+  .nav-section a.sub {
+    padding-left: 18px; font-size: 12.5px; color: var(--muted);
+  }
+  .nav-section a:hover { background: var(--accent-light); color: var(--accent); border-left-color: var(--accent); }
+  .nav-section a .num {
+    display: inline-block; width: 22px; font-variant-numeric: tabular-nums;
+    color: var(--muted); font-size: 11.5px; text-align: right; margin-right: 6px;
+  }
+  .nav-section a:hover .num { color: var(--accent); }
+  .group-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: 8px 0 2px; padding: 3px 0 3px 4px;
+    font-size: 11.5px; color: var(--accent); font-weight: 600;
+    letter-spacing: 0.5px; border-left: 3px solid var(--accent);
+  }
+  .group-head .count { color: var(--muted); font-weight: normal; font-size: 11px; }
+
+  .menu-toggle {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 50;
+    background: var(--accent); color: white; border: 0;
+    width: 38px; height: 38px; border-radius: 8px; font-size: 18px;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  /* ============ Main ============ */
+  .main { padding: 32px 40px 80px; max-width: 1080px; width: 100%; margin: 0 auto; }
+
+  header.cover {
+    text-align: center; padding: 12px 0 28px;
+    border-bottom: 1px solid var(--line); margin-bottom: 24px;
+  }
+  header.cover .tag {
+    display: inline-block; font-size: 11px; letter-spacing: 0.35em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 10px;
+  }
+  header.cover h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: 3px; }
+  header.cover .subtitle { color: var(--muted); font-size: 14px; margin: 0; }
+
+  .controls {
+    display: flex; justify-content: flex-end; gap: 8px;
+    margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .controls button {
+    background: var(--paper); border: 1px solid var(--line-2); border-radius: 18px;
+    padding: 6px 14px; font-size: 12.5px; color: var(--ink-2); cursor: pointer; font-family: inherit;
+  }
+  .controls button:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  section {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 26px 30px; margin-bottom: 22px;
+  }
+  section h2 { font-size: 20px; margin: 0 0 4px; color: var(--accent); letter-spacing: 2px; }
+  section h2 .num {
+    display: inline-block; font-family: Georgia, serif; font-style: italic;
+    margin-right: 8px; color: var(--gold); font-weight: normal;
+  }
+  section .lead {
+    color: var(--muted); font-size: 13.5px; margin: 0 0 16px;
+    border-bottom: 1px dotted var(--line); padding-bottom: 10px;
+  }
+  section h3 {
+    font-size: 16px; margin: 18px 0 8px; color: var(--ink);
+    border-left: 3px solid var(--accent); padding-left: 10px;
+  }
+  section p { margin: 6px 0 10px; color: var(--ink-2); }
+  section ul, section ol { margin: 4px 0 12px; padding-left: 22px; color: var(--ink-2); }
+  section li { margin: 3px 0; }
+
+  .criteria {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px; margin: 12px 0 4px;
+  }
+  .criteria div {
+    background: var(--soft-yellow); border: 1px solid #f0e2b8;
+    padding: 8px 12px; border-radius: 6px; font-size: 13.5px;
+  }
+  .criteria div b { color: var(--accent); margin-right: 6px; }
+
+  .callout {
+    background: var(--soft-blue); border-left: 4px solid #6e94c4;
+    padding: 12px 14px; border-radius: 6px; margin: 12px 0; font-size: 14px;
+  }
+  .callout.warn { background: #fff4e8; border-left-color: #d68a3a; }
+  .callout .head { font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+
+  table.zones { width: 100%; border-collapse: collapse; margin: 12px 0 4px; font-size: 13.5px; }
+  table.zones th, table.zones td {
+    border-bottom: 1px solid var(--line); padding: 9px 6px; text-align: left; vertical-align: top;
+  }
+  table.zones th { background: #f7f1e3; font-weight: 600; font-size: 12.5px; }
+  table.zones tr:last-child td { border-bottom: 0; }
+  table.zones .pct {
+    display: inline-block; background: var(--accent-light); color: var(--accent);
+    padding: 1px 7px; border-radius: 10px; font-size: 12px; font-weight: 600; margin-right: 4px;
+  }
+
+  .eval-dim {
+    background: var(--paper-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 12px 14px; margin: 10px 0;
+  }
+  .eval-dim h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
+  .eval-dim ul { padding-left: 18px; margin: 4px 0; }
+  .eval-dim ul li { font-size: 13px; margin: 2px 0; color: var(--ink-2); }
+  .eval-dim ul li b { color: var(--gold); font-family: Georgia, serif; margin-right: 4px; }
+
+  /* ============ Move cards ============ */
+  .moves-list { display: flex; flex-direction: column; gap: 16px; }
+  .move {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 22px; scroll-margin-top: 20px;
+    display: grid; grid-template-columns: 220px 1fr; gap: 18px;
+  }
+  .move:hover { border-color: var(--accent-2); }
+
+  .move .left-col { display: flex; flex-direction: column; gap: 8px; }
+  .move .body-views {
+    display: flex; gap: 4px; flex-shrink: 0;
+    background: linear-gradient(180deg, #fdfaf2 0%, #f5ede0 100%);
+    border-radius: 10px; padding: 8px 6px;
+    align-items: flex-start; justify-content: center;
+  }
+  .move .body-views .view { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .move .body-views .view-cap {
+    font-size: 9px; letter-spacing: 1px; text-align: center;
+    color: var(--muted); margin-top: 0;
+  }
+  /* body-highlighter 库会向 container 注入 .rbh-wrapper + svg.rbh */
+  .move .body-views .rbh-wrapper { width: 100px !important; padding: 0 !important; }
+  .move .body-views .rbh-wrapper svg.rbh { width: 100% !important; height: auto !important; display: block; }
+  .move .body-views .rbh-wrapper svg.rbh polygon { stroke: #9c7c52; stroke-width: 0.4; }
+  .move .body-views .loading-msg {
+    width: 100px; height: 180px; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--muted); text-align: center; padding: 10px;
+    background: #f5ede0; border-radius: 6px; line-height: 1.4;
+  }
+  .move .body-views .err-msg {
+    width: 200px; padding: 12px; font-size: 11px; color: var(--muted);
+    background: #fff4e8; border: 1px dashed #e0c8a0; border-radius: 6px;
+    line-height: 1.5;
+  }
+  .move .body-views.has-pic { display: block; padding: 6px; }
+  .move .body-views img.pose-img {
+    display: block; width: 100%; max-width: 220px; height: auto;
+    border-radius: 8px; background: white;
+  }
+  .move .body-views .pic-caption {
+    font-size: 9px; letter-spacing: 0.5px; text-align: center;
+    color: var(--muted); margin-top: 4px;
+  }
+  /* 自定义插图 URL 输入区 */
+  .pic-url-block {
+    margin-top: 8px; padding: 6px 8px;
+    background: #f5f0e3; border-radius: 6px;
+    font-size: 11px;
+  }
+  .pic-url-block label {
+    display: block; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.2px;
+  }
+  .pic-url-block input {
+    width: 100%; border: 1px solid var(--line-2); border-radius: 4px;
+    padding: 4px 6px; font-size: 11px; background: white;
+    color: var(--ink-2); font-family: inherit;
+  }
+  .pic-url-block input:focus { outline: 1px solid var(--accent); }
+  .pic-url-block .hints { color: var(--muted); font-size: 10px; margin-top: 3px; line-height: 1.4; }
+  .pic-url-block .hints a { color: var(--accent); text-decoration: none; }
+  .pic-url-block .hints a:hover { text-decoration: underline; }
+
+  .move .meta { min-width: 0; }
+  .move .move-head {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px;
+  }
+  .move .move-head .idx {
+    background: var(--accent); color: white; font-size: 11.5px;
+    padding: 2px 9px; border-radius: 12px; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .move .move-head h4 { margin: 0; font-size: 18px; }
+  .move .move-head .en { color: var(--muted); font-size: 12.5px; font-style: italic; }
+  .move .move-head .group-tag {
+    background: #f0eadd; color: #7a6c4f; padding: 1px 8px; border-radius: 10px;
+    font-size: 11px; letter-spacing: 0.3px; margin-left: auto;
+  }
+
+  .muscle-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 12px; }
+  .muscle-tags span {
+    background: var(--accent-light); color: var(--accent);
+    padding: 2px 9px; border-radius: 12px; font-size: 12px; font-weight: 500;
+  }
+  .muscle-tags span.sec { background: #f3eee2; color: #7a6c4f; font-weight: normal; }
+  .muscle-tags .label {
+    background: transparent !important; color: var(--muted) !important;
+    padding: 2px 0 !important; font-size: 11.5px; margin-right: 2px;
+  }
+  .move .block { margin: 10px 0; font-size: 14px; color: var(--ink-2); }
+  .move .block .lab {
+    display: inline-block; color: var(--accent); font-weight: 600;
+    font-size: 12px; letter-spacing: 0.5px; margin-right: 6px;
+  }
+  .move .block ul { margin: 4px 0; padding-left: 20px; }
+  .move .block ul li { margin: 2px 0; font-size: 13.5px; }
+
+  /* card summary line (auto load level + 最近自评) */
+  .card-summary {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    background: var(--paper-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 12px; margin: 10px 0;
+    font-size: 12.5px;
+  }
+  .card-summary .item { color: var(--muted); }
+  .card-summary .item b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 12px;
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.3px;
+    background: #eee; color: var(--muted);
+  }
+  .badge.L0 { background:#f1eee7; color:#8a857a; }
+  .badge.L1 { background:#fde7d8; color:#b8642a; }
+  .badge.L2 { background:#fde0c2; color:#a45a18; }
+  .badge.L3 { background:#d8ead8; color:#3d7a3d; }
+  .badge.L4 { background:#cbe2cb; color:#1f5c1f; }
+
+  /* History record block */
+  .record-block {
+    background: #fffaef; border: 1px solid #ecd9a3; border-radius: 8px;
+    padding: 12px 14px; margin-top: 14px;
+  }
+  .record-block h5 {
+    margin: 0 0 8px; font-size: 13px; color: #a26a18;
+    letter-spacing: 1px; display: flex; align-items: baseline; gap: 8px;
+  }
+  .record-block h5 .sub { color: var(--muted); font-weight: normal; font-size: 11.5px; }
+  .rec-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 6px 0;
+  }
+  .rec-row label { font-size: 12px; color: var(--muted); margin: 0 2px; }
+  .rec-row select {
+    border: 1px solid var(--line-2); border-radius: 5px;
+    padding: 4px 8px; font-size: 13px; background: white; color: var(--ink);
+    font-family: inherit; font-variant-numeric: tabular-nums; min-width: 84px;
+  }
+  .rec-row select:focus { outline: 1px solid var(--accent); }
+  .rec-row .x { color: var(--muted); font-size: 13px; }
+  .rec-row .hint {
+    margin-left: 8px; font-size: 12px; color: var(--accent); font-weight: 500;
+    background: var(--accent-light); padding: 2px 10px; border-radius: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .rec-row .hint.empty { background: transparent; color: var(--muted); font-weight: normal; }
+  .record-block textarea {
+    margin-top: 6px; width: 100%; border: 1px solid #ecd9a3;
+    border-radius: 5px; padding: 5px 9px; font-size: 13px;
+    background: white; color: var(--ink); min-height: 32px; resize: vertical; font-family: inherit;
+  }
+  .record-block textarea:focus { outline: 1px solid var(--accent); }
+
+  /* Training log */
+  .train-log {
+    margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line-2);
+  }
+  .train-log .header {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .train-log h5 {
+    margin: 0; font-size: 13px; color: var(--accent); letter-spacing: 1px;
+  }
+  .train-log .help { font-size: 11.5px; color: var(--muted); }
+
+  .log-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12.5px; }
+  .log-table th, .log-table td {
+    padding: 4px 5px; border-bottom: 1px solid var(--line); vertical-align: middle;
+  }
+  .log-table th {
+    background: #f7f1e3; font-weight: 600; font-size: 11px;
+    color: var(--ink-2); letter-spacing: 0.3px; text-align: left;
+  }
+  .log-table th.eval-h { color: var(--accent); background: #fdeae3; }
+  .log-table input, .log-table select {
+    width: 100%; border: 0; background: var(--soft-yellow);
+    padding: 3px 5px; font-size: 12.5px; border-radius: 4px;
+    color: var(--ink); font-family: inherit; font-variant-numeric: tabular-nums;
+  }
+  /* ===== 训练日志：评分子行 ===== */
+  .log-table tr.log-eval-row td {
+    background: #fdf6ec; padding: 8px 12px 12px;
+    border-bottom: 2px solid var(--line); border-top: 0;
+  }
+  .log-table tr.log-main td { border-bottom: 0; padding-top: 8px; padding-bottom: 4px; }
+  .eval-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 12px;
+  }
+  .eval-row .item {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .eval-row .item .lab {
+    flex-shrink: 0; min-width: 56px;
+    font-size: 12px; color: var(--ink-2); font-weight: 500;
+  }
+  .eval-row .item select {
+    flex: 1; min-width: 0;
+    border: 1px solid var(--line-2); border-radius: 5px;
+    padding: 5px 8px; font-size: 12.5px;
+    background: white; color: var(--ink-2);
+    font-family: inherit;
+  }
+  .eval-row .item select:focus { outline: 1px solid var(--accent); }
+  .eval-row .item select.set-L0 { background:#f1eee7; color:#6a655a; }
+  .eval-row .item select.set-L1 { background:#fde7d8; color:#a85420; }
+  .eval-row .item select.set-L2 { background:#fde0c2; color:#9a5012; }
+  .eval-row .item select.set-L3 { background:#d8ead8; color:#2d6e3a; }
+  .eval-row .item select.set-L4 { background:#cbe2cb; color:#1f5c1f; }
+  .log-table input:focus, .log-table select:focus { outline: 1px solid var(--accent); background: white; }
+  .log-table input[type="date"] { font-size: 12px; }
+  .log-table .col-num { width: 78px; }
+  .log-table .col-eval { width: 52px; }
+  .log-table .col-date { width: 110px; }
+  .log-table .col-del { width: 28px; text-align: center; }
+  .log-table .del-btn {
+    background: transparent; border: 0; color: var(--muted); cursor: pointer;
+    padding: 4px 6px; font-size: 14px; border-radius: 4px;
+  }
+  .log-table .del-btn:hover { color: var(--accent); background: var(--accent-light); }
+
+  .add-row-btn {
+    margin-top: 6px; background: var(--paper-2); border: 1px dashed var(--line-2);
+    color: var(--accent); padding: 5px 12px; font-size: 12.5px; border-radius: 6px;
+    cursor: pointer; font-family: inherit;
+  }
+  .add-row-btn:hover { background: var(--accent-light); border-color: var(--accent); border-style: solid; }
+
+  .saved-flash {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--good); color: white; padding: 8px 16px;
+    border-radius: 20px; font-size: 13px; opacity: 0;
+    transition: opacity 0.25s; pointer-events: none; z-index: 100;
+  }
+  .saved-flash.show { opacity: 1; }
+
+  footer {
+    text-align: center; color: var(--muted); font-size: 12.5px;
+    margin-top: 36px; padding: 18px 0 0; border-top: 1px solid var(--line);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 84vw; max-width: 320px;
+      transform: translateX(-100%); transition: transform 0.25s;
+      z-index: 40; box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .menu-toggle { display: block; }
+    .main { padding: 60px 14px 60px; }
+    header.cover h1 { font-size: 22px; letter-spacing: 1px; }
+    section { padding: 18px 14px; }
+    .move { grid-template-columns: 1fr; padding: 14px; }
+    .move .body-views { justify-content: center; }
+    .log-table { font-size: 11.5px; display: block; overflow-x: auto; white-space: nowrap; }
+  }
+
+  @media print {
+    .sidebar, .menu-toggle, .controls, .saved-flash { display: none; }
+    .layout { grid-template-columns: 1fr; }
+    .main { padding: 0; max-width: 100%; }
+    section, .move { border: 0; padding: 8px 0; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="菜单">☰</button>
+
+<div class="layout">
+
+  <!-- =========== Sidebar =========== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">健身动作手册</div>
+    <div class="brand-sub">PERSONAL · v1.2</div>
+
+    <div class="bw-block">
+      <label for="bw-input">我的体重 (kg)</label>
+      <input id="bw-input" type="number" step="0.5" min="20" max="250" placeholder="例如 70">
+      <div class="hint">用于自动评估你的"负重水平"</div>
+    </div>
+
+    <div class="nav-section">
+      <h5>近期目标</h5>
+      <a href="#goal"><span class="num">01</span>近期目标</a>
+      <a href="#good" class="sub">什么是"好动作"</a>
+      <a href="#mastery" class="sub">"熟练掌握"的定义</a>
+    </div>
+
+    <div class="nav-section">
+      <h5>原理学习</h5>
+      <a href="#mmc"><span class="num">02</span>神经-肌肉连接</a>
+      <a href="#growth"><span class="num">03</span>肌肉增长机制</a>
+      <a href="#load"><span class="num">04</span>1RM 与负荷区间</a>
+      <a href="#self-eval"><span class="num">05</span>自评等级标准</a>
+    </div>
+
+    <div class="nav-section">
+      <h5>训练分析</h5>
+      <a href="分析.html"><span class="num">📊</span>训练数据分析</a>
+    </div>
+
+    <div class="nav-section" id="nav-moves">
+      <h5>动作清单 <span style="color:var(--muted);font-size:10px;">共 <span id="moveCount">35</span> 个</span></h5>
+      <!-- 由 JS 填充：每个分组小标题 + 各动作链接 -->
+    </div>
+  </aside>
+
+  <!-- =========== Main =========== -->
+  <main class="main">
+
+    <header class="cover">
+      <div class="tag">PERSONAL TRAINING ARCHIVE</div>
+      <h1>健身动作手册</h1>
+      <p class="subtitle">覆盖全身主要肌群的"好动作"清单 · 原理 · 每次训练的记录与自评</p>
+    </header>
+
+    <div class="controls">
+      <button onclick="exportData()">导出我的记录 (JSON)</button>
+      <button onclick="importData()">导入记录</button>
+      <button onclick="window.print()">打印 / 存 PDF</button>
+    </div>
+
+    <!-- ===== 近期目标（合并 好动作定义 / 熟练定义 为其内部段落） ===== -->
+    <section id="goal">
+      <h2><span class="num">01</span>近期目标</h2>
+      <p class="lead">用最少数量的"好动作"覆盖全身主要肌群，并对每个动作的掌握水平与负荷水平有清晰的自我认知。</p>
+      <p>
+        目标可拆为三层：<br>
+        <b>① 覆盖性：</b>所选动作集合能照顾到下肢推/下肢拉/上肢推/上肢拉/核心/全身搬运 6 大功能模式。<br>
+        <b>② 熟练性：</b>对每个动作中的目标肌肉，能"清晰感知 + 主动控制"发力。<br>
+        <b>③ 进阶性：</b>对每个动作，明确当前负荷水平及合理的下一步增长方向。
+      </p>
+      <div class="callout">
+        <div class="head">"一定数量"到底是多少？</div>
+        不是越多越好。研究表明：覆盖一块肌群通常 1–2 个好动作就够。本手册列出 <b>23 个力量动作 + 12 个活动度/恢复动作</b>。常态训练保留 12–16 个力量动作 + 每天穿插 1-2 个活动度动作即可。
+      </div>
+
+      <h3 id="good">什么是"好动作"</h3>
+      <p>一个动作值不值得长期投入精力打磨，由以下 8 条标准共同决定。任何一条明显不满足，都应该被替换或退阶。</p>
+      <div class="criteria">
+        <div><b>1.</b>多关节复合，至少跨 2 个关节</div>
+        <div><b>2.</b>力线自然，关节不被迫扭曲</div>
+        <div><b>3.</b>训练效率高，能在短时间内给到足够刺激</div>
+        <div><b>4.</b>运动幅度完整，能拉伸+收缩全程</div>
+        <div><b>5.</b>可长期渐进负荷，安全可持续</div>
+        <div><b>6.</b>不易损伤关节，磨损分散</div>
+        <div><b>7.</b>技术门槛适中，可退阶/进阶</div>
+        <div><b>8.</b>对恢复友好，不会单次榨干神经系统</div>
+      </div>
+      <div class="callout warn">
+        <div class="head">反面例子</div>
+        孤立、力线扭曲、对单关节磨损极高的动作（如颈后宽距下拉、深度史密斯机硬质轨迹），即便短期有感觉，长期会拉低投入产出比。
+      </div>
+
+      <h3 id="mastery">"熟练掌握"的定义</h3>
+      <p><b>熟练 = 在动作完整 ROM 的每个区段，都能明确感知目标肌肉发力，并能主动选择"加重"还是"加感"。</b></p>
+      <ol>
+        <li><b>神经感知</b>：闭着眼睛也能说出"现在是胸大肌中部在被拉长"还是"被收缩"</li>
+        <li><b>力线控制</b>：动作轨迹稳定，离心和向心阶段都不"借力"</li>
+        <li><b>主动调节</b>：能在同一组里有意识地把刺激更多导向目标肌</li>
+        <li><b>负荷耐受</b>：在保持以上 3 点的前提下，能逐步把重量推到目标负荷区间</li>
+      </ol>
+    </section>
+
+    <!-- ===== 原理学习 ===== -->
+    <section id="mmc">
+      <h2><span class="num">02</span>原理 · 神经-肌肉连接</h2>
+      <p class="lead">为什么"必须明确感知到哪里在发力"？不是玄学，是有研究和生理学基础的。</p>
+
+      <h3>① 运动单位与发力分级</h3>
+      <p>每条肌肉由许多"运动单位"组成 —— 一个运动神经元 + 它控制的所有肌纤维。大脑决定哪些运动单位被招募、以多快的频率放电，直接决定一次收缩的力量大小。</p>
+      <p><b>Henneman 大小原则：</b>负荷低时只招募小型运动单位；负荷上升，大型（快肌主导、增长潜力大）运动单位被陆续招募。<b>你不"用上"大运动单位，它就不会增长。</b></p>
+
+      <h3>② 训练初期 80% 的进步来自神经适应</h3>
+      <p>新手前 4–8 周看到的快速进步，主要不是肌肉变大，而是神经系统学会更高效地招募运动单位、协调主动肌/拮抗肌。这一阶段的"熟练"本质就是给目标肌建一条更宽更顺的神经通路。</p>
+
+      <h3>③ 内部聚焦 vs 外部聚焦</h3>
+      <p><b>Schoenfeld 2018 关键研究：</b>同样训练 8 周，"内部聚焦"组（有意识感受目标肌发力）的二头肌厚度增长约 <b>12.4%</b>，"外部聚焦"组只有 <b>6.9%</b>，几乎翻倍。这种优势在中等以下负荷（≤60% 1RM）时最显著。</p>
+      <div class="callout">
+        <div class="head">实操推论</div>
+        ① 体感不到的肌肉，长期增长一定打折扣，先建立感知再加重。<br>
+        ② 中等重量（60–75% 1RM、8–12 次）最适合磨 Mind-Muscle Connection。<br>
+        ③ 复合动作时主动把意识引导到目标肌，可显著改变长期增长的肌群分布。
+      </div>
+    </section>
+
+    <section id="growth">
+      <h2><span class="num">03</span>原理 · 肌肉增长的三大机制</h2>
+      <p class="lead">来自 Schoenfeld 2010 综述（被后续研究反复修订）：<b>机械张力是主因，其余是放大器</b>。</p>
+      <h3>① 机械张力（最主要）</h3>
+      <p>肌纤维感受到的"拉力 × 时间"。只要张力够大、时间够长，就会启动 mTOR 通路，长出更多肌原纤维。</p>
+      <h3>② 代谢压力（"充血感"来源）</h3>
+      <p>长组数、短间歇让目标肌局部缺氧、乳酸/氢离子堆积，伴随细胞肿胀。中等重量多次数路线的核心机制。</p>
+      <h3>③ 肌肉损伤（辅助，不必追求）</h3>
+      <p>离心阶段产生的微观撕裂会触发修复反应，但过度损伤反而拖累恢复。是机械张力的副产品，不该单独追求。</p>
+      <div class="callout">
+        <div class="head">三种放大策略</div>
+        <b>① 加重</b>（更大机械张力）<b>② 加次数/缩间歇</b>（更多代谢压力）<b>③ 加幅度/减速离心</b>（更长张力时间）—— 可轮换使用以避免单一刺激饱和。
+      </div>
+    </section>
+
+    <section id="load">
+      <h2><span class="num">04</span>原理 · 1RM 与负荷区间</h2>
+      <p class="lead">把"原理"翻译成"今天该用多重"的桥梁。</p>
+      <h3>① 1RM 是什么</h3>
+      <p><b>1RM (One Repetition Max)</b>：以标准动作能恰好完成 1 次的最大重量。所有训练负荷的分母。</p>
+      <ul>
+        <li><b>估算（本手册自动用此公式）：</b><code>1RM ≈ 重量 × (1 + 0.0333 × 次数)</code>（Epley）<br>
+          例：80kg 卧推干净做 8 次 → 1RM ≈ <b>101 kg</b></li>
+        <li><b>直接测试：</b>充分热身后逐步加重，做到只能干净完成 1 次的重量。新手不建议。</li>
+      </ul>
+      <h3>② 三大负荷区间</h3>
+      <table class="zones">
+        <thead>
+          <tr><th style="width:18%">区间</th><th style="width:22%">每组次数</th><th style="width:30%">主要刺激</th><th>背后机制</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>最大力量区</b></td><td><span class="pct">85–100% 1RM</span>1–5 次</td><td>神经募集 + 肌原纤维肥大</td><td>极高机械张力，全部大运动单位被招募</td></tr>
+          <tr><td><b>肌肥大甜区</b></td><td><span class="pct">65–85% 1RM</span>6–12 次</td><td>肌肉体积增长（最高效）</td><td>机械张力 + 代谢压力同时达到较高水平</td></tr>
+          <tr><td><b>耐力代谢区</b></td><td><span class="pct">30–60% 1RM</span>15–30+ 次</td><td>肌耐力 + 毛细血管化</td><td>张力低但代谢压力极高，需接近力竭</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="head">综合结论</div>
+        Meta 分析显示：只要做到接近力竭，30%–85% 1RM 都能产生相似的肌肥大效果。但 65–85%（6–12 次）在效率/耐受/神经疲劳三者之间最平衡。
+      </div>
+    </section>
+
+    <section id="self-eval">
+      <h2><span class="num">05</span>自评等级标准</h2>
+      <p class="lead">每次训练记录里，每行都自带 4 个维度的自评（下拉选 L0–L4），每个维度都有专属的描述。整体等级 = 取最低维度（强调短板）。</p>
+      <p style="font-size:13.5px;">下方是每个维度对应等级的状态描述。具体下拉里同样显示这些短描述，你不需要再做二次解读。</p>
+
+      <div class="eval-dim">
+        <h4>① 神经感知 — "对目标肌的感觉"</h4>
+        <ul>
+          <li><b>L0</b>几乎完全感觉不到目标肌</li>
+          <li><b>L1</b>偶尔能模糊感觉到</li>
+          <li><b>L2</b>大部分动作中能清晰感觉到</li>
+          <li><b>L3</b>全程都能清晰感觉发力</li>
+          <li><b>L4</b>能精细引导发力到具体部位（如胸内侧/外侧）</li>
+        </ul>
+      </div>
+
+      <div class="eval-dim">
+        <h4>② 力线控制 — "动作轨迹的稳定度"</h4>
+        <ul>
+          <li><b>L0</b>需要镜子/视频反复纠正</li>
+          <li><b>L1</b>需要主动注意才能稳定</li>
+          <li><b>L2</b>主动注意下力线稳定</li>
+          <li><b>L3</b>不刻意注意也能保持标准</li>
+          <li><b>L4</b>大重量下仍完美保持</li>
+        </ul>
+      </div>
+
+      <div class="eval-dim">
+        <h4>③ 完整幅度 — "你能做到的 ROM"</h4>
+        <ul>
+          <li><b>L0</b>只能做约一半幅度</li>
+          <li><b>L1</b>大部分幅度，末端难触及</li>
+          <li><b>L2</b>完整幅度，但末端略不稳</li>
+          <li><b>L3</b>完整幅度流畅、无代偿</li>
+          <li><b>L4</b>全幅度 + 缓慢离心都稳</li>
+        </ul>
+      </div>
+
+      <div class="eval-dim">
+        <h4>④ 容量耐受 — "本次能保质量的有效组数"</h4>
+        <ul>
+          <li><b>L0</b>1 组就掉质量</li>
+          <li><b>L1</b>2–3 个有效组</li>
+          <li><b>L2</b>4–5 个有效组</li>
+          <li><b>L3</b>6+ 有效组质量稳定</li>
+          <li><b>L4</b>多动作叠加日仍保质量</li>
+        </ul>
+      </div>
+
+      <div class="eval-dim">
+        <h4>⑤ 负重水平 — 自动评估（不用选）</h4>
+        <p style="font-size:13px;margin:6px 0;">系统根据你的<b>体重</b>和<b>历史最大记录 + 训练日志的最大估算 1RM</b>自动判定。例如杠铃后蹲：L0≤0.5× 体重 / L1≤1.0× / L2≤1.5× / L3≤2.0× / L4>2.0×。自重动作（俯卧撑/平板）按次数或秒数评估。</p>
+      </div>
+    </section>
+
+    <!-- ========== 动作清单 ========== -->
+    <section id="moves">
+      <h2><span class="num">06</span>动作清单</h2>
+      <p class="lead">每张卡片：左侧是<b>解剖示意图</b>（前后两视图，主肌深红色，协同肌橙色）+ 右侧是动作要领、推荐理由、历史最大记录、训练日志（每次训练 1 行 + 当次自评）+ 综合等级。所有输入会自动保存在本机浏览器。</p>
+      <div class="moves-list" id="movesContainer"></div>
+    </section>
+
+    <footer>
+      <p>本手册基于 Schoenfeld 系列综述（2010 / 2018 等）整理 · 仅供个人训练参考</p>
+      <p>单文件 HTML，可双击打开 / 任意编辑器编辑 / 发给他人 · 未来可改造为微信小程序 (WXML) / PWA</p>
+    </footer>
+
+  </main>
+</div>
+
+<div class="saved-flash" id="savedFlash">已保存</div>
+
+<!-- ============== JS ============== -->
+<!-- 单一数据源：肌肉表 / 动作库 / 分类器（与分析看板共用） -->
+<script src="训练数据库.js"></script>
+<script>
+/* ============================================================
+ * 肌肉数据来自共享数据源「训练数据库.js」：
+ *   classifyExercise(动作名) → { contrib:{肌肉:系数}, primary:[], secondary:[] }
+ *   MUSCLE_TARGETS[肌肉].lib → body-highlighter 解剖图键
+ * 动作卡片的"主要肌群/协同/解剖图高亮"都由它统一生成，
+ * 与「分析.html」用的是同一套数据和分类逻辑。
+ * ============================================================ */
+// 把任意动作（用中文名）解析成手册需要的肌肉字段
+function muscleDataFor(move){
+  let c = null;
+  if (typeof classifyExercise === 'function') c = classifyExercise(move.cn);
+  if (!c || !c.contrib || Object.keys(c.contrib).length === 0){
+    // 共享库没匹配上 → 兜底用 move 自带的旧字段
+    return { primary: move.primary||[], secondary: move.secondary||[], mp: move.mp||[], ms: move.ms||[], contrib:{} };
+  }
+  const toLib = m => (typeof MUSCLE_TARGETS!=='undefined' && MUSCLE_TARGETS[m]) ? MUSCLE_TARGETS[m].lib : null;
+  const mp = [...new Set(c.primary.map(toLib).filter(Boolean))];
+  const ms = [...new Set(c.secondary.map(toLib).filter(Boolean))];
+  return { primary: c.primary, secondary: c.secondary, mp, ms, contrib: c.contrib };
+}
+
+/* ============================================================
+ * 解剖示意图：使用开源库 body-highlighter (MIT)
+ *  - GitHub:  https://github.com/lahaxearnaud/body-highlighter
+ *  - 从 jsDelivr CDN 以 ES Module 形式加载（无外部依赖）
+ *  - 每个动作渲染前视 + 后视两幅 SVG，按主/协同肌肉两种深浅高亮
+ *  - 加载失败时显示明确提示（不会回退到我自画的图）
+ * ============================================================ */
+let BodyHighlighter = null;        // 库 ready 后挂在此
+let BodyHighlighterFailed = false; // 加载失败标记
+
+async function loadBodyHighlighter(){
+  const urls = [
+    'https://cdn.jsdelivr.net/npm/body-highlighter@3.0.2/+esm',
+    'https://esm.sh/body-highlighter@3.0.2',
+    'https://cdn.jsdelivr.net/npm/body-highlighter/+esm'
+  ];
+  for (const u of urls){
+    try {
+      const mod = await import(/* @vite-ignore */ u);
+      BodyHighlighter = mod.default || mod.createBodyHighlighter || mod;
+      if (typeof BodyHighlighter !== 'function' && BodyHighlighter && typeof BodyHighlighter.default === 'function'){
+        BodyHighlighter = BodyHighlighter.default;
+      }
+      if (typeof BodyHighlighter === 'function') return true;
+    } catch(e){ /* try next */ }
+  }
+  BodyHighlighterFailed = true;
+  return false;
+}
+
+function renderBodyView(container, primary, secondary, type){
+  // 用 body-highlighter 的 frequency 机制：
+  //   primary muscles 出现 2 次 → 频次 2 → 深色
+  //   secondary muscles 出现 1 次 → 频次 1 → 浅色
+  const data = [];
+  primary.forEach(m => { data.push({ name:'p', muscles:[m] }); data.push({ name:'p2', muscles:[m] }); });
+  secondary.forEach(m => data.push({ name:'s', muscles:[m] }));
+  try {
+    BodyHighlighter({
+      container,
+      data,
+      type,                                         // 'anterior' | 'posterior'
+      highlightedColors: ['#ec8d6a', '#c8462c'],     // freq1 浅 / freq2 深
+      bodyColor: '#dec7a4',
+      style: { width: '100px', padding: '0' }
+    });
+  } catch(e){
+    container.innerHTML = '<div class="loading-msg">渲染失败</div>';
+  }
+}
+
+// ============ 重量/次数/组数/秒数 选项 ============
+function buildOpts(values, suffix){
+  return '<option value="">—</option>' + values.map(v=>`<option value="${v}">${v}${suffix}</option>`).join('');
+}
+const KG_VALUES = (function(){
+  const v=[];
+  for (let w=0; w<=300; w+=2.5){ v.push(w % 1===0 ? w.toString() : w.toFixed(1)); }
+  return v;
+})();
+const REPS_VALUES = (function(){
+  const v=[]; for (let r=1; r<=30; r++) v.push(r);
+  v.push(35); v.push(40); v.push(50); v.push(60); v.push(80); v.push(100);
+  return v;
+})();
+const SETS_VALUES = Array.from({length:12}, (_,i)=>i+1);
+const TIME_VALUES = (function(){
+  const v=[]; for (let s=5; s<=600; s += s<60?5:(s<180?10:30)) v.push(s);
+  return v;
+})();
+const KG_OPTS  = buildOpts(KG_VALUES,  ' kg');
+const REPS_OPTS= buildOpts(REPS_VALUES,' 次');
+const SETS_OPTS= buildOpts(SETS_VALUES,' 组');
+const TIME_OPTS= buildOpts(TIME_VALUES,' 秒');
+
+// ============ 4 个自评维度的"具体选项" ============
+const EVAL_DIMS = [
+  { key:'neural', name:'神经感知', short:'感觉', options:[
+    ['L0','几乎完全感觉不到'],['L1','偶尔模糊感觉到'],['L2','大部分时间清晰'],
+    ['L3','全程清晰感觉发力'],['L4','能引导到具体分区']
+  ]},
+  { key:'form', name:'力线控制', short:'力线', options:[
+    ['L0','需镜子/视频纠正'],['L1','需主动注意才稳'],['L2','主动注意下稳定'],
+    ['L3','不刻意也能保持'],['L4','大重量下仍完美']
+  ]},
+  { key:'rom', name:'完整幅度', short:'幅度', options:[
+    ['L0','只能半幅度'],['L1','大部分幅度，末端难'],['L2','完整幅度末端略不稳'],
+    ['L3','完整幅度流畅'],['L4','全幅度+慢离心稳']
+  ]},
+  { key:'volume', name:'容量耐受', short:'容量', options:[
+    ['L0','1 组就掉质量'],['L1','2–3 个有效组'],['L2','4–5 个有效组'],
+    ['L3','6+ 有效组稳'],['L4','多动作日仍保质']
+  ]}
+];
+
+// ============ 动作数据 ============
+//  primary/secondary：中文 tag 显示
+//  mp/ms：SVG 高亮用的肌肉键（front-deltoids / back-deltoids / chest / biceps / triceps /
+//         forearm / abs / obliques / trapezius / upper-back / lower-back /
+//         gluteal / hamstring / quadriceps / adductor / calves / tibialis）
+// ============ 动作数据（派生自共享数据源）============
+// MOVES 不再独立存储：全部从 训练数据库.js 的 EXERCISE_DB 派生。
+// 手册是「展示层」——动作的字段、肌肉、贡献系数只在 EXERCISE_DB 定义一次，
+// 与「分析.html」完全同源，不会出现两份数据不一致。
+const GROUP_ORDER = [
+  '下肢推','下肢拉','全身','上肢推','上肢拉','手臂','核心',
+  '热身激活','髋部活动度','筋膜放松','日常维持'
+];
+const MOVES = Object.values(EXERCISE_DB)
+  // 私教课移动类动作（壶铃高低6步至平衡）不纳入手册的 35 个精选动作
+  .filter(e => e.id !== 'kb-low-high-6' && !e.id.startsWith('supp-'))
+  .map(e => ({
+    id:    e.id,
+    group: e.category,
+    cn:    e.cn,
+    en:    e.en,
+    pic:   e.pic || '',
+    cues:  e.cues,
+    why:   e.why,
+    bw:    { type: e.loadType, levels: e.bwLevels, note: e.bwNote || '' }
+  }))
+  // 按训练分类排序（EXERCISE_DB 录入顺序已基本一致，sort 仅作兜底，稳定排序保留组内顺序）
+  .sort((a,b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
+
+// ============ 工具 ============
+function estimate1RM(w, r){ return (!w||!r||w<=0||r<=0) ? 0 : w * (1 + 0.0333 * r); }
+function pickLevel(value, levels){
+  let i = 0;
+  for (let j = 0; j < levels.length; j++){ if (value >= levels[j]) i = j; else break; }
+  return i;
+}
+
+// ============ 解剖示意图（占位 + body-highlighter 渲染） ============
+function injectBodySVGs(mp, ms, pic){
+  // 先返回占位容器；待库 ready 后由 renderBodiesForCard 注入真实 SVG
+  const wrap = document.createElement('div');
+  wrap.className = 'body-views';
+  wrap.dataset.primary = JSON.stringify(mp || []);
+  wrap.dataset.secondary = JSON.stringify(ms || []);
+  if (pic) wrap.dataset.pic = pic;
+  wrap.innerHTML = `
+    <div class="view"><div class="loading-msg">加载中…</div><div class="view-cap">${pic ? '动作姿态图' : '前 FRONT'}</div></div>
+    ${pic ? '' : '<div class="view"><div class="loading-msg">加载中…</div><div class="view-cap">背 BACK</div></div>'}
+  `;
+  return wrap;
+}
+
+function renderBodyHighlighterIn(wrap, mp, ms){
+  if (BodyHighlighterFailed || !BodyHighlighter){
+    wrap.innerHTML = `<div class="err-msg">⚠ 解剖示意图未加载<br><br>用的是开源库 <b>body-highlighter</b>（lahaxearnaud/body-highlighter, MIT），需要从 jsDelivr/esm.sh 拉取 ES module。当前网络不通或浏览器拦截了跨源模块。<br><br>解决：① 让浏览器有网重开；② 或用 <code>python3 -m http.server</code> 起本地 HTTP 服务后通过 localhost 访问。<br><br>下面的"主要肌群/协同"标签仍能看到每个动作发力到哪。</div>`;
+    return;
+  }
+  wrap.classList.remove('has-pic');
+  wrap.innerHTML = '';
+  const frontView = document.createElement('div'); frontView.className = 'view';
+  const frontHost = document.createElement('div'); frontView.appendChild(frontHost);
+  const frontCap = document.createElement('div'); frontCap.className = 'view-cap'; frontCap.textContent = '前 FRONT'; frontView.appendChild(frontCap);
+  const backView = document.createElement('div'); backView.className = 'view';
+  const backHost = document.createElement('div'); backView.appendChild(backHost);
+  const backCap = document.createElement('div'); backCap.className = 'view-cap'; backCap.textContent = '背 BACK'; backView.appendChild(backCap);
+  wrap.appendChild(frontView); wrap.appendChild(backView);
+  renderBodyView(frontHost, mp, ms, 'anterior');
+  renderBodyView(backHost, mp, ms, 'posterior');
+}
+
+function renderBodiesForCard(cardEl){
+  const wrap = cardEl.querySelector('.body-views');
+  if (!wrap) return;
+  const mp = JSON.parse(wrap.dataset.primary || '[]');
+  const ms = JSON.parse(wrap.dataset.secondary || '[]');
+  const pic = wrap.dataset.pic || '';
+
+  if (pic){
+    // 先尝试加载真人姿态图（外链）；失败或尺寸异常时回退到 body-highlighter
+    const probe = new Image();
+    probe.onload = () => {
+      if (probe.naturalWidth >= 50 && probe.naturalHeight >= 50){
+        wrap.classList.add('has-pic');
+        wrap.innerHTML = `<img src="${pic}" alt="动作姿态" class="pose-img" referrerpolicy="no-referrer"><div class="pic-caption">动作姿态图 · 外链</div>`;
+      } else {
+        renderBodyHighlighterIn(wrap, mp, ms);
+      }
+    };
+    probe.onerror = () => renderBodyHighlighterIn(wrap, mp, ms);
+    probe.referrerPolicy = 'no-referrer';
+    probe.src = pic;
+    return;
+  }
+  renderBodyHighlighterIn(wrap, mp, ms);
+}
+const MUSCLE_ZH = {
+  'front-deltoids':'三角肌前束','back-deltoids':'三角肌后束',
+  'trapezius':'斜方肌','upper-back':'上背 / 背阔肌','lower-back':'竖脊肌（下背）',
+  'chest':'胸大肌','biceps':'肱二头肌','triceps':'肱三头肌','forearm':'前臂',
+  'abs':'腹直肌','obliques':'腹斜肌',
+  'gluteal':'臀大肌','hamstring':'腘绳肌','quadriceps':'股四头肌',
+  'adductor':'内收肌','calves':'小腿（腓肠肌）','tibialis':'胫骨前肌'
+};
+
+// ============ Sidebar 动作清单 ============
+function renderSidebarMoves(){
+  const nav = document.getElementById('nav-moves');
+  const h5 = nav.querySelector('h5');
+  nav.innerHTML = ''; nav.appendChild(h5);
+  let idx = 1;
+  GROUP_ORDER.forEach(g => {
+    const ms = MOVES.filter(m=>m.group===g);
+    if (!ms.length) return;
+    const head = document.createElement('div');
+    head.className = 'group-head';
+    head.innerHTML = `<span>${g}</span><span class="count">${ms.length} 个</span>`;
+    nav.appendChild(head);
+    ms.forEach(m => {
+      const a = document.createElement('a');
+      a.href = '#move-' + m.id;
+      a.innerHTML = `<span class="num">${String(idx).padStart(2,'0')}</span>${m.cn}`;
+      nav.appendChild(a);
+      m._idx = idx; idx++;
+    });
+  });
+  document.getElementById('moveCount').textContent = MOVES.length;
+}
+
+// ============ 卡片渲染 ============
+function renderMoveCard(move){
+  const card = document.createElement('article');
+  card.className = 'move';
+  card.id = 'move-' + move.id;
+
+  // 肌肉数据统一来自共享数据源（与分析看板同源）
+  const md = muscleDataFor(move);
+
+  // 左列：解剖示意图 + 插图 URL 输入
+  const leftCol = document.createElement('div');
+  leftCol.className = 'left-col';
+  const customPic = (DATA.records[move.id] && DATA.records[move.id].customPic) || '';
+  const effectivePic = customPic || move.pic || '';
+  leftCol.appendChild(injectBodySVGs(md.mp || [], md.ms || [], effectivePic));
+  const picBlock = document.createElement('div');
+  picBlock.className = 'pic-url-block';
+  picBlock.innerHTML = `
+    <label>📷 插图链接（可选，可后期填）</label>
+    <input type="url" data-rf="customPic" placeholder="贴一个动作姿态图 URL..." value="${customPic.replace(/"/g,'&quot;')}">
+    <div class="hints">
+      推荐：<a href="https://musclewiki.com/exercise/${encodeURIComponent(move.en.toLowerCase().replace(/[^a-z0-9]+/g,'-'))}" target="_blank" rel="noopener">MuscleWiki 找 ${move.cn}↗</a>
+      （右键图片→复制图片地址）
+    </div>
+  `;
+  leftCol.appendChild(picBlock);
+  card.appendChild(leftCol);
+
+  // 右侧 meta
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.innerHTML = `
+    <div class="move-head">
+      <span class="idx">${String(move._idx).padStart(2,'0')}</span>
+      <h4>${move.cn} <span class="en">${move.en}</span></h4>
+      <span class="group-tag">${move.group}</span>
+    </div>
+    <div class="muscle-tags">
+      <span class="label">主要肌群</span>
+      ${md.primary.map(m=>`<span>${m}</span>`).join('')}
+      <span class="label" style="margin-left:8px;">协同</span>
+      ${(md.secondary||[]).map(m=>`<span class="sec">${m}</span>`).join('')}
+    </div>
+
+    <div class="card-summary">
+      <div class="item">负重等级 <span class="badge" data-load-badge>—</span></div>
+      <div class="item">最近自评 <span class="badge" data-recent-badge>—</span></div>
+      <div class="item" data-summary-extra>—</div>
+    </div>
+
+    <div class="block">
+      <span class="lab">动作要领</span>
+      <ul>${move.cues.map(c=>`<li>${c}</li>`).join('')}</ul>
+    </div>
+    <div class="block">
+      <span class="lab">推荐理由</span>
+      ${move.why}
+    </div>
+
+    <div class="record-block" data-move="${move.id}">
+      <h5>📌 历史最大记录 <span class="sub">${
+        move.bw.type==='time' ? '— 你曾支撑的最长时间' :
+        move.bw.type==='reps' ? '— 你单组的最高次数（可附负重）' :
+        '— 你曾完成的最重一组（含次数）'
+      }</span></h5>
+      ${(function(){
+        if (move.bw.type==='time'){
+          return `<div class="rec-row"><label>最长时间</label><select data-rf="peakSeconds">${TIME_OPTS}</select><span class="hint empty" data-peak-info>填写后自动估算等级</span></div>`;
+        }
+        if (move.bw.type==='reps'){
+          return `<div class="rec-row"><label>负重（可选）</label><select data-rf="peakWeight">${KG_OPTS}</select><span class="x">×</span><label>单组最高次数</label><select data-rf="peakReps">${REPS_OPTS}</select><span class="hint empty" data-peak-info>填写后自动估算等级</span></div>`;
+        }
+        return `<div class="rec-row"><label>重量</label><select data-rf="peakWeight">${KG_OPTS}</select><span class="x">×</span><label>完成次数</label><select data-rf="peakReps">${REPS_OPTS}</select><span class="hint empty" data-peak-info>填写后自动估算 1RM</span></div>`;
+      })()}
+      <textarea data-rf="peakNote" placeholder="备注：什么时候达到的？当时的训练阶段、体重、状态..."></textarea>
+    </div>
+
+    <div class="train-log" data-move="${move.id}">
+      <div class="header">
+        <h5>📝 训练日志</h5>
+        <span class="help">每次训练 + 当次自评一起记。"评级"列是该次训练的 4 维自评（综合 = 取最低）</span>
+      </div>
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th class="col-date">日期</th>
+            <th class="col-num">${move.bw.type==='time'?'秒数':'重量'}</th>
+            <th class="col-num">${move.bw.type==='time'?'—':'次数'}</th>
+            <th class="col-num">组数</th>
+            <th>备注</th>
+            <th class="col-eval eval-h" title="本次综合（取最低维度）">综合</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody data-rows></tbody>
+      </table>
+      <button class="add-row-btn" data-add>+ 添加记录</button>
+    </div>
+  `;
+  card.appendChild(meta);
+  return card;
+}
+
+// ============ 训练日志行 ============
+function selectWith(opts, value){
+  if (!value) return opts;
+  return opts.replace(`value="${value}"`, `value="${value}" selected`);
+}
+function evalSelectFor(dim, value){
+  // 每个维度专属下拉，选项内容是该维度的具体描述
+  const opts = [`<option value="">— 选本次状态 —</option>`].concat(
+    dim.options.map(([lv,desc])=>`<option value="${lv}"${lv===value?' selected':''}>${lv} · ${desc}</option>`)
+  ).join('');
+  return `<select data-rf="e_${dim.key}" class="${value?('set-'+value):''}">${opts}</select>`;
+}
+function rowHTML(row, isTime){
+  return `
+    <tr class="log-main">
+      <td><input type="date" data-rf="date" value="${row.date||''}"></td>
+      <td><select data-rf="weight">${selectWith(isTime ? TIME_OPTS : KG_OPTS, row.weight)}</select></td>
+      <td>${isTime ? '<span style="color:var(--muted)">—</span>' : `<select data-rf="reps">${selectWith(REPS_OPTS, row.reps)}</select>`}</td>
+      <td><select data-rf="sets">${selectWith(SETS_OPTS, row.sets)}</select></td>
+      <td><input type="text" data-rf="note" value="${(row.note||'').replace(/"/g,'&quot;')}" placeholder="（可选）"></td>
+      <td data-row-overall>${overallBadgeFromRow(row)}</td>
+      <td class="col-del"><button class="del-btn" data-del title="删除">×</button></td>
+    </tr>
+    <tr class="log-eval-row">
+      <td colspan="7">
+        <div class="eval-row">
+          ${EVAL_DIMS.map(d => `
+            <div class="item">
+              <span class="lab">${d.name}</span>
+              ${evalSelectFor(d, row['e_'+d.key]||'')}
+            </div>
+          `).join('')}
+        </div>
+      </td>
+    </tr>
+  `;
+}
+function overallBadgeFromRow(row){
+  const vals = ['e_neural','e_form','e_rom','e_volume'].map(k=>row[k]).filter(Boolean);
+  if (!vals.length) return '<span class="badge">—</span>';
+  const min = Math.min(...vals.map(v=>parseInt(v.slice(1))));
+  return `<span class="badge L${min}">L${min}</span>`;
+}
+
+function renderLogRows(moveId){
+  const log = (DATA.logs[moveId] || []);
+  const move = MOVES.find(m=>m.id===moveId);
+  const card = document.getElementById('move-'+moveId);
+  const tbody = card.querySelector('[data-rows]');
+  const isTime = move.bw.type==='time';
+  if (!log.length){
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);font-size:12px;padding:10px;">还没有记录 — 点下面"+ 添加记录"开始你的第一次</td></tr>`;
+  } else {
+    tbody.innerHTML = log.map(r=>rowHTML(r, isTime)).join('');
+  }
+  bindLogRowEvents(moveId);
+  updateLoadAndStats(moveId);
+}
+function bindLogRowEvents(moveId){
+  const card = document.getElementById('move-'+moveId);
+  // 每条 log 现在有 2 行：log-main + log-eval-row
+  card.querySelectorAll('[data-rows] tr.log-main').forEach((mainTr, idx)=>{
+    const evalTr = mainTr.nextElementSibling; // .log-eval-row
+    [mainTr, evalTr].forEach(tr => {
+      if (!tr) return;
+      tr.querySelectorAll('[data-rf]').forEach(input=>{
+        input.addEventListener('input', ()=>{
+          const f = input.dataset.rf;
+          const v = input.value;
+          if (!DATA.logs[moveId]) DATA.logs[moveId] = [];
+          if (!DATA.logs[moveId][idx]) DATA.logs[moveId][idx] = {};
+          DATA.logs[moveId][idx][f] = v;
+          if (f.startsWith('e_')){
+            input.className = v ? ('set-'+v) : '';
+            const cell = mainTr.querySelector('[data-row-overall]');
+            if (cell) cell.innerHTML = overallBadgeFromRow(DATA.logs[moveId][idx]);
+          }
+          save();
+          updateLoadAndStats(moveId);
+        });
+      });
+    });
+    const del = mainTr.querySelector('[data-del]');
+    if (del) del.addEventListener('click', ()=>{
+      DATA.logs[moveId].splice(idx,1); save(); renderLogRows(moveId);
+    });
+  });
+}
+function addLogRow(moveId){
+  if (!DATA.logs[moveId]) DATA.logs[moveId] = [];
+  const today = new Date().toISOString().slice(0,10);
+  DATA.logs[moveId].unshift({ date: today, weight:'', reps:'', sets:'', note:'', e_neural:'', e_form:'', e_rom:'', e_volume:'' });
+  save(); renderLogRows(moveId);
+}
+
+// ============ 自动等级 + 卡片摘要 ============
+function bestOf(moveId){
+  const move = MOVES.find(m=>m.id===moveId);
+  const rec = DATA.records[moveId] || {};
+  const log = DATA.logs[moveId] || [];
+  let bestWeight=0,bestReps=0,bestSeconds=0,bestORM=0;
+  function consider(w, r, s){
+    if (move.bw.type==='time'){ if (s>bestSeconds) bestSeconds=s; }
+    else if (move.bw.type==='reps'){
+      if (r>bestReps) bestReps=r; if (w>bestWeight) bestWeight=w;
+    } else {
+      if (w>0 && r>0){ const o = estimate1RM(w,r); if (o>bestORM){ bestORM=o; bestWeight=w; bestReps=r; } }
+    }
+  }
+  if (move.bw.type==='time') consider(0,0,parseFloat(rec.peakSeconds)||0);
+  else consider(parseFloat(rec.peakWeight)||0, parseFloat(rec.peakReps)||0, 0);
+  log.forEach(r=>{
+    consider(parseFloat(r.weight)||0, parseFloat(r.reps)||0,
+             move.bw.type==='time' ? (parseFloat(r.weight)||0) : 0);
+  });
+  return { bestWeight, bestReps, bestSeconds, bestORM };
+}
+
+function loadLevelFor(move, best, bw){
+  if (move.bw.type==='load' || move.bw.type==='load-bw'){
+    if (!bw || !best.bestWeight || !best.bestReps) return null;
+    const orm = estimate1RM(best.bestWeight, best.bestReps);
+    const ratio = move.bw.type==='load-bw' ? (orm+bw)/bw : orm/bw;
+    return { level: pickLevel(ratio, move.bw.levels), orm, ratio };
+  }
+  if (move.bw.type==='reps' && best.bestReps){
+    return { level: pickLevel(best.bestReps, move.bw.levels), reps: best.bestReps };
+  }
+  if (move.bw.type==='time' && best.bestSeconds){
+    return { level: pickLevel(best.bestSeconds, move.bw.levels), seconds: best.bestSeconds };
+  }
+  return null;
+}
+
+function updateLoadAndStats(moveId){
+  const move = MOVES.find(m=>m.id===moveId);
+  const card = document.getElementById('move-'+moveId);
+  const bw = parseFloat(DATA.bodyWeight)||0;
+  const best = bestOf(moveId);
+
+  // peak 区块的实时提示
+  const pi = card.querySelector('[data-peak-info]');
+  if (pi){
+    const rec = DATA.records[moveId] || {};
+    if (move.bw.type==='time'){
+      const s = parseFloat(rec.peakSeconds)||0;
+      pi.classList.toggle('empty', !s);
+      pi.textContent = s ? `${s} 秒` : '填写后自动估算等级';
+    } else if (move.bw.type==='reps'){
+      const w = parseFloat(rec.peakWeight)||0;
+      const r = parseFloat(rec.peakReps)||0;
+      pi.classList.toggle('empty', !r);
+      pi.textContent = r ? `${w?w+'kg × ':''}${r} 次` : '填写后自动估算等级';
+    } else {
+      const w = parseFloat(rec.peakWeight)||0;
+      const r = parseFloat(rec.peakReps)||0;
+      const orm = (w&&r)?estimate1RM(w,r):0;
+      pi.classList.toggle('empty', !orm);
+      pi.textContent = orm ? `估算 1RM ≈ ${orm.toFixed(1)} kg` : '填写后自动估算 1RM';
+    }
+  }
+
+  // 负重等级
+  const lv = loadLevelFor(move, best, bw);
+  const loadBadge = card.querySelector('[data-load-badge]');
+  if (lv){
+    loadBadge.textContent = 'L'+lv.level;
+    loadBadge.className = 'badge L'+lv.level;
+  } else {
+    loadBadge.textContent = '—';
+    loadBadge.className = 'badge';
+  }
+
+  // 最近一次自评（取最近一条 log 的 4 维）
+  const log = DATA.logs[moveId] || [];
+  let recentRow = null;
+  for (let i = 0; i < log.length; i++){
+    const r = log[i];
+    if (r.e_neural || r.e_form || r.e_rom || r.e_volume){ recentRow = r; break; }
+  }
+  const recentBadge = card.querySelector('[data-recent-badge]');
+  if (recentRow){
+    const vals = ['e_neural','e_form','e_rom','e_volume'].map(k=>recentRow[k]).filter(Boolean);
+    const min = Math.min(...vals.map(v=>parseInt(v.slice(1))));
+    recentBadge.textContent = `L${min} (${recentRow.date||'—'})`;
+    recentBadge.className = 'badge L'+min;
+  } else {
+    recentBadge.textContent = '—';
+    recentBadge.className = 'badge';
+  }
+
+  // 额外摘要
+  const extra = card.querySelector('[data-summary-extra]');
+  const totalSessions = log.filter(r=>r.weight||r.reps||r.sets).length;
+  let extraHtml = `<span style="color:var(--muted)">已记录 <b style="color:var(--ink)">${totalSessions}</b> 次</span>`;
+  if (lv && lv.orm) extraHtml += ` · <span style="color:var(--muted)">最高估算 1RM ≈ <b style="color:var(--ink)">${lv.orm.toFixed(1)} kg</b></span>`;
+  else if (lv && lv.reps) extraHtml += ` · <span style="color:var(--muted)">最高 <b style="color:var(--ink)">${lv.reps}</b> 次</span>`;
+  else if (lv && lv.seconds) extraHtml += ` · <span style="color:var(--muted)">最长 <b style="color:var(--ink)">${lv.seconds}</b> 秒</span>`;
+  extra.innerHTML = extraHtml;
+}
+
+// ============ 数据 + 持久化 ============
+const STORAGE_KEY = 'gym_handbook_v3';
+const DATA = { bodyWeight: '', records: {}, logs: {} };
+function load(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw){
+      const d = JSON.parse(raw);
+      DATA.bodyWeight = d.bodyWeight || '';
+      DATA.records = d.records || {};
+      DATA.logs = d.logs || {};
+      return;
+    }
+    // 尝试从旧 key v2 迁移
+    const old = localStorage.getItem('gym_handbook_v2');
+    if (old){
+      const d = JSON.parse(old);
+      DATA.bodyWeight = d.bodyWeight || '';
+      DATA.records = d.records || {};
+      DATA.logs = d.logs || {};
+      // 旧的 evals 不再使用（自评迁移到 log 行内，旧数据不迁移）
+    }
+  } catch(e){}
+}
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+  const f = document.getElementById('savedFlash');
+  f.classList.add('show');
+  clearTimeout(window.__flashT);
+  window.__flashT = setTimeout(()=>f.classList.remove('show'), 800);
+}
+
+// ============ 历史训练数据回填 ============
+// 来源：29 次私教课记录中，被判定为「同一动作」(🟢) 的绿勾记录。
+// 只在首次打开时种入 DATA.logs；之后用户的增删改完全自主，不会再被覆盖。
+// note 保留原始私教课动作名，方便追溯实际练的是哪个变式。
+const SEED_HISTORY = (function(){
+  const H = (date,w,r,s,src)=>({ date, weight:w, reps:r, sets:s, note:'历史 · '+src, e_neural:'', e_form:'', e_rom:'', e_volume:'' });
+  return {
+    'back-squat': [
+      H('2026-01-31',30,10,5,'杠铃低杠位深蹲'),
+      H('2026-01-24',25,10,4,'杠铃高杠位深蹲'),
+      H('2025-12-23',25,10,5,'杠铃低杠位深蹲'),
+      H('2025-12-04',25,10,4,'杠铃低杠位深蹲')
+    ],
+    'front-squat': [
+      H('2026-03-24',12,12,2,'杠铃前架位深蹲'),
+      H('2025-12-30',10,10,4,'杠铃前蹲'),
+      H('2025-12-11',18,10,3,'杠铃前蹲'),
+      H('2025-12-11',15,10,1,'杠铃前蹲')
+    ],
+    'bss': [
+      H('2026-03-24',12,10,2,'保加利亚单腿深蹲')
+    ],
+    'rdl': [
+      H('2025-12-23',35,10,5,'杠铃直腿硬拉'),
+      H('2025-12-18',20,10,5,'哑铃直腿硬拉'),
+      H('2025-12-11',35,10,4,'杠铃罗马尼亚硬拉')
+    ],
+    'hip-thrust': [
+      H('2026-04-02',50,10,2,'杠铃臀推')
+    ],
+    'bench-press': [
+      H('2026-04-02',18,10,2,'杠铃卧推'),
+      H('2026-02-03',18,10,5,'杠铃宽距卧推')
+    ],
+    'incline-db': [
+      H('2025-12-27',12,10,5,'哑铃上斜卧推')
+    ],
+    'dip': [
+      H('2026-01-13',0,10,5,'双杠臂屈伸（自重）')
+    ],
+    'pullup': [
+      H('2026-02-03',0,10,5,'弹力带引体向上（助力）'),
+      H('2025-12-25',0,10,5,'弹力带引体向上（助力）')
+    ],
+    'bb-row': [
+      H('2026-01-20',20,12,1,'反握杠铃划船'),
+      H('2026-01-20',12,10,4,'反握杠铃划船')
+    ],
+    'db-row': [
+      H('2025-12-25',12,10,4,'手支撑单侧负重划船')
+    ],
+    'lat-pulldown': [
+      H('2026-03-26',28,10,2,'坐姿后倾正握高位下拉'),
+      H('2026-01-13',30,10,2,'坐姿对握宽距高位下拉'),
+      H('2026-01-13',25,10,3,'坐姿对握宽距高位下拉'),
+      H('2025-12-06',30,10,1,'坐姿正握宽距高位下拉'),
+      H('2025-12-06',30,10,1,'坐姿正握宽距高位下拉'),
+      H('2025-12-06',25,10,2,'坐姿正握宽距高位下拉'),
+      H('2025-12-06',25,10,1,'坐姿正握宽距高位下拉'),
+      H('2025-12-04',25,10,4,'坐姿后倾正握高位下拉')
+    ],
+    'cg-bench': [
+      H('2026-02-10',15,10,5,'杠铃窄距卧推')
+    ]
+  };
+})();
+function seedHistory(){
+  const FLAG = 'gym_handbook_seed_v1';
+  if (localStorage.getItem(FLAG)) return;            // 只种一次
+  Object.keys(SEED_HISTORY).forEach(id => {
+    const existing = DATA.logs[id] || [];
+    DATA.logs[id] = existing.concat(SEED_HISTORY[id])
+      .sort((a,b)=> (b.date||'').localeCompare(a.date||''));   // 日期降序，与"新记录在最上"一致
+  });
+  localStorage.setItem(FLAG, '1');
+  save();
+}
+
+// ============ 绑定 ============
+function bindAll(){
+  const bwInput = document.getElementById('bw-input');
+  bwInput.value = DATA.bodyWeight || '';
+  bwInput.addEventListener('input', ()=>{
+    DATA.bodyWeight = bwInput.value;
+    save();
+    MOVES.forEach(m => updateLoadAndStats(m.id));
+  });
+  MOVES.forEach(m => {
+    const card = document.getElementById('move-'+m.id);
+    card.querySelector('[data-add]').addEventListener('click', ()=>addLogRow(m.id));
+    if (!DATA.records[m.id]) DATA.records[m.id] = {};
+    card.querySelectorAll('.record-block [data-rf]').forEach(el=>{
+      const f = el.dataset.rf;
+      if (DATA.records[m.id][f] !== undefined) el.value = DATA.records[m.id][f];
+      const handler = ()=>{
+        DATA.records[m.id][f] = el.value;
+        save(); updateLoadAndStats(m.id);
+      };
+      el.addEventListener('input', handler);
+      el.addEventListener('change', handler);
+    });
+    // 插图 URL 输入：变更后保存并重新渲染解剖图区域
+    card.querySelectorAll('.pic-url-block [data-rf]').forEach(el=>{
+      let debounceT;
+      el.addEventListener('input', ()=>{
+        DATA.records[m.id][el.dataset.rf] = el.value.trim();
+        save();
+        clearTimeout(debounceT);
+        debounceT = setTimeout(()=>{
+          const wrap = card.querySelector('.body-views');
+          if (wrap){
+            if (el.value.trim()) wrap.dataset.pic = el.value.trim();
+            else delete wrap.dataset.pic;
+            renderBodiesForCard(card);
+          }
+        }, 400);
+      });
+    });
+    renderLogRows(m.id);
+  });
+}
+
+// ============ 导出 / 导入 ============
+function exportData(){
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '健身手册-我的记录-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+function importData(){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const fr = new FileReader();
+    fr.onload = () => {
+      try {
+        const d = JSON.parse(fr.result);
+        DATA.bodyWeight = d.bodyWeight || '';
+        DATA.records = d.records || {};
+        DATA.logs = d.logs || {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+        location.reload();
+      } catch(err){ alert('JSON 解析失败：' + err.message); }
+    };
+    fr.readAsText(file);
+  };
+  input.click();
+}
+
+// ============ 移动端菜单 ============
+function initMenu(){
+  const toggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  toggle.addEventListener('click', e => { e.stopPropagation(); sidebar.classList.toggle('open'); });
+  document.addEventListener('click', e => {
+    if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle){
+      sidebar.classList.remove('open');
+    }
+  });
+  sidebar.querySelectorAll('a').forEach(a=>{
+    a.addEventListener('click', ()=>{ if (window.innerWidth < 900) sidebar.classList.remove('open'); });
+  });
+}
+
+// ============ Init ============
+document.addEventListener('DOMContentLoaded', async ()=>{
+  load();
+  seedHistory();
+  renderSidebarMoves();
+  const container = document.getElementById('movesContainer');
+  let idx = 1;
+  GROUP_ORDER.forEach(g => {
+    MOVES.filter(m=>m.group===g).forEach(m => {
+      m._idx = m._idx || idx;
+      container.appendChild(renderMoveCard(m));
+      idx++;
+    });
+  });
+  bindAll();
+  initMenu();
+
+  // 异步加载 body-highlighter（开源 MIT 库），完成后渲染解剖图
+  await loadBodyHighlighter();
+  document.querySelectorAll('.move').forEach(card => renderBodiesForCard(card));
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b03a2e">
+<title>30 节课增肌训练计划</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --line-2:#d6cfbe; --accent:#b03a2e; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8; --good:#2d6e3a;
+    --p1:#2f5d8d; --p2:#b03a2e; --p3:#c08a2e;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7; font-size:15px;
+    padding:28px 18px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:960px; margin:0 auto;}
+  header{text-align:center; margin-bottom:22px;}
+  .tag{font-size:11px; letter-spacing:.32em; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:26px; margin:6px 0 4px; letter-spacing:1px;}
+  header .sub{color:var(--muted); font-size:13.5px;}
+  .kpis{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:12px;}
+  .kpis div{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:7px 14px; font-size:12.5px;}
+  .kpis div b{color:var(--accent); font-size:15px;}
+
+  section{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-bottom:16px;
+  }
+  section h2{font-size:18px; color:var(--accent); letter-spacing:.5px; margin-bottom:4px;}
+  section .lead{color:var(--muted); font-size:13px; margin-bottom:12px;}
+  section h3{font-size:15px; margin:16px 0 6px; border-left:3px solid var(--accent); padding-left:9px;}
+  p{margin:7px 0; font-size:13.5px; color:var(--ink-2);}
+  b{color:var(--ink);}
+  ul{margin:6px 0 6px 20px;} li{font-size:13.5px; color:var(--ink-2); margin:3px 0;}
+
+  table{width:100%; border-collapse:collapse; margin:8px 0; font-size:12.5px;}
+  th,td{text-align:left; padding:7px 8px; vertical-align:top; border-bottom:1px solid var(--line);}
+  th{background:#f7f1e3; color:var(--ink-2); font-size:11.5px; font-weight:600;}
+  tr:last-child td{border-bottom:0;}
+  .num{text-align:right; font-variant-numeric:tabular-nums;}
+
+  .phase{border-left:4px solid var(--line-2); padding:10px 14px; margin:8px 0; border-radius:0 8px 8px 0; background:var(--paper-2);}
+  .phase.p1{border-color:var(--p1);} .phase.p2{border-color:var(--p2);} .phase.p3{border-color:var(--p3);}
+  .phase .pname{font-weight:700; font-size:14px;}
+  .phase.p1 .pname{color:var(--p1);} .phase.p2 .pname{color:var(--p2);} .phase.p3 .pname{color:var(--p3);}
+
+  .timebar{display:flex; height:34px; border-radius:8px; overflow:hidden; margin:10px 0 4px; font-size:11px; color:#fff; font-weight:600;}
+  .timebar div{display:flex; align-items:center; justify-content:center; text-align:center;}
+  .tb-warm{background:#6e94c4; flex:12;}
+  .tb-main{background:var(--accent); flex:40;}
+  .tb-cool{background:#7a9a6e; flex:8;}
+
+  .day{border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0; background:var(--paper-2);}
+  .day-head{display:flex; align-items:baseline; gap:9px; margin-bottom:3px;}
+  .day-head .badge{background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:2px 11px; border-radius:11px;}
+  .day-head h3{border:0; padding:0; margin:0; font-size:16px;}
+  .day-head .focus{font-size:12px; color:var(--muted); margin-left:auto;}
+  .day .mwrap{margin-top:8px;}
+
+  .greenbox{background:var(--good-light,#e3f1e6); border:1px solid #bcdcc4; border-radius:8px; padding:10px 13px; font-size:12.5px; color:#2a4a30; margin:10px 0;}
+  .note{background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:8px; padding:10px 13px; font-size:12.5px; margin:10px 0;}
+  .ref{font-size:11px; color:var(--muted); margin-top:8px;}
+  .ref a{color:var(--gold);}
+  .pill{display:inline-block; font-size:10.5px; padding:1px 7px; border-radius:9px; background:var(--accent-light); color:var(--accent); margin-right:3px;}
+  .pill.syn{background:#f3eee2; color:#7a6c4f;}
+
+  @media (max-width:680px){
+    body{padding:20px 12px;}
+    section{padding:15px 13px;}
+    .cal table, .lvl table{font-size:11.5px;}
+    th,td{padding:5px 5px;}
+  }
+
+
+  /* 8.2 abbreviation + worked example */
+  .abbr-table{margin:6px 0; font-size:12.5px;}
+  .abbr-table th,.abbr-table td{padding:4px 8px;}
+  .abbr-table td:first-child{font-weight:700; color:var(--accent);}
+  .example-box{background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:8px 0;}
+  .example-box > p:first-child{margin:0 0 4px; font-size:13px;}
+  .example-table{margin:4px 0; font-size:12.5px;}
+  .example-table th,.example-table td{padding:3px 6px; border-bottom:1px solid var(--line);}
+  .example-table tr:last-child td{border-bottom:0;}
+
+  /* 8.2 红桶诊断分组 */
+  .diag-group{border:1px solid var(--line); border-radius:10px; margin:10px 0; overflow:hidden;}
+  .diag-group .diag-head{padding:9px 13px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:13px;}
+  .diag-group .diag-tag{font-weight:700;}
+  .diag-group .diag-desc{color:var(--ink-2); font-size:12.5px; flex:1; min-width:200px;}
+  .diag-group .diag-n{font-size:11.5px; color:#fff; padding:2px 9px; border-radius:9px;}
+  .diag-group.cat-A .diag-head{background:#fbe7e1;} .diag-group.cat-A .diag-tag{color:#b03a2e;} .diag-group.cat-A .diag-n{background:#b03a2e;}
+  .diag-group.cat-B .diag-head{background:#fff8e3;} .diag-group.cat-B .diag-tag{color:#a87018;} .diag-group.cat-B .diag-n{background:#c08a2e;}
+  .diag-group.cat-C .diag-head{background:#eef3e9;} .diag-group.cat-C .diag-tag{color:#3e5a32;} .diag-group.cat-C .diag-n{background:#5a7a4e;}
+  .diag-group table{margin:0;}
+  .diag-group th{background:#fdfaf2;}
+
+  /* 8.2 健康检查 visuals */
+  .explainer{background:#fdf6df; border:1px solid #f0e2b8; border-radius:10px; padding:13px 15px; margin:10px 0;}
+  .explainer p{margin:0 0 6px;}
+  .explainer .explain-list{margin:6px 0 4px 18px; padding:0;}
+  .explainer .explain-list > li{font-size:13px; line-height:1.7; margin-bottom:8px; color:var(--ink);}
+  .explainer code{background:#fff; padding:1px 5px; border-radius:3px; font-size:12px; color:var(--accent); font-family:ui-monospace,SFMono-Regular,monospace;}
+
+  .status-summary{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:14px 0;}
+  .ss-card{border:1px solid var(--line); border-radius:10px; padding:11px 12px; text-align:center; background:var(--paper);}
+  .ss-card .ss-n{font-size:30px; font-weight:700; line-height:1; margin-bottom:4px;}
+  .ss-card .ss-label{font-size:12px; color:var(--ink-2); line-height:1.4;}
+  .ss-card .ss-sub{font-size:11px; color:var(--muted); font-weight:normal;}
+  .ss-ok{background:#e3f1e6; border-color:#bcdcc4;} .ss-ok .ss-n{color:#2d6e3a;}
+  .ss-close{background:#fff8e3; border-color:#f0e2b8;} .ss-close .ss-n{color:#c08a2e;}
+  .ss-short{background:#fbe7e1; border-color:#e8b8ac;} .ss-short .ss-n{color:#b03a2e;}
+  .ss-none{background:#f1efe8; border-color:var(--line-2);} .ss-none .ss-n{color:#8a857a;}
+
+  .bucket-h{font-size:14px; font-weight:700; padding:8px 12px; border-radius:8px; margin:0; letter-spacing:.3px;}
+  .bucket-h.ok{background:#e3f1e6; color:#2a4a30;}
+  .bucket-h.close{background:#fff8e3; color:#7a5a1f;}
+  .bucket-h.short{background:#fbe7e1; color:#9a2e23;}
+  .bucket-h.none{background:#f1efe8; color:#5a5448;}
+
+  .muscle-list{margin:6px 0 0 0; padding:8px 12px; background:var(--paper-2); border-radius:8px;}
+  .muscle-list .mrow{padding:5px 0; border-bottom:1px dashed var(--line); display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; line-height:1.9;}
+  .muscle-list .mrow:last-child{border-bottom:0;}
+  .muscle-list .rname{min-width:55px; flex:none; color:var(--accent); font-size:12px;}
+  .muscle-list .m{font-size:12.5px; color:var(--ink-2); white-space:nowrap;}
+  .muscle-list .m .n{font-size:11px; color:var(--muted); margin-left:2px;}
+  .muscle-list.ok .m{color:#2d6e3a;}
+  .muscle-list.short .m{color:#9a2e23;}
+  .muscle-list .badge-zone{display:inline-block; font-size:10px; padding:1px 6px; background:#2d6e3a; color:#fff; border-radius:8px; margin-left:4px;}
+
+
+  /* 12. Per-session matrix + cards */
+  .matrix-wrap{overflow-x:auto; margin:8px 0; border:1px solid var(--line); border-radius:8px;}
+  .session-matrix{width:max-content; border-collapse:collapse; font-size:10.5px;}
+  .session-matrix th, .session-matrix td{border:1px solid var(--line); padding:3px 4px; text-align:center; min-width:34px;}
+  .session-matrix .mov-th{position:sticky; left:0; background:#fdfaf2; z-index:1; text-align:left; padding:3px 6px; font-size:11px; font-weight:600; min-width:120px;}
+  .session-matrix .mov-th.c-A{border-left:3px solid var(--p1);}
+  .session-matrix .mov-th.c-B{border-left:3px solid var(--p2);}
+  .session-matrix .mov-th.c-C{border-left:3px solid var(--p3);}
+  .session-matrix .addon{font-size:9px; color:#a87018; font-weight:normal;}
+  .session-matrix .sess-th{font-size:9px; color:var(--muted); font-weight:normal; padding:2px 3px;}
+  .session-matrix th[colspan]{font-size:10px; padding:3px 4px;}
+  .session-matrix .ph-p1{background:#eef3f8;}
+  .session-matrix .ph-p2{background:#fce6e2;}
+  .session-matrix .ph-p3{background:#fff8e3;}
+  .session-matrix .ph-p3d{background:#f1efe8;}
+  .session-matrix .cell.blank{color:#bbb; font-size:9px;}
+  .session-matrix .cell.active{font-size:9.5px; line-height:1.3;}
+  .session-matrix .cell.active .w{display:block; font-weight:700; color:var(--ink);}
+  .session-matrix .cell.active .sr{display:block; color:var(--muted); font-size:8.5px;}
+
+  .cards-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin:10px 0;}
+  .session-card{border:1px solid var(--line); border-radius:10px; padding:9px 11px; background:var(--paper); font-size:12px;}
+  .session-card .sc-head{display:flex; align-items:baseline; gap:6px; margin-bottom:6px; padding-bottom:5px; border-bottom:2px solid var(--line);}
+  .session-card .sc-num{font-size:13px; font-weight:700;}
+  .session-card .sc-meta{font-size:11px; color:var(--ink-2); flex:1;}
+  .session-card .sc-phase{font-size:10px; padding:2px 6px; border-radius:8px;}
+  .session-card.ph-p1{border-top:3px solid var(--p1);} .session-card.ph-p1 .sc-phase{background:#eef3f8; color:var(--p1);}
+  .session-card.ph-p2{border-top:3px solid var(--p2);} .session-card.ph-p2 .sc-phase{background:#fce6e2; color:var(--p2);}
+  .session-card.ph-p3{border-top:3px solid var(--p3);} .session-card.ph-p3 .sc-phase{background:#fff8e3; color:#a87018;}
+  .session-card.ph-p3d{border-top:3px dashed #c08a2e;} .session-card.ph-p3d .sc-phase{background:#f1efe8; color:#666;}
+  .session-card .sc-table{width:100%; font-size:11px; margin:0;}
+  .session-card .sc-table th{font-size:10px; padding:3px 4px; background:#f7f1e3;}
+  .session-card .sc-table td{padding:4px 4px; border-bottom:1px dashed var(--line);}
+  .session-card .sc-table tr:last-child td{border-bottom:0;}
+
+  footer{text-align:center; color:var(--muted); font-size:11.5px; margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="tag">30-SESSION HYPERTROPHY PLAN</div>
+    <h1>30 节课增肌训练计划</h1>
+    <p class="sub">基于历史训练水平 + 分析诊断 + 训练科学原理 · 为后续用「动作手册」记录而设计</p>
+    <div class="kpis">
+      <div>目标 <b>增肌</b></div>
+      <div>频率 <b>3 次/周</b></div>
+      <div>周期 <b>10 周 · 30 节</b></div>
+      <div>单次 <b>约 60 分钟</b></div>
+    </div>
+  </header>
+
+  <!-- 1. 为什么这样设计 -->
+  <section>
+    <h2>1. 这套计划在解决什么问题</h2>
+    <p class="lead">不是凭空排课——是针对你前 29 节历史训练里分析出来的三个具体问题来设计的。</p>
+    <table>
+      <thead><tr><th style="width:30%">历史数据暴露的问题</th><th>这套计划怎么应对</th></tr></thead>
+      <tbody>
+        <tr><td><b>体验型：</b>114 个动作 99 个只做 1 次，没有可追踪、可渐进的刺激</td><td>固定 <b>18 个主力动作</b>反复练（16 主线 + 2 补全：哑铃侧平举/蚌式/提踵替换了原核心位）；每个动作在 30 节里至少出现 12–18 次，能看到进步曲线</td></tr>
+        <tr><td><b>频率不足：</b>整体约 1.5 次/周，每块肌肉远达不到每周 2 次主训</td><td>3 次/周 × 三课型轮换，<b>每块主要肌群每周被练到 ≥2 次</b>（Schoenfeld 2016：每周 ≥2 次优于 1 次）</td></tr>
+        <tr><td><b>没有结构：</b>训练量「前重后轻」衰减，折线锯齿无规律，看不出被设计过</td><td>分 <b>3 个周期阶段</b>，重量/组数按渐进超负荷逐段往上走，最后一周减载——折线变成「可识别的形状」</td></tr>
+      </tbody>
+    </table>
+    <p class="ref">原理依据：
+      <a href="https://pubmed.ncbi.nlm.nih.gov/27102172/" target="_blank" rel="noopener">Schoenfeld 等 2016 · 训练频率与肌肥大 meta 分析</a> ·
+      <a href="https://pubmed.ncbi.nlm.nih.gov/27433992/" target="_blank" rel="noopener">Schoenfeld 等 2017 · 周训练量剂量-反应</a> ·
+      <a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">ACSM · 阻力训练进阶模型 Position Stand</a>
+    </p>
+  </section>
+
+  <!-- 2. 三阶段周期 -->
+  <section>
+    <h2>2. 三阶段周期（10 周）</h2>
+    <p class="lead">「在已经学习过前面的基础上」——所以不从零开始，但也不一上来就冲量。分三段，每段任务不同。</p>
+    <div class="phase p1">
+      <div class="pname">阶段一 · 重建适应　第 1–3 周（第 1–9 节）</div>
+      <p>任务：把固定下来的 18 个动作的<b>动作模式和目标肌肉感知</b>重新建立起来，并开始在手册里规范记录。</p>
+      <p>处方：每动作 <b>2 组</b> · 8–12 次 · <b>RIR 3–4</b>（留 3–4 次余力）· 重量 = 历史最佳工作重量的 <b>85–90%</b>。宁可轻、先把「感觉发力 + 力线稳」做对。</p>
+    </div>
+    <div class="phase p2">
+      <div class="pname">阶段二 · 增肌主训　第 4–7 周（第 10–21 节）</div>
+      <p>任务：增肌主力段。把每块肌肉的<b>周有效组数推到甜区</b>，并持续渐进超负荷。</p>
+      <p>处方：每动作 <b>3 组</b> · 6–12 次 · <b>RIR 1–3</b> · 重量爬到历史水平并往上推。<b>每周</b>给主要复合动作 <b>+2.5kg 或 +1–2 次</b>——能加就加，加不动就保持次数把组做满。</p>
+    </div>
+    <div class="phase p3">
+      <div class="pname">阶段三 · 强化 + 减载　第 8–10 周（第 22–30 节）</div>
+      <p>任务：第 8–9 周冲一波强度，第 10 周减载恢复、为下一个周期蓄力。</p>
+      <p>处方：第 8–9 周（第 22–27 节）每动作 3 组 · <b>RIR 0–2</b>，主复合动作可加 1 个顶峰组。<br>
+      第 10 周（第 28–30 节）<b>减载</b>：每动作砍到 2 组 · 重量降 ~30% · RIR 3–4——这周是主动恢复，不是偷懒。</p>
+    </div>
+    <div class="note"><b>为什么要减载：</b>连续 9 周渐进加量后，疲劳会累积到掩盖进步。最后一周主动降量，让身体把前面的刺激「兑现」成实际增长——这是周期化训练的标准收尾。</div>
+  </section>
+
+  <!-- 3. 时间预算 -->
+  <section>
+    <h2>3. 每次 60 分钟 · 时间预算（6 动作版）</h2>
+    <p class="lead">为了把"补全动作"也装进去，每节课从 5 个动作扩到 6 个；主训练时间从 40 分扩到 45 分，整个 60 分钟预算依然撑得住。</p>
+    <div class="timebar">
+      <div class="tb-warm" style="flex:10">热身激活<br>10 分</div>
+      <div class="tb-main" style="flex:45">主训练 45 分</div>
+      <div class="tb-cool" style="flex:5">拉伸 5 分</div>
+    </div>
+    <table>
+      <thead><tr><th>环节</th><th class="num">时长</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td><b>热身激活</b></td><td class="num">~10 分</td><td>从动作手册「热身激活 / 髋部活动度」里挑 2–3 个，每个 1–2 组（按当天课型选，见下方课型表）</td></tr>
+        <tr><td><b>主训练</b></td><td class="num">~45 分</td><td>6 个动作。复合动作组间歇 ~120 秒、孤立动作 ~75 秒；典型一节 ≈ 16–18 个工作组</td></tr>
+        <tr><td><b>拉伸放松</b></td><td class="num">~5 分</td><td>从「筋膜放松 / 日常维持」里挑 1–2 个，针对当天练到的部位</td></tr>
+      </tbody>
+    </table>
+    <p>主训练 45 分钟的算法：阶段二/三每动作 3 组。一节 6 个动作里大致 3 个复合 + 3 个孤立/补全 ≈ <b>18 个工作组</b>。复合组（含 ~120 秒间歇）约 2.4 分/组 × 9 ≈ 22 分；孤立组（含 ~75 秒间歇）约 1.7 分/组 × 9 ≈ 15 分；动作之间换器械/调重量 ~6–8 分。合计 ≈ <b>43–45 分钟</b>。阶段一每动作 2 组，会更短，多出来的时间可以慢下来打磨动作质量。补全动作（提踵/侧平举/蚌式）单组只要 ~45 秒，不会拖慢节奏。</p>
+  </section>
+
+  <!-- 4. 每周三个课型 -->
+  <section>
+    <h2>4. 每周三个课型（A / B / C 轮换 · 每课 6 动作）</h2>
+    <p class="lead">每周第 1、2、3 次分别做课型 A、B、C。这样安排下来，每块主要肌群每周都被练到 ≥2 次。下面每个动作标了<span class="pill">主训</span>和<span class="pill syn">协同</span>肌群，重量是<b>阶段一起步参考</b>（阶段二/三按周递增）。<b>带 ★ 的是这版新加的补全动作</b>，主要为了补 8.2 节里发现的肌肉覆盖缺口。</p>
+
+    <div class="day">
+      <div class="day-head"><span class="badge">课型 A</span><h3>下肢 + 拉 + 核心</h3><span class="focus">主训：股四头肌 · 臀大肌 · 腘绳肌 · 背阔肌（引体） · 核心</span></div>
+      <div class="mwrap"><table>
+        <thead><tr><th>动作</th><th>主训 / 协同肌群</th><th class="num">阶段一起步</th><th>组×次</th></tr></thead>
+        <tbody>
+          <tr><td><b>杠铃后蹲</b></td><td><span class="pill">股四头肌</span><span class="pill">臀大肌</span><span class="pill syn">内收肌</span><span class="pill syn">竖脊肌</span><span class="pill syn">腘绳肌</span></td><td class="num">25–27 kg</td><td>2×10（阶段二起 3 组）</td></tr>
+          <tr><td><b>罗马尼亚硬拉</b></td><td><span class="pill">腘绳肌</span><span class="pill syn">臀大肌</span><span class="pill syn">竖脊肌</span></td><td class="num">28–30 kg</td><td>2×10</td></tr>
+          <tr><td><b>杠铃臀推</b></td><td><span class="pill">臀大肌</span><span class="pill syn">腘绳肌</span></td><td class="num">42–45 kg</td><td>2×10</td></tr>
+          <tr><td><b>引体向上（渐进 ★）</b></td><td><span class="pill">背阔肌</span><span class="pill">大圆肌</span><span class="pill syn">肱二头肌</span><span class="pill syn">菱形肌</span></td><td class="num">变式按周走</td><td>本周变式见第 9 节<br>（W1-3 死悬挂+高位下拉 / W4-6 负向 / W7-9 弹力带辅助 / W10 尝试 strict）</td></tr>
+          <tr><td><b>帕罗夫推（抗旋 ★）</b></td><td><span class="pill">腹斜肌</span><span class="pill">腹横肌</span><span class="pill syn">腰方肌</span></td><td class="num">弹力带 15-20磅</td><td>3×10/侧（每周 1 次可换悬垂举腿/平板支撑做抗屈方向）</td></tr>
+          <tr><td><b>提踵（站姿 ★）</b></td><td><span class="pill">腓肠肌</span><span class="pill syn">比目鱼肌</span><span class="pill syn">胫骨后肌</span><span class="pill syn">腓骨长短肌</span></td><td class="num">自重 / +8-12 kg 哑铃</td><td>3×15（动作末尾，~5 分钟）</td></tr>
+          <tr style="background:#fdf6df;"><td><b>坐姿提踵</b> <span style="font-size:10px; color:#a87018;">W6+ 加</span></td><td><span class="pill">比目鱼肌</span><span class="pill syn">腓肠肌</span><span class="pill syn">胫骨后肌</span></td><td class="num">15-20 kg / 杠铃压腿</td><td>2×15（W6 起加入，专攻比目鱼肌，~3 分钟）</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">热身：泡沫轴股四头肌松解 → 动态髋部画圈 → 深蹲停留激活　|　拉伸：沙发拉伸 → 半跪姿髋屈肌拉伸<br><b>W6 后</b>第 7 个动作（坐姿提踵）出现——加完 ~48 分钟，时间预算撑得住</p>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="badge">课型 B</span><h3>上肢（推 + 拉）</h3><span class="focus">主训：胸大肌 · 背阔肌 · 三角肌（前+中束）· 手臂</span></div>
+      <div class="mwrap"><table>
+        <thead><tr><th>动作</th><th>主训 / 协同肌群</th><th class="num">阶段一起步</th><th>组×次</th></tr></thead>
+        <tbody>
+          <tr><td><b>杠铃卧推</b></td><td><span class="pill">胸大肌</span><span class="pill syn">三角肌前束</span><span class="pill syn">肱三头肌</span></td><td class="num">15 kg</td><td>2×10</td></tr>
+          <tr><td><b>杠铃俯身划船</b></td><td><span class="pill">背阔肌</span><span class="pill">菱形肌</span><span class="pill syn">斜方肌中下</span><span class="pill syn">肱二头肌</span></td><td class="num">25 kg</td><td>2×10</td></tr>
+          <tr><td><b>站姿杠铃推举</b></td><td><span class="pill">三角肌前束</span><span class="pill syn">肱三头肌</span><span class="pill syn">三角肌中束</span></td><td class="num">空杆–15 kg（体感校准）</td><td>2×8–10</td></tr>
+          <tr><td><b>上斜哑铃卧推</b></td><td><span class="pill">胸大肌-上部</span><span class="pill syn">三角肌前束</span><span class="pill syn">肱三头肌</span></td><td class="num">6–8 kg/手</td><td>2×10</td></tr>
+          <tr><td><b>杠铃弯举</b></td><td><span class="pill">肱二头肌</span><span class="pill syn">前臂</span></td><td class="num">10–12 kg（无历史，保守起）</td><td>2×10–12</td></tr>
+          <tr><td><b>哑铃侧平举（★）</b></td><td><span class="pill">三角肌中束</span><span class="pill syn">斜方肌-上部</span><span class="pill syn">三角肌后束</span></td><td class="num">3–4 kg/手</td><td>3×12–15（动作末尾）<br><span style="font-size:11px;color:#a87018;"><b>W5+ 升 4 组</b>——为补三角肌中束 MEV</span></td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">热身：泡沫轴胸椎放松 → 肩部绕环 → 墙天使　|　拉伸：泡沫轴胸椎放松 → 墙天使</p>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="badge">课型 C</span><h3>全身均衡</h3><span class="focus">补全频率 · 单侧 / 自重变式 · 肩健康 · 臀中</span></div>
+      <div class="mwrap"><table>
+        <thead><tr><th>动作</th><th>主训 / 协同肌群</th><th class="num">阶段一起步</th><th>组×次</th></tr></thead>
+        <tbody>
+          <tr><td><b>杠铃前蹲</b></td><td><span class="pill">股四头肌</span><span class="pill syn">臀大肌</span><span class="pill syn">竖脊肌</span></td><td class="num">15 kg</td><td>2×10</td></tr>
+          <tr><td><b>单臂哑铃划船</b></td><td><span class="pill">背阔肌</span><span class="pill syn">菱形肌</span><span class="pill syn">肱二头肌</span></td><td class="num">18–20 kg/手</td><td>2×10/侧</td></tr>
+          <tr><td><b>双杠臂屈伸</b></td><td><span class="pill">胸大肌-中下部</span><span class="pill syn">肱三头肌</span><span class="pill syn">三角肌前束</span></td><td class="num">自重（不够用辅助带）</td><td>2×6–10</td></tr>
+          <tr><td><b>行进弓步</b></td><td><span class="pill">股四头肌</span><span class="pill">臀大肌</span><span class="pill syn">腘绳肌</span><span class="pill syn">臀中肌</span></td><td class="num">8–12 kg/手</td><td>2×10/侧</td></tr>
+          <tr><td><b>面拉</b></td><td><span class="pill">三角肌后束</span><span class="pill syn">菱形肌</span><span class="pill syn">肩袖肌群</span></td><td class="num">15–20 kg（体感校准）</td><td>2×12–15</td></tr>
+          <tr><td><b>蚌式（★）</b></td><td><span class="pill">臀中肌</span><span class="pill">髋外展肌-TFL</span><span class="pill syn">髋深层旋转肌</span><span class="pill syn">臀大肌-上部</span></td><td class="num">自重 / 弹力带</td><td>3×15/侧（动作末尾）</td></tr>
+          <tr style="background:#fdf6df;"><td><b>俯卧腿弯举</b> <span style="font-size:10px; color:#a87018;">W5+ 加</span></td><td><span class="pill">腘绳肌-半腱+半膜</span><span class="pill syn">腘绳肌-股二头长头</span></td><td class="num">8-12 kg 起步</td><td>2×12（W5 起加入，修复 Q/H 失衡，~4 分钟）</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">热身：动态髋部画圈 → 肩部绕环 → 深蹲停留激活　|　拉伸：90/90 髋部旋转 → 筋膜球足底放松<br><b>W5 后</b>第 7 个动作（俯卧腿弯举）出现——加完 ~48 分钟，时间预算撑得住</p>
+    </div>
+
+    <div class="greenbox"><b>每周频率核对：</b>股四头肌 A+C 2 次 · 臀大肌 A+C 多次 · 腘绳肌 A 1 次（<b>W5+ C 课加俯卧腿弯举 → 2 次</b>）· 胸大肌 B+C 2 次 · 背阔肌 A+B+C 3 次 · 三角肌中束 B（侧平举，<b>W5+ 升 4 组</b>）1 次 · 臀中肌 C 1 次 · 小腿 A 1 次（<b>W6+ 加坐姿提踵</b>）· 核心抗旋 A 1 次。<b>带 ★ 的 5 个动作 + W5/W6 后的 2 个加入动作</b>正好对应 8.3 节里"必须改的 3 块"——侧平举 +1 组修三角肌中束、俯卧腿弯举修腘绳半腱半膜、坐姿提踵修比目鱼。</div>
+    <div class="note"><b>W5/W6 升级动作总览：</b>到第 5 周开始，C 课加 <b>俯卧腿弯举 2×12</b>（修 Q/H 失衡）；同时 B 课的哑铃侧平举从 3 组升到 4 组（补三角肌中束 MEV）。到第 6 周开始，A 课末尾加 <b>坐姿提踵 2×15</b>（补比目鱼肌 MEV）。<br>升级后单节训练 ~48 分钟，整套预算 60 分钟仍然撑得住——补全动作都是小肌肉孤立，单组 ~45 秒。</div>
+  </section>
+
+  <!-- 5. 起步重量参考 -->
+  <section class="lvl">
+    <h2>5. 起步重量是怎么定的</h2>
+    <p class="lead">不是拍脑袋——是从你 v2 历史数据库里 143 条训练实例算出每个动作的历史最佳，再反推。</p>
+    <table>
+      <thead><tr><th>动作</th><th class="num">历史最佳</th><th class="num">估算 1RM</th><th class="num">阶段一起步</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>杠铃后蹲</td><td class="num">30kg×10</td><td class="num">≈40kg</td><td class="num">25–27kg</td><td>取历史 10RM 的 ~85–90%</td></tr>
+        <tr><td>罗马尼亚硬拉</td><td class="num">35kg×10</td><td class="num">≈47kg</td><td class="num">28–30kg</td><td>同上</td></tr>
+        <tr><td>杠铃臀推</td><td class="num">50kg×10</td><td class="num">≈67kg</td><td class="num">42–45kg</td><td>你最强的动作，起步也最高</td></tr>
+        <tr><td>杠铃前蹲</td><td class="num">18kg×10</td><td class="num">≈24kg</td><td class="num">15kg</td><td>同上</td></tr>
+        <tr><td>杠铃卧推</td><td class="num">18kg×10</td><td class="num">≈24kg</td><td class="num">15kg</td><td>同上</td></tr>
+        <tr><td>杠铃俯身划船</td><td class="num">30kg×12</td><td class="num">≈42kg</td><td class="num">25kg</td><td>历史源自 T 杠划船</td></tr>
+        <tr><td>单臂哑铃划船</td><td class="num">24kg×10</td><td class="num">≈32kg</td><td class="num">18–20kg/手</td><td>同上</td></tr>
+        <tr><td>高位下拉</td><td class="num">30kg×10</td><td class="num">≈40kg</td><td class="num">25kg</td><td>同上</td></tr>
+        <tr><td>上斜哑铃卧推</td><td class="num">15kg×10(杠铃)</td><td class="num">≈20kg</td><td class="num">6–8kg/手</td><td>历史是杠铃上斜，换哑铃按单手折算</td></tr>
+        <tr><td>站姿杠铃推举</td><td class="num">12kg×10(哑铃)</td><td class="num">≈16kg</td><td class="num">空杆–15kg</td><td>历史是坐姿哑铃推举，换站姿杠铃需第 1 次体感校准</td></tr>
+        <tr><td>行进弓步</td><td class="num">弓步偏轻</td><td class="num">—</td><td class="num">8–12kg/手</td><td>历史弓步类负重普遍较轻，保守起步</td></tr>
+        <tr><td>引体向上（渐进）</td><td class="num">无</td><td class="num">—</td><td class="num">见第 9 节</td><td>从死悬挂起步，按 10 周渐进路径走，目标 W10 完成 1 个 strict</td></tr>
+        <tr><td>杠铃弯举 / 双杠臂屈伸 / 面拉<br>帕罗夫推 / 悬垂举腿 / 平板支撑</td><td class="num">无 / 自重</td><td class="num">—</td><td class="num">见课型表</td><td>历史里没有可比较的负重记录，<b>第 1 次按 RIR 3–4 校准</b>，记到手册里当作新基线</td></tr>
+        <tr><td>提踵（站姿）★</td><td class="num">无</td><td class="num">—</td><td class="num">自重→+8-12kg/手</td><td>历史从未单独练；先做 3×15 自重把感觉建起来，第 2 周开始加哑铃</td></tr>
+        <tr><td>哑铃侧平举 ★</td><td class="num">无</td><td class="num">—</td><td class="num">3–4kg/手</td><td>小肌孤立动作起手务必轻；以"能感到肩中束烧"为准，不为重量</td></tr>
+        <tr><td>蚌式 ★</td><td class="num">无</td><td class="num">—</td><td class="num">自重 / 加弹力带</td><td>第 1 次先做 3×15/侧 自重把臀中找出来，再考虑加弹力带</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>重要：起步重量只是参考。</b>第 1 次做每个动作时，按「能干净完成 + 还留 3–4 次余力（RIR 3–4）」来微调——比参考值轻或重都正常，把<b>实际用的重量记进手册</b>，那才是你真正的基线。后面所有进阶都从这个真实基线往上走。</div>
+  </section>
+
+  <!-- 6. 30 节课日历 -->
+  <section class="cal">
+    <h2>6. 30 节课日历</h2>
+    <p class="lead">每周 A / B / C 轮换，阶段决定强度。「本周进阶目标」是相对上一周。</p>
+    <table>
+      <thead><tr><th>周</th><th>节次</th><th>课型</th><th>阶段</th><th>本周进阶目标</th></tr></thead>
+      <tbody>
+        <tr><td>第 1 周</td><td>1·2·3</td><td>A·B·C</td><td style="color:var(--p1)">重建适应</td><td>建立动作模式，重量取参考值，每动作 2 组，RIR 3–4</td></tr>
+        <tr><td>第 2 周</td><td>4·5·6</td><td>A·B·C</td><td style="color:var(--p1)">重建适应</td><td>重量持平或 +2.5kg；重点在「目标肌肉感知」这一维度的自评</td></tr>
+        <tr><td>第 3 周</td><td>7·8·9</td><td>A·B·C</td><td style="color:var(--p1)">重建适应</td><td>动作质量稳定后，把重量推到接近历史水平，准备进入主训段</td></tr>
+        <tr><td>第 4 周</td><td>10·11·12</td><td>A·B·C</td><td style="color:var(--p2)">增肌主训</td><td>每动作升到 <b>3 组</b>，RIR 降到 1–3，重量到历史 10RM 水平</td></tr>
+        <tr><td>第 5 周</td><td>13·14·15</td><td>A·B·C</td><td style="color:var(--p2)">增肌主训</td><td>主复合动作 +2.5kg 或 +1–2 次</td></tr>
+        <tr><td>第 6 周</td><td>16·17·18</td><td>A·B·C</td><td style="color:var(--p2)">增肌主训</td><td>继续 +2.5kg 或 +1–2 次；加不动的动作就把 3 组都做满次数</td></tr>
+        <tr><td>第 7 周</td><td>19·20·21</td><td>A·B·C</td><td style="color:var(--p2)">增肌主训</td><td>本段最后一周，能维持渐进就维持；开始留意恢复体感</td></tr>
+        <tr><td>第 8 周</td><td>22·23·24</td><td>A·B·C</td><td style="color:var(--p3)">强化</td><td>RIR 降到 0–2；主复合动作（后蹲/硬拉/卧推/划船）可加 1 个顶峰组</td></tr>
+        <tr><td>第 9 周</td><td>25·26·27</td><td>A·B·C</td><td style="color:var(--p3)">强化</td><td>冲本周期的最高重量 / 次数，记录新的历史最佳</td></tr>
+        <tr><td>第 10 周</td><td>28·29·30</td><td>A·B·C</td><td style="color:var(--p3)">减载</td><td><b>主动恢复</b>：每动作砍到 2 组、重量降 ~30%、RIR 3–4。周期收尾</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 7. 怎么配合手册 -->
+  <section>
+    <h2>7. 怎么用「动作手册」记录</h2>
+    <p>这套计划是为「能被记录、能被复盘」设计的。每次训练后，在动作手册里：</p>
+    <ul>
+      <li><b>记每个动作的重量 × 次数 × 组数</b>——这是渐进超负荷的依据，下次知道该加多少。</li>
+      <li><b>记 4 维自评</b>（神经感知 / 力线控制 / 完整幅度 / 容量耐受）——尤其阶段一，重点看「目标肌肉感知」有没有提升。</li>
+      <li><b>记 RIR</b>（这次还能多做几次）——判断强度够不够、要不要加量。</li>
+    </ul>
+    <p>每过一个阶段（约 3 周），回「训练分析」页看：周等效组数有没有进甜区、折线有没有变成渐进向上的形状、平衡有没有改善。<b>这套计划成不成功，最终就看「每块肌肉的逐次趋势」那张图——从锯齿乱跳变成缓慢爬升。</b></p>
+    <div class="note">下一个周期：30 节课练完、减载结束后，拿手册里积累的真实数据重新生成下一份计划——那时候就是真正「数据驱动」的迭代了，而不是再靠历史体验型数据估算。</div>
+  </section>
+
+  <!-- ========== 8. 计划评估 ========== -->
+<section>
+<h2>8. 计划评估 · 跟历史 29 节同维度对比</h2>
+<p class="lead">前面 Summary 是为「历史 29 节」做的总结。这一节就是给新计划做同样维度的总结——这样新计划好不好、相对历史改进了多少，看得见、可对比。</p>
+
+<h3>8.1 18 个动作是否符合「好动作」标准</h3>
+<p>动作手册里列了 8 条「好动作」标准：① 多关节复合 ② 力线自然 ③ 效率高 ④ 幅度完整 ⑤ 可长期渐进 ⑥ 关节友好 ⑦ 有退/进阶 ⑧ 对恢复友好。</p>
+<table><thead><tr><th>动作</th><th>多关节</th><th>力线</th><th>渐进性</th><th>关节友好</th><th>结论</th></tr></thead><tbody>
+<tr><td>杠铃后蹲 / 前蹲 / 行进弓步</td><td>✓ 髋膝踝</td><td>✓</td><td>✓ 加重</td><td>✓</td><td>下肢之王，全部合格</td></tr>
+<tr><td>罗马尼亚硬拉 / 杠铃臀推</td><td>✓ 髋为主</td><td>✓</td><td>✓ 大幅加重空间</td><td>✓ 腰友好</td><td>髋铰链双柱，全部合格</td></tr>
+<tr><td>杠铃卧推 / 上斜哑铃 / 双杠臂屈伸</td><td>✓ 肩肘</td><td>✓</td><td>✓</td><td>✓（注意肘关节）</td><td>横/竖推齐全</td></tr>
+<tr><td>站姿杠铃推举</td><td>✓ 肩肘 + 核心</td><td>✓</td><td>✓</td><td>✓ 站姿优于借力</td><td>合格</td></tr>
+<tr><td>引体向上（渐进 ★） / 杠铃俯身划船 / 单臂哑铃划船</td><td>✓ 肩肘</td><td>✓</td><td>✓ 死悬挂→负向→弹力带→strict 4 阶</td><td>✓</td><td>垂直拉 + 水平拉双线覆盖（10 周渐进路径见第 9 节）</td></tr>
+<tr><td>面拉</td><td>✓ 肩 + 肩胛</td><td>✓ 肩健康首选</td><td>✓</td><td>✓✓ 极友好</td><td>合格（小肌孤立例外）</td></tr>
+<tr><td>杠铃弯举 / 哑铃侧平举（★）</td><td>~ 单关节</td><td>✓</td><td>✓</td><td>✓</td><td>合格（孤立动作例外，补三角中束）</td></tr>
+<tr><td>帕罗夫推（★） / 悬垂举腿 / 平板支撑</td><td>✓ 核心整合</td><td>✓</td><td>✓ 时间/负重/带阻</td><td>✓</td><td>抗屈/抗伸/抗旋三向覆盖</td></tr>
+<tr><td>提踵（站姿 ★）</td><td>~ 单关节（踝）</td><td>✓</td><td>✓ 自重→负重</td><td>✓</td><td>合格（小腿主孤立动作，补小腿+足踝稳定）</td></tr>
+<tr><td>蚌式（★）</td><td>~ 单关节（髋）</td><td>✓</td><td>✓ 自重→弹力带</td><td>✓✓ 髋友好</td><td>合格（臀中肌/髋外展专用，补骨盆稳定）</td></tr>
+</tbody></table>
+<div class="greenbox" style="background:#e3f1e6;border:1px solid #bcdcc4;color:#2a4a30;"><b>结论：</b>18 个动作全部满足 8 条标准。其中 5 个孤立动作（弯举/面拉/侧平举/提踵/蚌式）按"小肌肉补足"的角色保留，不参与"多关节"这一条。引体向上的"渐进性"特别强——10 周里走 4 个不同变式，是计划里最有学习曲线的动作。</div>
+
+<h3>8.2 计划够不够刺激每块肌肉？（健康检查 · 已应用 8.3 必改项）</h3>
+
+<div class="note" style="background:#e3f1e6;border-color:#bcdcc4;color:#2a4a30;"><b>本节已经反映 W5/W6+ 修改后的状态：</b>侧平举升 4 组、C 课加俯卧腿弯举、A 课加坐姿提踵——这些都已写进课型表。下面的健康检查是"用<b>修改后</b>的计划"重新算出来的结果，所以跟最初版本不一样。</div>
+
+<!-- ① 缩写词典 -->
+<div class="explainer">
+<p><b>① 三个缩写到底是什么</b>（先把术语讲清楚）</p>
+<table class="abbr-table">
+<thead><tr><th style="width:13%">缩写</th><th style="width:30%">英文全称</th><th>意思</th></tr></thead>
+<tbody>
+<tr><td><b>MEV</b></td><td>Minimum Effective Volume</td><td><b>最低有效训练量</b>——一块肌肉一周里被刺激到这个数以上才会增肌；低于它白练。这是我们要看的<b>唯一关键门槛</b>。</td></tr>
+<tr><td>MAV</td><td>Maximum Adaptive Volume</td><td>最佳适应量——再往上就是"高效甜区"，长得最快。对你现阶段不重要</td></tr>
+<tr><td>MRV</td><td>Maximum Recoverable Volume</td><td>最大可恢复量——超过这个数恢复跟不上、反而退步。增肌目标基本碰不到这条线</td></tr>
+</tbody>
+</table>
+<p class="ref" style="margin:6px 0 0;">出处：Israetel / Renaissance Periodization 的<a href="https://renaissanceperiodization.com/training-volume-landmarks-muscle-growth" target="_blank" rel="noopener">"Training Volume Landmarks"</a>框架 · Schoenfeld 2017 剂量-反应 meta 分析</p>
+</div>
+
+<div class="explainer">
+<p><b>② 那些 9.0、4.2 的数字怎么来的</b>（一个肌肉走一遍完整算例）</p>
+<p style="margin:6px 0 4px;">关键概念：<b>一个动作往往同时练多块肌肉</b>，所以一组动作不是"+1"给某一块，而是按解剖激活程度<b>打折分配</b>给参与的每块肌肉。</p>
+
+<div class="example-box">
+<p><b>例 1：1 组杠铃后蹲对每块肌肉的贡献是多少？</b></p>
+<table class="example-table">
+<thead><tr><th>肌肉</th><th class="num">贡献系数</th><th>角色</th></tr></thead>
+<tbody>
+<tr><td>股四头肌-外侧+中间头</td><td class="num">1.0</td><td>主肌</td></tr>
+<tr><td>臀大肌-下部</td><td class="num">0.8</td><td>强协同（伸髋）</td></tr>
+<tr><td>股直肌</td><td class="num">0.5</td><td>部分参与</td></tr>
+<tr><td>股内侧肌-VMO</td><td class="num">0.5</td><td>部分参与</td></tr>
+<tr><td>内收肌群</td><td class="num">0.4</td><td>协同稳定大腿</td></tr>
+<tr><td>腘绳肌-股二头长头</td><td class="num">0.3</td><td>协同伸髋</td></tr>
+<tr><td>竖脊肌</td><td class="num">0.3</td><td>脊柱抗弯</td></tr>
+</tbody>
+</table>
+<p style="margin:6px 0 0;font-size:12.5px;color:var(--ink-2);">所以做 1 组深蹲：股四"算 1.0 组"、臀大肌"算 0.8 组"、内收肌"算 0.4 组"...... 加起来这一组动作总共"分给"了 7 块肌肉。</p>
+</div>
+
+<div class="example-box">
+<p><b>例 2：腘绳肌-半腱+半膜从 1.8 → 3.8 是怎么算出来的？</b>（修复 Q/H 失衡的那块）</p>
+<table class="example-table">
+<thead><tr><th>哪一课 · 哪个动作</th><th class="num">组数</th><th class="num">×</th><th class="num">系数</th><th class="num">=</th><th class="num">贡献</th></tr></thead>
+<tbody>
+<tr><td>周一 A 课 · 罗马尼亚硬拉</td><td class="num">3</td><td class="num">×</td><td class="num">0.6</td><td class="num">=</td><td class="num">1.8</td></tr>
+<tr style="background:#fdf6df;"><td>周五 C 课 · <b>俯卧腿弯举 ★ (W5+ 新加)</b></td><td class="num">2</td><td class="num">×</td><td class="num">1.0</td><td class="num">=</td><td class="num">2.0</td></tr>
+<tr style="border-top:2px solid var(--accent);"><td><b>合计 / 周</b></td><td colspan="4"></td><td class="num"><b>3.8 组</b></td></tr>
+<tr style="background:#fdf6df;"><td colspan="5"><b>对照 MEV：</b></td><td class="num"><b>3.8 / 4 → 🟡</b></td></tr>
+</tbody>
+</table>
+<p style="margin:6px 0 0;font-size:12.5px;color:var(--ink-2);">3.8/4 = 95%，从 🔴 (45%) 一跨就到 🟡 边缘。这是<b>必改项里效果最显著的一项</b>——俯卧腿弯举是它的主动作（1.0 系数）。</p>
+</div>
+
+<p style="margin:8px 0 0;"><b>③ 看什么</b>——不看绝对数字，看它<b>对照 MEV 落在哪一档</b>：</p>
+<ul style="margin:4px 0 0 18px; font-size:13px;">
+<li>✅ <b>已达 MEV</b>（≥100%）：每周训练量过门槛、能增肌</li>
+<li>🟡 <b>接近 MEV</b>（70-99%）：差一点、可能本周做实际重量上来后就到</li>
+<li>🔴 <b>远低于 MEV</b>（&lt;70%）：明显不够，需要诊断为什么</li>
+<li>⚪ <b>完全没练</b>：一组都没刺激</li>
+</ul>
+</div>
+
+<!-- 4 张状态卡 -->
+<div class="status-summary">
+<div class="ss-card ss-ok"><div class="ss-n">20</div><div class="ss-label">✅ 已达 MEV<br><span class="ss-sub">能长肌肉的有效刺激</span></div></div>
+<div class="ss-card ss-close"><div class="ss-n">8</div><div class="ss-label">🟡 接近 MEV<br><span class="ss-sub">差一点，再加一点就够</span></div></div>
+<div class="ss-card ss-short"><div class="ss-n">11</div><div class="ss-label">🔴 远低于 MEV<br><span class="ss-sub">有刺激但不到门槛</span></div></div>
+<div class="ss-card ss-none"><div class="ss-n">3</div><div class="ss-label">⚪ 完全没练<br><span class="ss-sub">需评估是否要补</span></div></div>
+</div>
+
+<div class="note"><b>跟改之前比：</b>🟡 从 6→8 (+2)、🔴 从 13→11 (-2)、✅ 和 ⚪ 没变。<b>实际只有 1 块"真的从 🔴 跨过去到 🟡"</b>——腘绳肌-半腱+半膜 (1.8→3.8/4)。三角肌中束和比目鱼肌虽然提升明显（+1 组 / +2 组）但仍 &lt;70%，需要再追加（见 8.3）。</div>
+
+<h4 class="bucket-h ok">✅ 已达 MEV — 这些不用管（20 块）</h4>
+<p class="lead">这些肌肉每周训练量已经过了 MEV 门槛，每周都在"能长肌肉"的有效区。其中带"甜区"标签的 1 块到了 MAV~MRV 高效区。</p>
+<div class="muscle-list ok">
+<div class="mrow"><b class="rname">胸</b><span class="m">胸大肌-中下部 <span class="n">7.5</span></span> · <span class="m">胸小肌 <span class="n">2.4</span></span> · <span class="m">前锯肌 <span class="n">5.3</span></span></div>
+<div class="mrow"><b class="rname">背</b><span class="m">菱形肌 <span class="n">7.6</span></span> · <span class="m">斜方肌-中下部 <span class="n">6</span></span> · <span class="m">竖脊肌 <span class="n">6</span></span></div>
+<div class="mrow"><b class="rname">肩</b><span class="m">三角肌前束 <span class="n">7.8</span></span></div>
+<div class="mrow"><b class="rname">手臂</b><span class="m">肱二头肌 <span class="n">8.4</span></span> · <span class="m">肱肌 <span class="n">6.9</span></span> · <span class="m">肱桡肌 <span class="n">5</span></span> · <span class="m">肱三头肌-长头 <span class="n">4</span></span> · <span class="m">肱三头肌-外侧+内侧头 <span class="n">6.7</span></span> · <span class="m">前臂 <span class="n">6.5</span></span></div>
+<div class="mrow"><b class="rname">腰腹</b><span class="m">腹横肌 <span class="n">5.3</span></span></div>
+<div class="mrow"><b class="rname">大腿前</b><span class="m">股四头肌-外侧+中间头 <span class="n">8.7</span></span> · <span class="m">股内侧肌-VMO <span class="n">5</span></span></div>
+<div class="mrow"><b class="rname">大腿后</b><span class="m">腘绳肌-股二头长头 <span class="n">7.7</span></span></div>
+<div class="mrow"><b class="rname">臀</b><span class="m">臀大肌-上部 <span class="n">6.5</span></span> · <span class="m">臀大肌-下部 <span class="n">11.1</span><span class="badge-zone">甜区</span></span> · <span class="m">臀中肌 <span class="n">4.3</span></span></div>
+</div>
+
+<h4 class="bucket-h close" style="margin-top:18px;">🟡 接近 MEV — 差一点点（8 块）</h4>
+<p class="lead">这些肌肉训练量到了 MEV 的 70-99%。<b>大概率你按计划做 1-2 周后就会过线</b>——我做估算时按阶段一保守系数算，实际你做时系数会比这高。如果到第 6 周仍没过线再单独想办法。<br><b>新进入这桶的 2 块</b>：腘绳肌-半腱+半膜（来自 W5+ 俯卧腿弯举）、腓肠肌（来自 W6+ 坐姿提踵协同 0.4）。</p>
+<div class="muscle-list close">
+<div class="mrow"><b class="rname">胸</b><span class="m">胸大肌-上部 <span class="n">4.2/6</span></span></div>
+<div class="mrow"><b class="rname">背</b><span class="m">背阔肌 <span class="n">9/10</span></span> · <span class="m">斜方肌-上部 <span class="n">3.4/4</span></span> · <span class="m">大圆肌 <span class="n">5.3/6</span></span></div>
+<div class="mrow"><b class="rname">肩</b><span class="m">三角肌后束 <span class="n">6.5/8</span></span></div>
+<div class="mrow"><b class="rname">腰腹</b><span class="m">腰方肌 <span class="n">2.9/4</span></span></div>
+<div class="mrow"><b class="rname">大腿后</b><span class="m">腘绳肌-半腱+半膜 <span class="n">3.8/4</span></span></div>
+<div class="mrow"><b class="rname">小腿</b><span class="m">腓肠肌 <span class="n">4.4/6</span></span></div>
+</div>
+
+<h4 class="bucket-h short" style="margin-top:18px;">🔴 远低于 MEV — 真正需要诊断的（11 块）</h4>
+<p class="lead">这些肌肉训练量<b>不到 MEV 的 70%</b>——光靠现在的动作很难自己爬到门槛。下面把 11 块按根因分 3 类，每块给出具体原因 + 解决方案。<br>
+<b>结论先讲</b>：11 块里只有 <b>类型 A 的 2 块</b>（三角肌中束 / 比目鱼肌）需要再追加一档量；类型 B 的 2 块可加可不加；类型 C 的 7 块<b>本来就不需要达 MEV</b>，是误报。</p>
+
+<div class="diag-group cat-A">
+<div class="diag-head"><span class="diag-tag">🔧 动作不到位（还需追加）</span><span class="diag-desc">已加了一个动作但分量不够——再调一档量就过线</span><span class="diag-n">2 块</span></div>
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:22%">肌肉</th><th style="width:11%">现在/MEV</th><th style="width:34%">为什么不到 MEV</th><th>解决方案</th></tr></thead>
+<tbody><tr><td><b>比目鱼肌</b></td><td class="num">3.5/6</td><td>坐姿提踵 W6+ 加入后从 1.5 → 3.5，提升明显但仍 58%（差 2.5 组到 MEV 6）</td><td><b>已部分修复</b>。W8+ 把坐姿提踵从 2 组升到 <b>3 组</b>就能过线 (4.5/6)。当前 W6-7 维持 2 组让动作熟练</td></tr>
+<tr><td><b>三角肌中束</b></td><td class="num">5.2/8</td><td>侧平举 W5+ 升到 4 组后从 4.2 → 5.2，但仍只 65%。其它推动作（卧推/推举）对中束几乎没贡献</td><td><b>追加</b>：W7+ 把侧平举再升到 <b>5 组</b>（如肩疲劳承受得住）；或在 C 课型加「面拉→侧平举」超级组 1 轮</td></tr>
+</tbody>
+</table>
+</div>
+<div class="diag-group cat-B">
+<div class="diag-head"><span class="diag-tag">📅 频率只 1 次/周</span><span class="diag-desc">动作有，但只在一个课型出现——再加一组或者复制到另一课型即可</span><span class="diag-n">2 块</span></div>
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:22%">肌肉</th><th style="width:11%">现在/MEV</th><th style="width:34%">为什么不到 MEV</th><th>解决方案</th></tr></thead>
+<tbody><tr><td><b>腹直肌</b></td><td class="num">2.7/6</td><td>A 课帕罗夫推对腹直肌只 0.4 协同系数</td><td>A 课 1 个月里 1 次<b>把帕罗夫推换成悬垂举腿</b>（已在 A 课型表备注里）；想可见腹肌则独立加抗屈动作 2 组</td></tr>
+<tr><td><b>髋外展肌-TFL</b></td><td class="num">2.1/4</td><td>C 课蚌式是主训（0.7 系数）×3 组 + 弓步协同，频率 1 次/周</td><td><b>勉强够</b>。可接受 2.1/4——蚌式更核心是练臀中（已 4.3/4 过线）</td></tr>
+</tbody>
+</table>
+</div>
+<div class="diag-group cat-C">
+<div class="diag-head"><span class="diag-tag">🧘 它本来就是辅助/稳定肌</span><span class="diag-desc">它的训练学角色就是协同稳定，<b>本来就不需要达 MEV</b>，在红桶里不是真问题</span><span class="diag-n">7 块</span></div>
+<table style="font-size:12.5px;">
+<thead><tr><th style="width:22%">肌肉</th><th style="width:11%">现在/MEV</th><th style="width:34%">为什么不到 MEV</th><th>解决方案</th></tr></thead>
+<tbody><tr><td><b>腹斜肌</b></td><td class="num">3/6</td><td>帕罗夫推主训抗旋（1.0 系数），但只 3 组/周。核心稳定肌不需要 MEV 6+</td><td><b>不改</b>。3 组抗旋够用；要"V 形腹斜"才需要加自重侧桥 2×30s</td></tr>
+<tr><td><b>胫骨后肌</b></td><td class="num">1.5/4</td><td>站姿提踵协同 0.3 + 坐姿提踵协同 0.3 = 1.5（从 0.9 提升）</td><td><b>不改</b>。日常走路+提踵就够</td></tr>
+<tr><td><b>股直肌</b></td><td class="num">2.3/4</td><td>股直跨膝+髋两关节，常规深蹲/弓步主要练单关节的 VMO/外侧头</td><td><b>不改</b>。VMO/外侧头已 8.7 组够强；要专门练股直需直腿抬腿，对增肌价值低</td></tr>
+<tr><td><b>内收肌群</b></td><td class="num">2.1/6</td><td>只靠深蹲/弓步的协同（0.3-0.4 系数）</td><td><b>不改</b>。日常深蹲已覆盖，独立练对增肌目标价值低</td></tr>
+<tr><td><b>腓骨长短肌</b></td><td class="num">0.9/4</td><td>站姿提踵协同 0.3 系数</td><td><b>不改</b>。腓骨是踝侧稳定肌，0.9 组够用</td></tr>
+<tr><td><b>肩袖肌群</b></td><td class="num">1.8/4</td><td>肩袖是稳定肌不是表层肌；只靠面拉和推举协同给到 1.8 组</td><td><b>无肩痛可不强求</b>。若出现肩痛或弹响：拉伸时加 2 组 YTW 字母操就够</td></tr>
+<tr><td><b>髋深层旋转肌</b></td><td class="num">2.5/4</td><td>蚌式协同 0.5 系数</td><td><b>不改</b>。深旋肌主要是稳定功能，过度训反而紧</td></tr>
+</tbody>
+</table>
+</div>
+
+
+<h4 class="bucket-h none" style="margin-top:18px;">⚪ 完全没练 — 评估后接受现状（3 块）</h4>
+<p class="lead">髂腰肌（髋屈肌）、胫骨前肌、颈部肌群——这 3 块属于"健身常规不必单练"：颈部走拉伸时 2 分钟四向抗阻、髂腰肌走日常走/抬腿、胫骨前肌走"日常脚踝抓地"。不为这 3 块再加动作。</p>
+
+<h3>8.2.5 · 10 周 × 重点肌肉 训练量轨迹（热力图）</h3>
+<p class="lead">前面 8.2 的健康检查是<b>满负荷一周（W6+）的快照</b>。但 10 周里每周状态不同——下面这张图把整套 10 周展开，按 10 块"决策值得看"的肌肉画轨迹。<br>
+<b>怎么看：</b>横轴 W1→W10，纵轴 10 块肌肉。每格 = 该周这块肌肉的<b>有效组数 + 对 MEV 的占比</b>。颜色：深红 &lt;40% / 橙 40-70% / 黄 70-99% / 浅绿 100-129% / 深绿 130%+ 甜区 / 紫 超额。</p>
+
+<div class="chartbox"><svg viewBox="0 0 900 336" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:inherit;"><text x="450.0" y="14" text-anchor="middle" font-size="12" font-weight="700" fill="#1f1d1a">10 周 × 重点肌肉 训练量热力图 · 每格 = 该周有效组数 / MEV%</text><text x="450.0" y="30" text-anchor="middle" font-size="10" fill="#8a857a">深红=&lt;40% · 橙=40-70% · 黄=70-100% · 浅绿=100-130% · 深绿=甜区 · 紫=超额</text><rect x="200.0" y="40" width="186.0" height="14" fill="#eef3f8"/><text x="293.0" y="50" text-anchor="middle" font-size="9.5" fill="#2f5d8d" font-weight="700">Phase 1 重建</text><rect x="386.0" y="40" width="248.0" height="14" fill="#fce6e2"/><text x="510.0" y="50" text-anchor="middle" font-size="9.5" fill="#b03a2e" font-weight="700">Phase 2 增肌主训</text><rect x="634.0" y="40" width="124.0" height="14" fill="#fff8e3"/><text x="696.0" y="50" text-anchor="middle" font-size="9.5" fill="#c08a2e" font-weight="700">P3 强化</text><rect x="758.0" y="40" width="62.0" height="14" fill="#f1efe8"/><text x="789.0" y="50" text-anchor="middle" font-size="9.5" fill="#666" font-weight="700">减载</text><text x="231.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W1</text><text x="293.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W2</text><text x="355.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W3</text><text x="417.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W4</text><text x="479.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W5</text><text x="541.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W6</text><text x="603.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W7</text><text x="665.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W8</text><text x="727.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W9</text><text x="789.0" y="53" text-anchor="middle" font-size="10" fill="#3a372f" font-weight="700">W10</text><text x="194" y="72.0" text-anchor="end" font-size="11" fill="#1f1d1a">胸大肌-上部</text><text x="194" y="84.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 6 · 🟡 改善</text><rect x="201.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="231.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.6</text><text x="231.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">43%</text><rect x="263.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="293.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.6</text><text x="293.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">43%</text><rect x="325.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="355.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.6</text><text x="355.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">43%</text><rect x="387.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="417.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.9</text><text x="417.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><rect x="449.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="479.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.9</text><text x="479.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><rect x="511.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="541.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.9</text><text x="541.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><rect x="573.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="603.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.9</text><text x="603.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><rect x="635.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="665.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.9</text><text x="665.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><rect x="697.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="727.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.9</text><text x="727.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><rect x="759.0" y="57" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="789.0" y="71.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.6</text><text x="789.0" y="82.0" text-anchor="middle" font-size="8" fill="#1f1d1a">43%</text><text x="194" y="98.0" text-anchor="end" font-size="11" fill="#1f1d1a">背阔肌</text><text x="194" y="110.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 10 · 🟡 改善</text><rect x="201.0" y="83" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="231.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.2</text><text x="231.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">52%</text><rect x="263.0" y="83" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="293.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.2</text><text x="293.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">52%</text><rect x="325.0" y="83" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="355.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.2</text><text x="355.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">52%</text><rect x="387.0" y="83" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="417.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">8.7</text><text x="417.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">86%</text><rect x="449.0" y="83" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="479.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">8.7</text><text x="479.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">86%</text><rect x="511.0" y="83" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="541.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">8.7</text><text x="541.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">86%</text><rect x="573.0" y="83" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="603.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">8.7</text><text x="603.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">86%</text><rect x="635.0" y="83" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="665.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">8.7</text><text x="665.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">86%</text><rect x="697.0" y="83" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="727.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">8.7</text><text x="727.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">86%</text><rect x="759.0" y="83" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="789.0" y="97.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.8</text><text x="789.0" y="108.0" text-anchor="middle" font-size="8" fill="#1f1d1a">57%</text><text x="194" y="124.0" text-anchor="end" font-size="11" fill="#1f1d1a">三角肌中束</text><text x="194" y="136.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 8 · 🔴 待修复</text><rect x="201.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="231.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.0</text><text x="231.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="263.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="293.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.0</text><text x="293.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="325.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="355.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.0</text><text x="355.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="387.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="417.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.5</text><text x="417.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">56%</text><rect x="449.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="479.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.5</text><text x="479.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">68%</text><rect x="511.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="541.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.5</text><text x="541.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">68%</text><rect x="573.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="603.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.5</text><text x="603.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">68%</text><rect x="635.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="665.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.5</text><text x="665.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">68%</text><rect x="697.0" y="109" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="727.0" y="123.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.5</text><text x="727.0" y="134.0" text-anchor="middle" font-size="8" fill="#1f1d1a">68%</text><rect x="759.0" y="109" width="60.0" height="24" fill="#d76450" rx="3"/><text x="789.0" y="123.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">3.0</text><text x="789.0" y="134.0" text-anchor="middle" font-size="8" fill="#fff">37%</text><text x="194" y="150.0" text-anchor="end" font-size="11" fill="#1f1d1a">三角肌后束</text><text x="194" y="162.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 8 · 🟡 已 ≥70%</text><rect x="201.0" y="135" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="231.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="231.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">67%</text><rect x="263.0" y="135" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="293.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="293.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">67%</text><rect x="325.0" y="135" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="355.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="355.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">67%</text><rect x="387.0" y="135" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="417.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">6.5</text><text x="417.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">81%</text><rect x="449.0" y="135" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="479.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">6.7</text><text x="479.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">83%</text><rect x="511.0" y="135" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="541.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">6.7</text><text x="541.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">83%</text><rect x="573.0" y="135" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="603.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">6.7</text><text x="603.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">83%</text><rect x="635.0" y="135" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="665.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">6.7</text><text x="665.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">83%</text><rect x="697.0" y="135" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="727.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">6.7</text><text x="727.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">83%</text><rect x="759.0" y="135" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="789.0" y="149.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.3</text><text x="789.0" y="160.0" text-anchor="middle" font-size="8" fill="#1f1d1a">53%</text><text x="194" y="176.0" text-anchor="end" font-size="11" fill="#1f1d1a">股四头肌-外侧+中间头</text><text x="194" y="188.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 6 · ✅</text><rect x="201.0" y="161" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="231.0" y="175.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="231.0" y="186.0" text-anchor="middle" font-size="8" fill="#1f1d1a">90%</text><rect x="263.0" y="161" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="293.0" y="175.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="293.0" y="186.0" text-anchor="middle" font-size="8" fill="#1f1d1a">90%</text><rect x="325.0" y="161" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="355.0" y="175.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="355.0" y="186.0" text-anchor="middle" font-size="8" fill="#1f1d1a">90%</text><rect x="387.0" y="161" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="417.0" y="175.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">8.1</text><text x="417.0" y="186.0" text-anchor="middle" font-size="8" fill="#fff">135%</text><rect x="449.0" y="161" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="479.0" y="175.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">8.1</text><text x="479.0" y="186.0" text-anchor="middle" font-size="8" fill="#fff">135%</text><rect x="511.0" y="161" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="541.0" y="175.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">8.1</text><text x="541.0" y="186.0" text-anchor="middle" font-size="8" fill="#fff">135%</text><rect x="573.0" y="161" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="603.0" y="175.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">8.1</text><text x="603.0" y="186.0" text-anchor="middle" font-size="8" fill="#fff">135%</text><rect x="635.0" y="161" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="665.0" y="175.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">8.1</text><text x="665.0" y="186.0" text-anchor="middle" font-size="8" fill="#fff">135%</text><rect x="697.0" y="161" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="727.0" y="175.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">8.1</text><text x="727.0" y="186.0" text-anchor="middle" font-size="8" fill="#fff">135%</text><rect x="759.0" y="161" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="789.0" y="175.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">5.4</text><text x="789.0" y="186.0" text-anchor="middle" font-size="8" fill="#1f1d1a">90%</text><text x="194" y="202.0" text-anchor="end" font-size="11" fill="#1f1d1a">臀大肌-下部</text><text x="194" y="214.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 4 · ✅ 甜区</text><rect x="201.0" y="187" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="231.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">7.8</text><text x="231.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">195%</text><rect x="263.0" y="187" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="293.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">7.8</text><text x="293.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">195%</text><rect x="325.0" y="187" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="355.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">7.8</text><text x="355.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">195%</text><rect x="387.0" y="187" width="60.0" height="24" fill="#7a4eb0" rx="3"/><text x="417.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">11.7</text><text x="417.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">292%</text><rect x="449.0" y="187" width="60.0" height="24" fill="#7a4eb0" rx="3"/><text x="479.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">11.7</text><text x="479.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">292%</text><rect x="511.0" y="187" width="60.0" height="24" fill="#7a4eb0" rx="3"/><text x="541.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">11.7</text><text x="541.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">292%</text><rect x="573.0" y="187" width="60.0" height="24" fill="#7a4eb0" rx="3"/><text x="603.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">11.7</text><text x="603.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">292%</text><rect x="635.0" y="187" width="60.0" height="24" fill="#7a4eb0" rx="3"/><text x="665.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">11.7</text><text x="665.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">292%</text><rect x="697.0" y="187" width="60.0" height="24" fill="#7a4eb0" rx="3"/><text x="727.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">11.7</text><text x="727.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">292%</text><rect x="759.0" y="187" width="60.0" height="24" fill="#3d8c46" rx="3"/><text x="789.0" y="201.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">7.8</text><text x="789.0" y="212.0" text-anchor="middle" font-size="8" fill="#fff">195%</text><text x="194" y="228.0" text-anchor="end" font-size="11" fill="#1f1d1a">腘绳肌-半腱+半膜</text><text x="194" y="240.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 4 · 🟡 已修复</text><rect x="201.0" y="213" width="60.0" height="24" fill="#d76450" rx="3"/><text x="231.0" y="227.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">0.6</text><text x="231.0" y="238.0" text-anchor="middle" font-size="8" fill="#fff">15%</text><rect x="263.0" y="213" width="60.0" height="24" fill="#d76450" rx="3"/><text x="293.0" y="227.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">0.6</text><text x="293.0" y="238.0" text-anchor="middle" font-size="8" fill="#fff">15%</text><rect x="325.0" y="213" width="60.0" height="24" fill="#d76450" rx="3"/><text x="355.0" y="227.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">0.6</text><text x="355.0" y="238.0" text-anchor="middle" font-size="8" fill="#fff">15%</text><rect x="387.0" y="213" width="60.0" height="24" fill="#d76450" rx="3"/><text x="417.0" y="227.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">0.9</text><text x="417.0" y="238.0" text-anchor="middle" font-size="8" fill="#fff">22%</text><rect x="449.0" y="213" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="479.0" y="227.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.9</text><text x="479.0" y="238.0" text-anchor="middle" font-size="8" fill="#1f1d1a">72%</text><rect x="511.0" y="213" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="541.0" y="227.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.9</text><text x="541.0" y="238.0" text-anchor="middle" font-size="8" fill="#1f1d1a">72%</text><rect x="573.0" y="213" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="603.0" y="227.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.9</text><text x="603.0" y="238.0" text-anchor="middle" font-size="8" fill="#1f1d1a">72%</text><rect x="635.0" y="213" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="665.0" y="227.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.9</text><text x="665.0" y="238.0" text-anchor="middle" font-size="8" fill="#1f1d1a">72%</text><rect x="697.0" y="213" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="727.0" y="227.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.9</text><text x="727.0" y="238.0" text-anchor="middle" font-size="8" fill="#1f1d1a">72%</text><rect x="759.0" y="213" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="789.0" y="227.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">2.6</text><text x="789.0" y="238.0" text-anchor="middle" font-size="8" fill="#1f1d1a">65%</text><text x="194" y="254.0" text-anchor="end" font-size="11" fill="#1f1d1a">比目鱼肌</text><text x="194" y="266.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 6 · 🔴 改善但仍未线</text><rect x="201.0" y="239" width="60.0" height="24" fill="#d76450" rx="3"/><text x="231.0" y="253.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.5</text><text x="231.0" y="264.0" text-anchor="middle" font-size="8" fill="#fff">25%</text><rect x="263.0" y="239" width="60.0" height="24" fill="#d76450" rx="3"/><text x="293.0" y="253.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.5</text><text x="293.0" y="264.0" text-anchor="middle" font-size="8" fill="#fff">25%</text><rect x="325.0" y="239" width="60.0" height="24" fill="#d76450" rx="3"/><text x="355.0" y="253.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.5</text><text x="355.0" y="264.0" text-anchor="middle" font-size="8" fill="#fff">25%</text><rect x="387.0" y="239" width="60.0" height="24" fill="#d76450" rx="3"/><text x="417.0" y="253.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.5</text><text x="417.0" y="264.0" text-anchor="middle" font-size="8" fill="#fff">25%</text><rect x="449.0" y="239" width="60.0" height="24" fill="#d76450" rx="3"/><text x="479.0" y="253.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.5</text><text x="479.0" y="264.0" text-anchor="middle" font-size="8" fill="#fff">25%</text><rect x="511.0" y="239" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="541.0" y="253.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.5</text><text x="541.0" y="264.0" text-anchor="middle" font-size="8" fill="#1f1d1a">58%</text><rect x="573.0" y="239" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="603.0" y="253.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.5</text><text x="603.0" y="264.0" text-anchor="middle" font-size="8" fill="#1f1d1a">58%</text><rect x="635.0" y="239" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="665.0" y="253.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.5</text><text x="665.0" y="264.0" text-anchor="middle" font-size="8" fill="#1f1d1a">58%</text><rect x="697.0" y="239" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="727.0" y="253.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.5</text><text x="727.0" y="264.0" text-anchor="middle" font-size="8" fill="#1f1d1a">58%</text><rect x="759.0" y="239" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="789.0" y="253.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.0</text><text x="789.0" y="264.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><text x="194" y="280.0" text-anchor="end" font-size="11" fill="#1f1d1a">腓肠肌</text><text x="194" y="292.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 6 · 🟡 改善</text><rect x="201.0" y="265" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="231.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.0</text><text x="231.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="263.0" y="265" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="293.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.0</text><text x="293.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="325.0" y="265" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="355.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.0</text><text x="355.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="387.0" y="265" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="417.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.0</text><text x="417.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">50%</text><rect x="449.0" y="265" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="479.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.6</text><text x="479.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">60%</text><rect x="511.0" y="265" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="541.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.4</text><text x="541.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">73%</text><rect x="573.0" y="265" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="603.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.4</text><text x="603.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">73%</text><rect x="635.0" y="265" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="665.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.4</text><text x="665.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">73%</text><rect x="697.0" y="265" width="60.0" height="24" fill="#e0c562" rx="3"/><text x="727.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">4.4</text><text x="727.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">73%</text><rect x="759.0" y="265" width="60.0" height="24" fill="#e89a55" rx="3"/><text x="789.0" y="279.0" text-anchor="middle" font-size="10" fill="#1f1d1a" font-weight="600">3.4</text><text x="789.0" y="290.0" text-anchor="middle" font-size="8" fill="#1f1d1a">56%</text><text x="194" y="306.0" text-anchor="end" font-size="11" fill="#1f1d1a">腹直肌</text><text x="194" y="318.0" text-anchor="end" font-size="9" fill="#8a857a">MEV 6 · 🔴 静态低</text><rect x="201.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="231.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="231.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="263.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="293.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="293.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="325.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="355.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="355.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="387.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="417.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="417.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="449.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="479.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="479.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="511.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="541.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="541.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="573.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="603.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="603.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="635.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="665.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="665.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="697.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="727.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">1.2</text><text x="727.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">20%</text><rect x="759.0" y="291" width="60.0" height="24" fill="#d76450" rx="3"/><text x="789.0" y="305.0" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">0.8</text><text x="789.0" y="316.0" text-anchor="middle" font-size="8" fill="#fff">13%</text></svg></div>
+
+<div class="note"><b>读图重点：</b><br>
+① <b>W1-3 全是黄/橙</b>——是设计的：Phase 1 只 2 组、保守重量，目的是建立动作和感知，<b>不期望达 MEV</b>。<br>
+② <b>W4 多数转绿</b>——升 3 组后绝大多数关键肌肉进入"能长肌肉"区。<br>
+③ <b>W5 上多了 2 格绿</b>——侧平举升 4 组让三角中束往上爬；俯卧腿弯举让腘绳半腱半膜直接从橙跨到绿。<br>
+④ <b>W6 比目鱼跨过门槛</b>——坐姿提踵加入后从深红到橙/黄。<br>
+⑤ <b>W6-W9 是"满负荷期"</b>，4 周稳定在最高水平，这是真正的增肌期。<br>
+⑥ <b>W10 全部回到黄/橙</b>——减载周设计 -30%，让前 9 周积累的疲劳转化为生长。<br>
+⑦ <b>三角肌中束、比目鱼肌、腹直肌</b>——10 周里都没真正进绿区。前两个 W7/W8 追加 1 组可解；腹直肌定位是协同稳定，不强求。</div>
+
+<p class="lead" style="margin-top:14px;"><b>这张图回答的问题：</b>"评估的不是整个计划么？" —— <b>整个 10 周的"每周快照"都画出来了</b>。8.2 的 ✅20/🟡8/🔴11/⚪3 是 W6+ 那一列（满负荷快照）；其它周状态随时可在这张图里查。增肌科学（Schoenfeld 2016/2017）说的"周量≥MEV"是 <b>per-week</b> 标准，所以"以最高负荷周作主评估"是常规做法；这张图把"其它周的情况"补齐。</p>
+
+
+<h3 style="margin-top:24px;">8.3 之前 4 个决策项 · 修复进展核对</h3>
+<p class="lead">8.3 节最初列了 4 个需要做决策的肌肉。现在 W5/W6+ 修改已经写进课型表了，逐项核对效果：</p>
+
+<table style="font-size:13px;">
+<thead><tr><th style="width:18%">肌肉</th><th style="width:12%">改前</th><th style="width:12%">改后</th><th style="width:8%">效果</th><th style="width:25%">做了什么</th><th>是否还需追加</th></tr></thead>
+<tbody>
+<tr>
+  <td><b>腘绳肌-半腱+半膜</b></td>
+  <td class="num">1.8/4 (45%)</td>
+  <td class="num" style="color:var(--good);"><b>3.8/4 (95%)</b></td>
+  <td><span class="ok"><b>✅ 已解决</b></span></td>
+  <td>W5+ C 课加俯卧腿弯举 2×12</td>
+  <td><b>不用改</b>。Q/H 失衡从 1.96 修到约 1.3，膝健康指标过关</td>
+</tr>
+<tr>
+  <td><b>三角肌后束</b></td>
+  <td class="num">6.3/8 (79%)</td>
+  <td class="num" style="color:var(--good);"><b>6.5/8 (81%)</b></td>
+  <td><span class="ok">✓ 微改善</span></td>
+  <td>侧平举 W5+ 升 4 组，对后束协同 0.25 → +0.25</td>
+  <td><b>不用改</b>。已在 🟡 安全区，距 MEV 只差 1.5</td>
+</tr>
+<tr>
+  <td><b>三角肌中束</b></td>
+  <td class="num">4.2/8 (53%)</td>
+  <td class="num" style="color:#a87018;"><b>5.2/8 (65%)</b></td>
+  <td><span class="warn">↗ 进步但未过线</span></td>
+  <td>侧平举 W5+ 升 4 组（+1.0）</td>
+  <td><b>还需追加</b>：W7+ 把侧平举再升到 <b>5 组</b>（如肩疲劳 OK）；或 C 课加「面拉→侧平举」超级组</td>
+</tr>
+<tr>
+  <td><b>比目鱼肌</b></td>
+  <td class="num">1.5/6 (25%)</td>
+  <td class="num" style="color:#a87018;"><b>3.5/6 (58%)</b></td>
+  <td><span class="warn">↗ 大幅进步未过线</span></td>
+  <td>W6+ A 课加坐姿提踵 2×15</td>
+  <td><b>还需追加</b>：W8+ 把坐姿提踵从 2 组 → <b>3 组</b>（4.5/6 接近 🟡）。当前 W6-7 先让动作熟练</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note"><b>小结：</b>4 项决策里，<b>2 项已完全解决</b>（腘绳肌-半腱+半膜 ✅ / 三角肌后束 ✓）、<b>2 项还需追加一档</b>（三角肌中束、比目鱼肌）。这 2 项追加都已规划进 W7+/W8+ 时间线——计划不需要重做，只是组数再升一档。<br>
+<b>升级后的新决策：</b>到 <b>W7</b> 检查一次三角肌中束（是否已 ≥6.4/8 = 80%）；到 <b>W8</b> 检查一次比目鱼肌（是否已 ≥4.2/6 = 70%）。两者都达到再继续；没达到就执行上面右栏的追加方案。</div>
+
+
+<h3>8.4 重量随 10 周的设计曲线</h3>
+<p class="lead">6 个主复合动作的工作重量随周次怎么走——这就是 Summary 里我们说"应该长成什么形状"的折线，跟历史的"随机锯齿+衰减"形成对照。</p>
+<div class="chartbox"><svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:inherit;"><text x="450.0" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#1f1d1a">6 个主复合动作 · 工作重量随 10 周的设计曲线</text><text x="450.0" y="30" text-anchor="middle" font-size="10" fill="#8a857a">阶段一 持平体感 → 阶段二 每周+2.5kg → 阶段三 wk8-9 冲量、wk10 减载-30%</text><rect x="60" y="44" width="272" height="186" fill="#eaf1f8" opacity="0.5"/><rect x="333" y="44" width="364" height="186" fill="#fce6e2" opacity="0.5"/><rect x="698" y="44" width="182" height="186" fill="#fff8e3" opacity="0.5"/><text x="196" y="54" text-anchor="middle" font-size="9.5" fill="#2f5d8d">重建适应</text><text x="515" y="54" text-anchor="middle" font-size="9.5" fill="#b03a2e">增肌主训</text><text x="789" y="54" text-anchor="middle" font-size="9.5" fill="#c08a2e">强化+减载</text><text x="60" y="244" text-anchor="middle" font-size="9" fill="#999">W1</text><text x="151" y="244" text-anchor="middle" font-size="9" fill="#999">W2</text><text x="242" y="244" text-anchor="middle" font-size="9" fill="#999">W3</text><text x="333" y="244" text-anchor="middle" font-size="9" fill="#999">W4</text><text x="424" y="244" text-anchor="middle" font-size="9" fill="#999">W5</text><text x="516" y="244" text-anchor="middle" font-size="9" fill="#999">W6</text><text x="607" y="244" text-anchor="middle" font-size="9" fill="#999">W7</text><text x="698" y="244" text-anchor="middle" font-size="9" fill="#999">W8</text><text x="789" y="244" text-anchor="middle" font-size="9" fill="#999">W9</text><text x="880" y="244" text-anchor="middle" font-size="9" fill="#999">W10</text><line x1="60" x2="880" y1="200.9" y2="200.9" stroke="#eee"/><text x="56" y="203.9" text-anchor="end" font-size="9" fill="#999">10kg</text><line x1="60" x2="880" y1="171.9" y2="171.9" stroke="#eee"/><text x="56" y="174.9" text-anchor="end" font-size="9" fill="#999">20kg</text><line x1="60" x2="880" y1="142.8" y2="142.8" stroke="#eee"/><text x="56" y="145.8" text-anchor="end" font-size="9" fill="#999">30kg</text><line x1="60" x2="880" y1="113.8" y2="113.8" stroke="#eee"/><text x="56" y="116.8" text-anchor="end" font-size="9" fill="#999">40kg</text><line x1="60" x2="880" y1="84.7" y2="84.7" stroke="#eee"/><text x="56" y="87.7" text-anchor="end" font-size="9" fill="#999">50kg</text><line x1="60" x2="880" y1="55.6" y2="55.6" stroke="#eee"/><text x="56" y="58.6" text-anchor="end" font-size="9" fill="#999">60kg</text><polyline points="60.0,154.4 151.1,154.4 242.2,154.4 333.3,147.2 424.4,139.9 515.6,132.6 606.7,125.4 697.8,118.1 788.9,110.8 880.0,150.1" fill="none" stroke="#b03a2e" stroke-width="1.8"/><circle cx="60.0" cy="154.4" r="2.5" fill="#b03a2e"/><circle cx="151.1" cy="154.4" r="2.5" fill="#b03a2e"/><circle cx="242.2" cy="154.4" r="2.5" fill="#b03a2e"/><circle cx="333.3" cy="147.2" r="2.5" fill="#b03a2e"/><circle cx="424.4" cy="139.9" r="2.5" fill="#b03a2e"/><circle cx="515.6" cy="132.6" r="2.5" fill="#b03a2e"/><circle cx="606.7" cy="125.4" r="2.5" fill="#b03a2e"/><circle cx="697.8" cy="118.1" r="2.5" fill="#b03a2e"/><circle cx="788.9" cy="110.8" r="2.5" fill="#b03a2e"/><circle cx="880.0" cy="150.1" r="2.5" fill="#b03a2e"/><rect x="75" y="241" width="10" height="3" fill="#b03a2e"/><text x="89" y="248" font-size="9.5" fill="#3a372f">杠铃后蹲</text><polyline points="60.0,145.7 151.1,145.7 242.2,145.7 333.3,138.5 424.4,131.2 515.6,123.9 606.7,116.7 697.8,109.4 788.9,102.1 880.0,142.8" fill="none" stroke="#2d6e3a" stroke-width="1.8"/><circle cx="60.0" cy="145.7" r="2.5" fill="#2d6e3a"/><circle cx="151.1" cy="145.7" r="2.5" fill="#2d6e3a"/><circle cx="242.2" cy="145.7" r="2.5" fill="#2d6e3a"/><circle cx="333.3" cy="138.5" r="2.5" fill="#2d6e3a"/><circle cx="424.4" cy="131.2" r="2.5" fill="#2d6e3a"/><circle cx="515.6" cy="123.9" r="2.5" fill="#2d6e3a"/><circle cx="606.7" cy="116.7" r="2.5" fill="#2d6e3a"/><circle cx="697.8" cy="109.4" r="2.5" fill="#2d6e3a"/><circle cx="788.9" cy="102.1" r="2.5" fill="#2d6e3a"/><circle cx="880.0" cy="142.8" r="2.5" fill="#2d6e3a"/><rect x="255" y="241" width="10" height="3" fill="#2d6e3a"/><text x="269" y="248" font-size="9.5" fill="#3a372f">罗马尼亚硬拉</text><polyline points="60.0,102.1 151.1,102.1 242.2,102.1 333.3,94.9 424.4,87.6 515.6,80.3 606.7,73.1 697.8,65.8 788.9,58.5 880.0,106.5" fill="none" stroke="#c08a2e" stroke-width="1.8"/><circle cx="60.0" cy="102.1" r="2.5" fill="#c08a2e"/><circle cx="151.1" cy="102.1" r="2.5" fill="#c08a2e"/><circle cx="242.2" cy="102.1" r="2.5" fill="#c08a2e"/><circle cx="333.3" cy="94.9" r="2.5" fill="#c08a2e"/><circle cx="424.4" cy="87.6" r="2.5" fill="#c08a2e"/><circle cx="515.6" cy="80.3" r="2.5" fill="#c08a2e"/><circle cx="606.7" cy="73.1" r="2.5" fill="#c08a2e"/><circle cx="697.8" cy="65.8" r="2.5" fill="#c08a2e"/><circle cx="788.9" cy="58.5" r="2.5" fill="#c08a2e"/><circle cx="880.0" cy="106.5" r="2.5" fill="#c08a2e"/><rect x="435" y="241" width="10" height="3" fill="#c08a2e"/><text x="449" y="248" font-size="9.5" fill="#3a372f">杠铃臀推</text><polyline points="60.0,186.4 151.1,186.4 242.2,186.4 333.3,179.1 424.4,171.9 515.6,164.6 606.7,157.3 697.8,150.1 788.9,142.8 880.0,171.9" fill="none" stroke="#2f5d8d" stroke-width="1.8"/><circle cx="60.0" cy="186.4" r="2.5" fill="#2f5d8d"/><circle cx="151.1" cy="186.4" r="2.5" fill="#2f5d8d"/><circle cx="242.2" cy="186.4" r="2.5" fill="#2f5d8d"/><circle cx="333.3" cy="179.1" r="2.5" fill="#2f5d8d"/><circle cx="424.4" cy="171.9" r="2.5" fill="#2f5d8d"/><circle cx="515.6" cy="164.6" r="2.5" fill="#2f5d8d"/><circle cx="606.7" cy="157.3" r="2.5" fill="#2f5d8d"/><circle cx="697.8" cy="150.1" r="2.5" fill="#2f5d8d"/><circle cx="788.9" cy="142.8" r="2.5" fill="#2f5d8d"/><circle cx="880.0" cy="171.9" r="2.5" fill="#2f5d8d"/><rect x="75" y="229" width="10" height="3" fill="#2f5d8d"/><text x="89" y="236" font-size="9.5" fill="#3a372f">杠铃卧推</text><polyline points="60.0,157.3 151.1,157.3 242.2,157.3 333.3,150.1 424.4,142.8 515.6,135.5 606.7,128.3 697.8,121.0 788.9,113.8 880.0,150.1" fill="none" stroke="#7a4eb0" stroke-width="1.8"/><circle cx="60.0" cy="157.3" r="2.5" fill="#7a4eb0"/><circle cx="151.1" cy="157.3" r="2.5" fill="#7a4eb0"/><circle cx="242.2" cy="157.3" r="2.5" fill="#7a4eb0"/><circle cx="333.3" cy="150.1" r="2.5" fill="#7a4eb0"/><circle cx="424.4" cy="142.8" r="2.5" fill="#7a4eb0"/><circle cx="515.6" cy="135.5" r="2.5" fill="#7a4eb0"/><circle cx="606.7" cy="128.3" r="2.5" fill="#7a4eb0"/><circle cx="697.8" cy="121.0" r="2.5" fill="#7a4eb0"/><circle cx="788.9" cy="113.8" r="2.5" fill="#7a4eb0"/><circle cx="880.0" cy="150.1" r="2.5" fill="#7a4eb0"/><rect x="255" y="229" width="10" height="3" fill="#7a4eb0"/><text x="269" y="236" font-size="9.5" fill="#3a372f">杠铃俯身划船</text><polyline points="60.0,186.4 151.1,186.4 242.2,186.4 333.3,179.1 424.4,171.9 515.6,164.6 606.7,157.3 697.8,150.1 788.9,142.8 880.0,171.9" fill="none" stroke="#3a8087" stroke-width="1.8"/><circle cx="60.0" cy="186.4" r="2.5" fill="#3a8087"/><circle cx="151.1" cy="186.4" r="2.5" fill="#3a8087"/><circle cx="242.2" cy="186.4" r="2.5" fill="#3a8087"/><circle cx="333.3" cy="179.1" r="2.5" fill="#3a8087"/><circle cx="424.4" cy="171.9" r="2.5" fill="#3a8087"/><circle cx="515.6" cy="164.6" r="2.5" fill="#3a8087"/><circle cx="606.7" cy="157.3" r="2.5" fill="#3a8087"/><circle cx="697.8" cy="150.1" r="2.5" fill="#3a8087"/><circle cx="788.9" cy="142.8" r="2.5" fill="#3a8087"/><circle cx="880.0" cy="171.9" r="2.5" fill="#3a8087"/><rect x="435" y="229" width="10" height="3" fill="#3a8087"/><text x="449" y="236" font-size="9.5" fill="#3a372f">杠铃前蹲</text></svg></div>
+<div class="greenbox" style="background:#e3f1e6;border:1px solid #bcdcc4;color:#2a4a30;"><b>读这张图：</b>阶段一（前 3 周）持平=先把动作稳住；阶段二（4–7 周）匀速向上=每周 +2.5kg 的渐进超负荷；第 8–9 周是冲量顶峰，第 10 周回落 30% 是主动减载。<b>这就是「被设计过的训练计划」该有的形状</b>——和历史「锯齿乱跳」一对比就明显。</div>
+
+<h3>8.5 跟历史 29 节同维度并列对比（18 动作版）</h3>
+<table><thead><tr><th>维度</th><th>历史 29 节</th><th>新计划 30 节（18 动作）</th><th>改善</th></tr></thead><tbody>
+<tr><td><b>训练频率</b></td><td>~1.5 次/周，前高后低</td><td><b>3 次/周</b>，全程稳定</td><td>✓ 翻倍 + 稳定</td></tr>
+<tr><td><b>周期总跨度</b></td><td>5 个月，29 节</td><td>10 周，30 节</td><td>✓ 节奏紧凑、可复盘</td></tr>
+<tr><td><b>不同动作数</b></td><td><b>114 个</b>（99 个只 1 次）</td><td><b>18 个</b>固定主力</td><td>✓ 每动作平均重复 10–18 次，可追踪进步</td></tr>
+<tr><td><b>主训肌肉覆盖</b></td><td>19/42（45%）</td><td>14/42（33%）</td><td>~ 略窄，但每块更深（深 vs 广的取舍）</td></tr>
+<tr><td><b>训到的肌肉</b></td><td>37/42（任何角色）</td><td>39/42</td><td>✓ 计划补全后覆盖追平历史</td></tr>
+<tr><td><b>已达 MEV 肌肉数</b></td><td>未追踪</td><td><b>20/42</b>（+ 🟡 接近 8 块）</td><td>✓ 首次把容量门槛量化</td></tr>
+<tr><td><b>需要追加的"真问题"</b></td><td>未追踪</td><td><b>2/42</b>（三角肌中束 W7+、比目鱼肌 W8+）</td><td>✓ 已规划进时间线</td></tr>
+<tr><td><b>每肌肉周频率</b></td><td>普遍 >7 天 1 次主训</td><td>主要肌群 <b>≥2 次/周</b></td><td>✓ 满足 Schoenfeld 频率推荐</td></tr>
+<tr><td><b>主动作重量曲线</b></td><td>锯齿随机 + 整体衰减</td><td>阶段渐进 + 末周减载</td><td>✓ 从无结构 → 有结构</td></tr>
+<tr><td><b>容量曲线</b></td><td>前高后低衰减</td><td>阶段渐增 + 减载收尾</td><td>✓ 反向，符合周期化原理</td></tr>
+<tr><td><b>计划结构</b></td><td>无明显设计</td><td>3 阶段 × 3 课型 × 6 动作周期化</td><td>✓ 可识别、可复盘</td></tr>
+</tbody></table>
+<div class="note"><b>诚实小结：</b>新计划在<b>"深"</b>（固定动作、固定频率、阶段渐进）和<b>"广"</b>（补全后训到 39/42，已达 MEV 20 块）两个维度上都优于历史。剩下 3 块未训属于"健身常规不必单练"的范畴；剩下 19 块在 MEV 以下是<b>训练角色定位为"辅助稳定肌"</b>的肌肉——这些不强求达 MEV，但已经有训练刺激进入了。</div>
+</section>
+
+  
+
+<!-- 9. 引体向上 -->
+<section>
+<h2>9. 引体向上 · 10 周渐进路径（嵌入 A 课型第 4 位）</h2>
+<p class="lead">目标：第 10 周（第 28-30 节附近）完成 <b>1 个 strict（全幅、无借力）引体向上</b>。整个路径不打乱原计划——它就是 A 课型第 4 位"引体向上"那一格，按周自动换变式。每周做 A 课时按下面这张表的变式做就行。</p>
+
+<h3>9.1 为什么能 10 周从 0 到 1</h3>
+<p>strict 引体的关键三件事：(1) <b>悬挂能力</b>——握力和肩胛下回旋的"挂得住"；(2) <b>背阔肌+大圆肌做拉力主导的能力</b>——不是靠手臂收缩，而是靠肩胛回缩+肩内收；(3) <b>渐进负荷</b>——从更轻的拉（高位下拉/弹力带辅助/负向）逐步过渡到自重。这套路径每个阶段都对应一项能力，循序解锁。</p>
+
+<h3>9.2 10 周变式表</h3>
+<table>
+<thead><tr><th>周</th><th class="num">节</th><th>阶段</th><th>当周变式（A 课型第 4 位）</th><th>组×次（参考）</th><th>这周在练什么</th></tr></thead>
+<tbody>
+<tr><td>W1</td><td class="num">第 1 节</td><td style="color:var(--p1)">基础</td><td><b>死悬挂（dead hang）</b> + 高位下拉 25kg</td><td>死悬挂 3×15-20s · 高位下拉 2×10</td><td>建立握力+肩胛悬挂感；高位下拉量化拉力基线</td></tr>
+<tr><td>W2</td><td class="num">第 4 节</td><td style="color:var(--p1)">基础</td><td>死悬挂 + 高位下拉 27.5kg</td><td>死悬挂 3×20-25s · 高位下拉 2×10</td><td>悬挂时间稳步延长；高位下拉 +2.5kg</td></tr>
+<tr><td>W3</td><td class="num">第 7 节</td><td style="color:var(--p1)">基础</td><td><b>主动悬挂（active hang，肩胛下沉）</b> + 高位下拉 30kg</td><td>主动悬挂 3×10-15s · 高位下拉 3×8</td><td>引入肩胛主动下沉——这是 strict 引体的"启动姿态"</td></tr>
+<tr><td>W4</td><td class="num">第 10 节</td><td style="color:var(--p2)">负向</td><td><b>负向引体（negatives，离心 3s 下放）</b></td><td>3×3-5 次 · 用凳子或弹力带跳上去</td><td>离心阶段先建立——这是 0→1 最重要的能力</td></tr>
+<tr><td>W5</td><td class="num">第 13 节</td><td style="color:var(--p2)">负向</td><td>负向引体（离心 4s 下放）</td><td>3×4-5 次</td><td>下放时间延长到 4s；记录第几下开始下落变快</td></tr>
+<tr><td>W6</td><td class="num">第 16 节</td><td style="color:var(--p2)">负向</td><td>负向引体（离心 5s 下放）</td><td>3×5 次</td><td>下放 5s 稳——具备这个能力的人通常已能做 1 个 strict</td></tr>
+<tr><td>W7</td><td class="num">第 19 节</td><td style="color:var(--p2)">辅助</td><td><b>弹力带辅助引体（重磅带，~25-35 lbs 辅助）</b></td><td>3×5-6 次</td><td>用最厚弹力带练全幅 ROM；体会"启动→上拉→过下巴"的整体节奏</td></tr>
+<tr><td>W8</td><td class="num">第 22 节</td><td style="color:var(--p3)">辅助</td><td>弹力带辅助引体（中磅带，~15-25 lbs）</td><td>3×4-5 次</td><td>减少弹力辅助 ≈ 10 lbs；如能做 5 次以上，下周换轻磅</td></tr>
+<tr><td>W9</td><td class="num">第 25 节</td><td style="color:var(--p3)">辅助→尝试</td><td>弹力带辅助引体（轻磅带，~10 lbs）+ <b>每周 1 次尝试 1 个 strict</b></td><td>辅助 3×3-4 + strict 尝试 2-3 次</td><td>开始小心测试 strict 单次；记录 ROM 到哪里就卡住</td></tr>
+<tr><td>W10</td><td class="num">第 28 节</td><td style="color:var(--p3)">收尾</td><td><b>strict 引体向上 ★</b> + 负向收尾</td><td>strict 力竭单次（目标 1+ 次）· 后跟 2-3 次负向</td><td><b>本周目标：完成 1 个 strict</b>。失败也无妨——继续走下一周期，多数人 W11-12 能拿下</td></tr>
+</tbody>
+</table>
+
+<h3>9.3 配套要求</h3>
+<ul>
+<li><b>B 课型的杠铃俯身划船 + C 课型的单臂哑铃划船不能省</b>——这两个动作把背阔肌的"水平拉"训练量补上去，是引体进步的隐性发动机。</li>
+<li><b>体重</b>：引体本质上是"把自己拉上去"，每 1kg 体重 ≈ 多 1kg 抗阻；如果体脂偏高，配合饮食把体重往下走 2-3kg 会显著加速进展。</li>
+<li><b>失败可循环</b>：如果某一周做不到表里的次数，<b>这周重复上一周</b>，下一周再往前推。"按周稳进"比"硬冲下个里程碑"对长期更有利。</li>
+<li><b>测重 + 记录</b>：第 1 周记基础体重 + 高位下拉 e1RM；第 5 周/第 8 周各做一次"今天能负向多少秒"作为节点记录，写进手册。</li>
+</ul>
+<div class="note"><b>关于不打乱原计划：</b>整个引体路径就装在 A 课型第 4 位那一格，重量/组数/动作位置都不变。从原计划角度看，A 课型还是"下肢+核心"加 1 个垂直拉——只是这个垂直拉每 3 周换一个具体变式而已。其余 5 个动作（后蹲/RDL/臀推/帕罗夫推/提踵）完全不动。</div>
+<p class="ref">原理依据：<a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">ACSM · 阻力训练进阶模型</a>（离心强度先于向心达成）；<a href="https://pubmed.ncbi.nlm.nih.gov/25530001/" target="_blank" rel="noopener">EMG 研究：拉类动作背阔肌+大圆肌的激活</a></p>
+</section>
+
+<!-- 10. 频率与休息间隔 -->
+<section>
+<h2>10. 42 块肌肉 · 每块多久被练 1 次（间隔表）</h2>
+<p class="lead">下面是<b>按周一/周三/周五的 A→B→C 节奏</b>展开后，每块肌肉真实落在哪几天、最大间隔多少天、平均间隔多少天。<br>
+节奏：周一 A → 周三 B（隔 2 天）→ 周五 C（隔 2 天）→ 下周一 A（隔 3 天，跨周末）。所以"出现 A+B+C"=每周 3 次主训、平均间隔 2.3 天；"只出现 1 个"=每周 1 次、间隔 7 天。<br>
+判断标准：<b>🟢 频率 OK</b> = ≥2 次/周且间隔 ≥2 天（符合 Schoenfeld 2016 和 ACSM 48-72h 恢复窗口）；<b>🟡 频率 &lt;2/周</b> = 每周只训 1 次（间隔 7 天，对小肌孤立可接受、对主肌偏低）；<b>🟠 间隔偏短</b> = 频率 ≥3 但平均间隔 &lt;2 天（恢复可能不够）；<b>⚪ 未训</b>。</p>
+<table>
+<thead><tr><th>肌肉</th><th>出现在</th><th class="num">次/周</th><th class="num">平均间隔</th><th class="num">最长间隔</th><th>判断</th></tr></thead>
+<tbody>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>胸（4 块）</b></td></tr>
+<tr><td>胸大肌-上部</td><td>B</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>胸大肌-中下部</td><td>BC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">5 d</td><td>🟢 频率 OK</td></tr>
+<tr><td>胸小肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>前锯肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>背（6 块）</b></td></tr>
+<tr><td>背阔肌</td><td>ABC</td><td class="num">3</td><td class="num">2.3 d</td><td class="num">3 d</td><td>🟢 高频 OK</td></tr>
+<tr><td>菱形肌</td><td>ABC</td><td class="num">3</td><td class="num">2.3 d</td><td class="num">3 d</td><td>🟢 高频 OK</td></tr>
+<tr><td>斜方肌-上部</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>斜方肌-中下部</td><td>BC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">5 d</td><td>🟢 频率 OK</td></tr>
+<tr><td>竖脊肌</td><td>AC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">4 d</td><td>🟢 频率 OK</td></tr>
+<tr><td>大圆肌</td><td>ABC</td><td class="num">3</td><td class="num">2.3 d</td><td class="num">3 d</td><td>🟢 高频 OK</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>肩（4 块）</b></td></tr>
+<tr><td>三角肌前束</td><td>B</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>三角肌中束</td><td>B</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>三角肌后束</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>肩袖肌群</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>手臂（6 块）</b></td></tr>
+<tr><td>肱二头肌</td><td>ABC</td><td class="num">3</td><td class="num">2.3 d</td><td class="num">3 d</td><td>🟢 高频 OK</td></tr>
+<tr><td>肱肌</td><td>ABC</td><td class="num">3</td><td class="num">2.3 d</td><td class="num">3 d</td><td>🟢 高频 OK</td></tr>
+<tr><td>肱桡肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>肱三头肌-长头</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>肱三头肌-外侧+内侧头</td><td>BC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">5 d</td><td>🟢 频率 OK</td></tr>
+<tr><td>前臂</td><td>B</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>腰腹（5 块）</b></td></tr>
+<tr><td>腹直肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>腹斜肌</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>腹横肌</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>髂腰肌（髋屈肌）</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>腰方肌</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>大腿前（3 块）</b></td></tr>
+<tr><td>股四头肌-外侧+中间头</td><td>AC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">4 d</td><td>🟢 频率 OK</td></tr>
+<tr><td>股直肌</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>股内侧肌-VMO</td><td>AC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">4 d</td><td>🟢 频率 OK</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>大腿后（2 块）</b></td></tr>
+<tr><td>腘绳肌-股二头长头</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>腘绳肌-半腱+半膜</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>臀（3 块）</b></td></tr>
+<tr><td>臀大肌-上部</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>臀大肌-下部</td><td>AC</td><td class="num">2</td><td class="num">3.5 d</td><td class="num">4 d</td><td>🟢 频率 OK</td></tr>
+<tr><td>臀中肌</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>髋（3 块）</b></td></tr>
+<tr><td>内收肌群</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>髋外展肌-TFL</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>髋深层旋转肌</td><td>C</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>小腿（5 块）</b></td></tr>
+<tr><td>腓肠肌</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>比目鱼肌</td><td>A</td><td class="num">1</td><td class="num">7.0 d</td><td class="num">7 d</td><td>🟡 频率<2/周</td></tr>
+<tr><td>胫骨前肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>腓骨长短肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr><td>胫骨后肌</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+<tr style="background:#f7f1e3;"><td colspan="6"><b>颈（1 块）</b></td></tr>
+<tr><td>颈部肌群</td><td>-</td><td class="num">0</td><td class="num">— d</td><td class="num">— d</td><td>⚪ 未训</td></tr>
+</tbody>
+</table>
+
+<h3>10.1 一图看懂哪些肌肉受高频刺激</h3>
+<table>
+<thead><tr><th>分组</th><th>肌肉</th><th>评注</th></tr></thead>
+<tbody>
+<tr><td><b>🟢 高频组（每周 3 次，间隔 2.3 天）</b></td><td>背阔肌 · 菱形肌 · 大圆肌 · 肱二头肌 · 肱肌 ·（A 引体 + B 划船 + C 划船协同）</td><td>每个 A/B/C 都触发拉肌群——是这版计划"重叠贡献"的甜区</td></tr>
+<tr><td><b>🟢 中频组（每周 2 次，间隔 3-4 天）</b></td><td>胸大肌-中下部 · 斜方肌-中下部 · 竖脊肌 · 股四头肌 · 股内侧肌 · 臀大肌-下部 · 肱三头肌-外侧+内侧头</td><td>主流频率推荐区——足够刺激、足够恢复</td></tr>
+<tr><td><b>🟡 低频组（每周 1 次，间隔 7 天）</b></td><td>三角肌前/中/后束 · 胸大肌-上部 · 肩袖 · 肱三头肌-长头 · 前臂 · 腘绳肌（A 1 次）· 臀中肌（C 1 次）· 腓肠肌/比目鱼肌（A 1 次）· 腹斜肌（A 帕罗夫推）· 腰方肌（A）· 股直肌（C 弓步）</td><td>对小肌孤立和补全动作可接受；对主推（胸/三角/腿后/臀中），<b>第 5 周后可考虑把对应动作复制一份到另一课型</b>把频率推到 2 次/周（详见 10.2）</td></tr>
+<tr><td><b>⚪ 未训组</b></td><td>颈部肌群 · 髂腰肌（髋屈肌）· 胫骨前肌</td><td>"健身常规不必单练"——拉伸或日常代偿即可</td></tr>
+</tbody>
+</table>
+
+<h3>10.2 哪些"每周 1 次"想推到 2 次</h3>
+<p>下面这几块"重要度高 + 现在只 1 次"的肌肉，是后续每节课能感觉到差异的关键。当前不修改，仍是 1 次；<b>第 5 周后视恢复情况</b>选 1-2 块复制到另一课型：</p>
+<ul>
+<li><b>胸大肌-上部</b>（仅 B 课，上斜哑铃卧推）→ 后半段可在 C 课型把双杠臂屈伸 ROM 加深，或换成"低位拉力器飞鸟"补一次上斜激活</li>
+<li><b>腘绳肌-半腱+半膜</b>（仅 A 课，RDL 间接刺激）→ 后半段可在 C 课型加 <b>俯卧腿弯举 2×12</b> 或 <b>北欧腘绳</b></li>
+<li><b>三角肌中束</b>（仅 B 课，哑铃侧平举）→ 后半段在 C 课型加 1 组超级组（面拉立刻接侧平举）</li>
+<li><b>臀中肌</b>（仅 C 课，蚌式）→ 已经 OK，但 A 课型杠铃臀推外旋脚尖即可加点上部贡献</li>
+</ul>
+<div class="note"><b>整体节律评价：</b>对增肌目标，<b>"每周 2 次主训"是 Schoenfeld 2016 验证过的最低有效频率</b>。这套 18 动作×3 课型在 16 块肌肉上做到了 ≥2 次（高+中频组），剩下 19 块走"每周 1 次"——是<b>"够最低门槛、留出恢复空间</b>的安排，不是疏漏。三个未训属于"训练外"的肌肉。</div>
+<p class="ref">原理依据：<a href="https://pubmed.ncbi.nlm.nih.gov/27102172/" target="_blank" rel="noopener">Schoenfeld 等 2016 · 训练频率 meta（≥2 次/周优于 1 次）</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">ACSM Position Stand · 训练间隔与恢复</a></p>
+</section>
+
+<!-- 11. 平衡评估 -->
+<section>
+<h2>11. 计划的平衡性评估</h2>
+
+<h3>11.1 什么叫"平衡"？10 个常用比率</h3>
+<p class="lead">"训练计划是否平衡"不是一句模糊的话——力学/医学界已经把它拆成了具体可测的比率。下面这 10 个是从康复医学、力量训练科学里抽出来的<b>最常用的判断维度</b>，对应不同的健康/表现目标。</p>
+<table>
+<thead><tr><th>维度</th><th>什么意思 / 失衡后果</th><th>常用目标区间</th><th>依据</th></tr></thead>
+<tbody>
+<tr><td><b>胸 / 背</b></td><td>水平推 vs 水平拉的总量比。胸&gt;&gt;背 → 圆肩、肩前突、Janda 上交叉综合症</td><td class="num">0.6 – 1.2</td><td>姿势医学共识，Page/Frank/Lardner</td></tr>
+<tr><td><b>推 / 拉（总）</b></td><td>所有推（卧推/推举/双杠/侧平举）vs 所有拉（划船/引体/面拉）。推&gt;&gt;拉 → 肩袖受伤风险</td><td class="num">0.85 – 1.2</td><td>Cools 2007 肩袖康复研究</td></tr>
+<tr><td><b>肩 / 胸</b></td><td>三角肌总训练量 vs 胸训量。肩独立量&lt;胸→ 肩易被胸训带偏（小重量胸推时三角肌前束代偿）</td><td class="num">0.3 – 1.0</td><td>训练学常识</td></tr>
+<tr><td><b>上身 / 下身</b></td><td>下身天然肌肉量大、能容更多组数；上身过多 → 下身相对萎缩</td><td class="num">0.5 – 1.3</td><td>RP 训练学 / Israetel</td></tr>
+<tr><td><b>大腿前 / 大腿后（Q/H）</b></td><td>股四头肌 vs 腘绳肌力量/组数比。Q&gt;&gt;H → 前交叉韧带受伤风险，膝关节代偿</td><td class="num">1.0 – 1.7</td><td>运动医学 ACL 损伤研究，"Q/H ratio"</td></tr>
+<tr><td><b>臀 / 大腿前</b></td><td>髋伸 vs 膝伸的训练比。臀弱 → 股四代偿、膝关节压力↑</td><td class="num">0.5 – 1.2</td><td>髋伸主导训练学</td></tr>
+<tr><td><b>小腿 / 大腿前</b></td><td>小腿训练量通常占大腿 10-40%；过低 → 跟腱+踝稳定差</td><td class="num">0.1 – 0.4</td><td>训练学常识</td></tr>
+<tr><td><b>髋稳定 / 臀</b></td><td>内收+外展+深旋 vs 臀大肌训练量比。骨盆稳定&臀大力量需要配套</td><td class="num">0.2 – 0.7</td><td>髋功能康复学</td></tr>
+<tr><td><b>前链 / 后链</b></td><td>身体前侧（胸/肩前/股四/腹）vs 后侧（背/臀/腘绳/竖脊）。久坐人群多前链过强</td><td class="num">0.7 – 1.3</td><td>姿势医学共识</td></tr>
+<tr><td><b>腰腹 / 上身</b></td><td>核心训练量占上身比。低于 10% → 核心不足，高于 40% → 过度</td><td class="num">0.1 – 0.4</td><td>核心训练学</td></tr>
+</tbody>
+</table>
+<p class="ref">主要文献：<a href="https://pubmed.ncbi.nlm.nih.gov/17715457/" target="_blank" rel="noopener">Cools 2007 · 肩袖康复中的推/拉平衡</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/19940559/" target="_blank" rel="noopener">Q/H ratio 与 ACL 损伤</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/22356680/" target="_blank" rel="noopener">前/后链与久坐姿势</a></p>
+
+<h3>11.2 这套 18 动作计划的实际平衡（3 状态对比）</h3>
+<p class="lead">单位：每周有效组数比值。下表展示 <b>3 个状态</b>：① 改前原版 18 动作；② 当前（W5/W6+ 3 项 已应用后）；③ 进一步加 3 个调整（见 11.4）后的预测。<br>
+<b>失衡数</b>：① 原版 <b>7/10</b> → ② 已应用后 <b>7/10</b> → ③ 全部应用后 <b>4/10</b>。</p>
+
+<table style="font-size:12.5px;">
+<thead><tr>
+<th style="width:16%">维度</th>
+<th class="num" style="width:13%">① 原版</th>
+<th class="num" style="width:14%">② 已应用</th>
+<th class="num" style="width:14%">③ 全部应用</th>
+<th class="num" style="width:9%">目标</th>
+<th>说明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">0.53 ⚠</td>
+<td class="num" style="color:var(--accent);">0.52 ⚠</td>
+<td class="num" style="color:var(--good);">0.6 ✓</td>
+<td class="num">0.6–1.2</td>
+<td><b style="color:var(--good);">建议改 → 修复</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">0.73 ⚠</td>
+<td class="num" style="color:var(--accent);">0.74 ⚠</td>
+<td class="num" style="color:var(--good);">0.85 ✓</td>
+<td class="num">0.85–1.2</td>
+<td><b style="color:var(--good);">建议改 → 修复</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">1.04 ⚠</td>
+<td class="num" style="color:var(--accent);">1.1 ⚠</td>
+<td class="num" style="color:var(--good);">0.97 ✓</td>
+<td class="num">0.3–1.0</td>
+<td><b style="color:var(--good);">建议改 → 修复</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">2.17 ⚠</td>
+<td class="num" style="color:var(--accent);">1.95 ⚠</td>
+<td class="num" style="color:var(--accent);">1.96 ⚠</td>
+<td class="num">0.5–1.3</td>
+<td>保持，<b>不需要修</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">1.98 ⚠</td>
+<td class="num" style="color:var(--good);">1.39 ✓</td>
+<td class="num" style="color:var(--good);">1.57 ✓</td>
+<td class="num">1.0–1.7</td>
+<td>✅ 已修复</td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">1.37 ⚠</td>
+<td class="num" style="color:var(--accent);">1.37 ⚠</td>
+<td class="num" style="color:var(--accent);">1.25 ⚠</td>
+<td class="num">0.5–1.2</td>
+<td>保持，<b>不需要修</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--good);">0.39 ✓</td>
+<td class="num" style="color:var(--accent);">0.64 ⚠</td>
+<td class="num" style="color:var(--accent);">0.57 ⚠</td>
+<td class="num">0.1–0.4</td>
+<td>保持，<b>不需要修</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--good);">0.31 ✓</td>
+<td class="num" style="color:var(--good);">0.31 ✓</td>
+<td class="num" style="color:var(--good);">0.31 ✓</td>
+<td class="num">0.2–0.7</td>
+<td>✅ 已修复</td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--accent);">0.61 ⚠</td>
+<td class="num" style="color:var(--accent);">0.56 ⚠</td>
+<td class="num" style="color:var(--accent);">0.62 ⚠</td>
+<td class="num">0.7–1.3</td>
+<td>保持，<b>不需要修</b></td>
+</tr>
+<tr>
+<td><b>腰腹 / 上身</b></td>
+<td class="num" style="color:var(--good);">0.11 ✓</td>
+<td class="num" style="color:var(--good);">0.11 ✓</td>
+<td class="num" style="color:var(--good);">0.1 ✓</td>
+<td class="num">0.1–0.4</td>
+<td>✅ 已修复</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="margin-top:18px;">11.3 现状解读</h3>
+<div class="summary3">
+<div class="s3-row s3-fact"><span class="s3-tag">① 三个状态的事实</span>
+<p><b>原版 vs 已应用：</b>只有 <b>Q/H</b> 从 1.98 → 1.39 真的修了（俯卧腿弯举的功劳）。其它 6 个失衡<b>几乎没动</b>——因为已应用的 3 项主要补的是<b>腘绳/小腿/三角中束</b>，而失衡集中在<b>推太少 / 胸太少 / 上身太多 / 前链太少</b>这几个方向。两组改动正好"错开了"。</p>
+<p><b>已应用 vs 全部应用：</b>如果再加 3 个调整（B 课上斜推 3→4 组、C 课双杠 2→3 组、C 课前蹲 2→3 组），可以把 <b>胸/背、推/拉、肩/胸</b> 这 3 项都拉进合格区。</p>
+</div>
+<div class="s3-row s3-judge"><span class="s3-tag">② 残留 4 项的判断</span>
+<p>全部应用后剩下的 4 个失衡：</p>
+<ol>
+<li><b>上身/下身 1.96</b>（目标 ≤1.3）—— <b>设计选择不算 bug</b>。增肌取向的训练者上身比例普遍 1.5-2.0，硬压到 ≤1.3 需要把下肢翻倍，反而打乱节奏。建议接受 1.5-2.0 这个区间。</li>
+<li><b>臀/大腿前 1.25</b>（目标 ≤1.2）—— <b>差 0.05 可以忽略</b>。或者把 C 课前蹲再升 1 组到 4 组，让大腿前再 +2.0。</li>
+<li><b>小腿/大腿前 0.57</b>（目标 ≤0.4）—— <b>反向超标</b>，意思是补小腿后小腿训得偏多了。属于<b>可接受的代价</b>——比目鱼肌从 1.5 → 3.5 + 腓肠肌过 MEV，对踝健康+站立耐力都好。</li>
+<li><b>前链/后链 0.62</b>（目标 ≥0.7）—— 方向对了（从 0.56 升到 0.62），<b>差 0.08</b>，未来再加 1 个胸动作（比如 D 课型加上斜杠铃推）就能过线。</li>
+</ol>
+</div>
+<div class="s3-row s3-advice"><span class="s3-tag">③ 直接执行的修复方案</span>
+<p><b>下面 11.4 节</b>把这 3 个调整写成可直接照做的清单：每个调整做哪个课型、加哪个动作、几组几次、影响哪几条平衡比率。</p>
+</div>
+</div>
+
+<h3 style="margin-top:24px;">11.4 修复方案 · 3 个进一步调整</h3>
+<p class="lead">这是<b>在已有 18 动作课型表上的微调</b>——不是重做计划。3 个调整都是把现有动作的组数 +1，不加新动作。建议 W5+ 起步（和俯卧腿弯举同步），W8 周末重新评估。</p>
+
+<table style="font-size:13px;">
+<thead><tr>
+<th style="width:14%">调整</th>
+<th style="width:14%">课型 / 时机</th>
+<th style="width:20%">具体改动</th>
+<th>修复哪些失衡</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><b>调整 1<br>上斜哑铃卧推 3→4 组</b></td>
+<td>B 课<br>W5+ 起</td>
+<td>原 3 组 × 10 → <b>4 组 × 8-10</b>。第 4 组用阶段二重量（8-10kg/手），RIR 1-2</td>
+<td>胸/背 0.52 → 0.55<br>推/拉 0.74 → 0.78<br>肩/胸 1.1 → 1.02<br><b>胸大肌-上部</b> 从 🟡 → ✅ 顺带修复</td>
+</tr>
+<tr>
+<td><b>调整 2<br>双杠臂屈伸 2→3 组</b></td>
+<td>C 课<br>W5+ 起</td>
+<td>原 2 组 × 6-10 → <b>3 组 × 6-10</b>。自重不够用辅助带，RIR 1-2</td>
+<td>推/拉 0.78 → 0.85（过线）<br>胸/背 0.55 → 0.60（过线）<br>前链/后链 0.56 → 0.59</td>
+</tr>
+<tr>
+<td><b>调整 3<br>杠铃前蹲 2→3 组</b></td>
+<td>C 课<br>W5+ 起</td>
+<td>原 2 组 × 10 → <b>3 组 × 8-10</b>。重量按计划渐进到 18-20kg，RIR 1-2</td>
+<td>Q/H 1.39 → 1.57（保持✓）<br>上身/下身 1.95 → 1.96（无害变化）<br>前链/后链 0.59 → 0.62<br><b>大腿前</b> 容量从 16 → 18</td>
+</tr>
+</tbody>
+</table>
+
+<div class="greenbox" style="background:#e3f1e6;border:1px solid #bcdcc4;color:#2a4a30;"><b>合计影响：</b>3 个调整都是"组数 +1"——不加新动作、不改课型结构。总训练时间增加 <b>~8-10 分钟</b>（B 课 +3 分、C 课 +5 分）。每节课从 ~45 分 → ~50-55 分，60 分钟预算仍撑得住。<br>
+<b>失衡数 7/10 → 4/10</b>，剩下 4 项里有 3 项可以接受、1 项（前链/后链 0.62）继续走会自然修复。</div>
+
+<div class="note"><b>怎么核对效果：</b>从 W5 起按调整执行。<b>W8 周末</b>打开第 13 节"计划评估面板"，它会用<b>你实际记录的数据</b>重算这 10 个比率（不是上面的预测）——这样能看到"我实际做的是不是按预测的方向走"。如果不是，调整就回滚。</div>
+
+</section>
+
+  <!-- 12. 每节课具体计划 -->
+<section>
+<h2>12. 每节课具体计划（30 节全表）</h2>
+<p class="lead">下面 30 节课的<b>具体重量 × 组 × 次 × RIR</b>是按"阶段一持平 → 阶段二每周 +2.5kg → 阶段三冲量 → 第 10 周减载 30%"逻辑推出的。<b>这是建议线，不是命令</b>——实际训练里每次按 RIR 校准（"还能多做几次"作为度量），把真实数据记到动作手册里，下一周计划会用<b>你实际的数据</b>而不是这个估算来调整。</p>
+
+<h3>12.1 矩阵 · 一眼看完整 30 节</h3>
+<p class="lead">行=动作（按 A/B/C 课型分组），列=30 节。深色背景=阶段二/三主训段、浅黄=减载周。空格点=这节没这个动作。每格内"重量 · 组×次"。<b>矩阵适合看趋势</b>（比如杠铃后蹲从 27.5→40kg 的爬升曲线）。</p>
+<div class="matrix-wrap"><table class="session-matrix"><tr><th rowspan="2" style="position:sticky;left:0;background:#f7f1e3;z-index:2;">动作</th><th colspan="3" class="ph-p1">W1 · 重建适应</th><th colspan="3" class="ph-p1">W2 · 重建适应</th><th colspan="3" class="ph-p1">W3 · 重建适应</th><th colspan="3" class="ph-p2">W4 · 增肌主训</th><th colspan="3" class="ph-p2">W5 · 增肌主训</th><th colspan="3" class="ph-p2">W6 · 增肌主训</th><th colspan="3" class="ph-p2">W7 · 增肌主训</th><th colspan="3" class="ph-p3">W8 · 强化</th><th colspan="3" class="ph-p3">W9 · 强化</th><th colspan="3" class="ph-p3d">W10 · 减载</th></tr><tr><th class="sess-th">S1·A</th><th class="sess-th">S2·B</th><th class="sess-th">S3·C</th><th class="sess-th">S4·A</th><th class="sess-th">S5·B</th><th class="sess-th">S6·C</th><th class="sess-th">S7·A</th><th class="sess-th">S8·B</th><th class="sess-th">S9·C</th><th class="sess-th">S10·A</th><th class="sess-th">S11·B</th><th class="sess-th">S12·C</th><th class="sess-th">S13·A</th><th class="sess-th">S14·B</th><th class="sess-th">S15·C</th><th class="sess-th">S16·A</th><th class="sess-th">S17·B</th><th class="sess-th">S18·C</th><th class="sess-th">S19·A</th><th class="sess-th">S20·B</th><th class="sess-th">S21·C</th><th class="sess-th">S22·A</th><th class="sess-th">S23·B</th><th class="sess-th">S24·C</th><th class="sess-th">S25·A</th><th class="sess-th">S26·B</th><th class="sess-th">S27·C</th><th class="sess-th">S28·A</th><th class="sess-th">S29·B</th><th class="sess-th">S30·C</th></tr><tr><th class="mov-th c-A">杠铃后蹲</th><td class="cell ph-p1 active"><span class="w">27.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">27.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">27.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 active"><span class="w">27.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">30kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">32.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">35kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active"><span class="w">37.5kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">40kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active"><span class="w">28kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-A">罗马尼亚硬拉</th><td class="cell ph-p1 active"><span class="w">30kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">30kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">30kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 active"><span class="w">30kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">32.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">35kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">37.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active"><span class="w">40kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">42.5kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active"><span class="w">29.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-A">杠铃臀推</th><td class="cell ph-p1 active"><span class="w">45kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">45kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">45kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 active"><span class="w">45kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">48kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">51kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">54kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active"><span class="w">57kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">60kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active"><span class="w">42kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-A">引体向上(渐进)</th><td class="cell ph-p1 active">死悬</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active">死悬+</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active">主悬</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 active">负向 3s</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active">负向 4s</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active">负向 5s</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active">带辅 重磅</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active">带辅 中磅</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active">带辅+试 strict</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active">strict ★</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-A">帕罗夫推</th><td class="cell ph-p1 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">弹力带 15磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active"><span class="w">弹力带 25磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">弹力带 25磅</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active"><span class="w">弹力带 15磅</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-A">提踵(站姿)</th><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active"><span class="w">+12kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">+12kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active"><span class="w">自重</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-A">坐姿提踵 <span class="addon">(W6+)</span></th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d active"><span class="w">—</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-B">杠铃卧推</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">15kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">16.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">18kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">19.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">21kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">22.5kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">15.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-B">杠铃俯身划船</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">25kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">25kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">25kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">25kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">27kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">29kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">31kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">33kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">35kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">24.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-B">站姿杠铃推举</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">15kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">16.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">18kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">19.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">21kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">22.5kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">15.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-B">上斜哑铃卧推</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">7kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">7kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">7kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">7kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">8kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">9kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">10kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">11kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">12kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">8.5kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-B">杠铃弯举</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">12kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">12kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">12kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">12kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">13kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">14kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">15.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">16.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">17.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">12kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-B">哑铃侧平举</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">4kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">4kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">4kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">4kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">4.5kg</span><span class="sr">4×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">5kg</span><span class="sr">4×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">5kg</span><span class="sr">4×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">5.5kg</span><span class="sr">4×10-12</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">6kg</span><span class="sr">4×10-12</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">4kg</span><span class="sr">2×10</span></td><td class="cell ph-p3d blank">·</td></tr><tr><th class="mov-th c-C">杠铃前蹲</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">15kg</span><span class="sr">2×10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">15kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">16.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">18kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">19.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">21kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">22.5kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">15.5kg</span><span class="sr">2×10</span></td></tr><tr><th class="mov-th c-C">单臂哑铃划船</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">20kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">20kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">20kg</span><span class="sr">2×10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">20kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">21.5kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">23kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">25kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">26.5kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">28kg</span><span class="sr">3×6-8</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">19.5kg</span><span class="sr">2×10</span></td></tr><tr><th class="mov-th c-C">双杠臂屈伸</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">2×10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">自重+辅助↓</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">自重+辅助↓</span><span class="sr">3×8-10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">自重</span><span class="sr">2×10</span></td></tr><tr><th class="mov-th c-C">行进弓步</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">10kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">10kg</span><span class="sr">2×10</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">10kg</span><span class="sr">2×10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">10kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">11kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">12kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">13kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">14kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">15kg</span><span class="sr">3×8-10</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">10.5kg</span><span class="sr">2×10</span></td></tr><tr><th class="mov-th c-C">面拉</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">17.5kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">17.5kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">17.5kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">17.5kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">19kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">20.5kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">22kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">23.5kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">25kg</span><span class="sr">3×12-15</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">17.5kg</span><span class="sr">2×10</span></td></tr><tr><th class="mov-th c-C">蚌式</th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">自重</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">弹力带</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">弹力带</span><span class="sr">3×12-15</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">自重</span><span class="sr">2×10</span></td></tr><tr><th class="mov-th c-C">俯卧腿弯举 <span class="addon">(W5+)</span></th><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p1 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 blank">·</td><td class="cell ph-p2 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 blank">·</td><td class="cell ph-p3 active"><span class="w">—</span><span class="sr">3×12-15</span></td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d blank">·</td><td class="cell ph-p3d active"><span class="w">—</span><span class="sr">2×10</span></td></tr></table></div>
+
+<h3 style="margin-top:24px;">12.2 30 张卡片 · 训练当天打开看</h3>
+<p class="lead">每张卡片对应 1 节课。训练当天点开对应那节，按上面的数据做。<b>每节做完去动作手册记录实际重量/次数/RIR/4 维自评</b>——评估面板（Section 13）会用这些实际数据再推下周的计划。</p>
+<div class="cards-grid"><div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 1 节</div>
+  <div class="sc-meta">W1 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">27.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">30kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">45kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">死悬挂 3×15-20s + 高位下拉 25kg 2×10</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 3)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 2 节</div>
+  <div class="sc-meta">W1 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">25kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">7kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">12kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">4kg</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 3 节</div>
+  <div class="sc-meta">W1 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">20kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">10kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">17.5kg</td><td>3×12-15 (RIR 3)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 4 节</div>
+  <div class="sc-meta">W2 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">27.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">30kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">45kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">死悬挂 3×20-25s + 高位下拉 27.5kg 2×10</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 3)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 5 节</div>
+  <div class="sc-meta">W2 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">25kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">7kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">12kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">4kg</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 6 节</div>
+  <div class="sc-meta">W2 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">20kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">10kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">17.5kg</td><td>3×12-15 (RIR 3)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 7 节</div>
+  <div class="sc-meta">W3 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">27.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">30kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">45kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">主动悬挂 3×10-15s + 高位下拉 30kg 3×8</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 3)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 8 节</div>
+  <div class="sc-meta">W3 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">25kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">7kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">12kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">4kg</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p1">
+<div class="sc-head">
+  <div class="sc-num">第 9 节</div>
+  <div class="sc-meta">W3 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">重建适应</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">15kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">20kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">10kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">17.5kg</td><td>3×12-15 (RIR 3)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 3)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 10 节</div>
+  <div class="sc-meta">W4 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">27.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">30kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">45kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">负向引体 3×3-5（离心 3s）</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 11 节</div>
+  <div class="sc-meta">W4 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">15kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">25kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">15kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">7kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">12kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">4kg</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 12 节</div>
+  <div class="sc-meta">W4 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">15kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">20kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">10kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">17.5kg</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 13 节</div>
+  <div class="sc-meta">W5 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">30kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">32.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">48kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">负向引体 3×4-5（离心 4s）</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 14 节</div>
+  <div class="sc-meta">W5 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">16.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">27kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">16.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">8kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">13kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">4.5kg</td><td>4×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 15 节</div>
+  <div class="sc-meta">W5 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">16.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">21.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">11kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">19kg</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>俯卧腿弯举</b></td><td class="num">—</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 16 节</div>
+  <div class="sc-meta">W6 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">32.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">35kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">51kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">负向引体 3×5（离心 5s）</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>坐姿提踵</b></td><td class="num">—</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 17 节</div>
+  <div class="sc-meta">W6 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">18kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">29kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">18kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">9kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">14kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">5kg</td><td>4×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 18 节</div>
+  <div class="sc-meta">W6 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">18kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">23kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">12kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">20.5kg</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>俯卧腿弯举</b></td><td class="num">—</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 19 节</div>
+  <div class="sc-meta">W7 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">35kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">37.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">54kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">弹力带辅助引体（重磅带）3×5-6</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>坐姿提踵</b></td><td class="num">—</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 20 节</div>
+  <div class="sc-meta">W7 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">19.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">31kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">19.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">10kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">15.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">5kg</td><td>4×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p2">
+<div class="sc-head">
+  <div class="sc-num">第 21 节</div>
+  <div class="sc-meta">W7 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">增肌主训</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">19.5kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">25kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">13kg</td><td>3×8-10 (RIR 1-3)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">22kg</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>3×12-15 (RIR 1-2)</td></tr>
+<tr><td><b>俯卧腿弯举</b></td><td class="num">—</td><td>3×12-15 (RIR 1-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3">
+<div class="sc-head">
+  <div class="sc-num">第 22 节</div>
+  <div class="sc-meta">W8 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">强化</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">37.5kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">40kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">57kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">弹力带辅助引体（中磅带）3×4-5</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 25磅</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">+12kg</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>坐姿提踵</b></td><td class="num">—</td><td>3×12-15 (RIR 0-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3">
+<div class="sc-head">
+  <div class="sc-num">第 23 节</div>
+  <div class="sc-meta">W8 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">强化</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">21kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">33kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">21kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">11kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">16.5kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">5.5kg</td><td>4×10-12 (RIR 0-1)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3">
+<div class="sc-head">
+  <div class="sc-num">第 24 节</div>
+  <div class="sc-meta">W8 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">强化</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">21kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">26.5kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重+辅助↓</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">14kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">23.5kg</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">弹力带</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>俯卧腿弯举</b></td><td class="num">—</td><td>3×12-15 (RIR 0-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3">
+<div class="sc-head">
+  <div class="sc-num">第 25 节</div>
+  <div class="sc-meta">W9 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">强化</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">40kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">42.5kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">60kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">弹力带辅助 3×3-4 + strict 尝试 2-3 次</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 25磅</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">+12kg</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>坐姿提踵</b></td><td class="num">—</td><td>3×12-15 (RIR 0-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3">
+<div class="sc-head">
+  <div class="sc-num">第 26 节</div>
+  <div class="sc-meta">W9 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">强化</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">22.5kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">35kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">22.5kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">12kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">17.5kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">6kg</td><td>4×10-12 (RIR 0-1)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3">
+<div class="sc-head">
+  <div class="sc-num">第 27 节</div>
+  <div class="sc-meta">W9 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">强化</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">22.5kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">28kg</td><td>3×6-8 + 顶峰 1×AMRAP (RIR 0)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重+辅助↓</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">15kg</td><td>3×8-10 (RIR 0-2)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">25kg</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">弹力带</td><td>3×12-15 (RIR 0-2)</td></tr>
+<tr><td><b>俯卧腿弯举</b></td><td class="num">—</td><td>3×12-15 (RIR 0-2)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3d">
+<div class="sc-head">
+  <div class="sc-num">第 28 节</div>
+  <div class="sc-meta">W10 · 课型 A · 下肢 + 拉 + 核心</div>
+  <div class="sc-phase">减载</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃后蹲</b></td><td class="num">28kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>罗马尼亚硬拉</b></td><td class="num">29.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃臀推</b></td><td class="num">42kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>引体向上</b></td><td colspan="2">strict 引体 1 力竭 + 负向 2-3 次</td></tr>
+<tr><td><b>帕罗夫推</b></td><td class="num">弹力带 15磅</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>提踵(站姿)</b></td><td class="num">自重</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>坐姿提踵</b></td><td class="num">—</td><td>2×10 (RIR 3-4)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3d">
+<div class="sc-head">
+  <div class="sc-num">第 29 节</div>
+  <div class="sc-meta">W10 · 课型 B · 上肢推+拉</div>
+  <div class="sc-phase">减载</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃卧推</b></td><td class="num">15.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃俯身划船</b></td><td class="num">24.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>站姿杠铃推举</b></td><td class="num">15.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>上斜哑铃卧推</b></td><td class="num">8.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>杠铃弯举</b></td><td class="num">12kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>哑铃侧平举</b></td><td class="num">4kg</td><td>2×10 (RIR 3-4)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="session-card ph-p3d">
+<div class="sc-head">
+  <div class="sc-num">第 30 节</div>
+  <div class="sc-meta">W10 · 课型 C · 全身均衡</div>
+  <div class="sc-phase">减载</div>
+</div>
+<table class="sc-table">
+<thead><tr><th style="width:38%">动作</th><th style="width:24%">重量</th><th>组×次（RIR）</th></tr></thead>
+<tbody><tr><td><b>杠铃前蹲</b></td><td class="num">15.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>单臂哑铃划船</b></td><td class="num">19.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>双杠臂屈伸</b></td><td class="num">自重</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>行进弓步</b></td><td class="num">10.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>面拉</b></td><td class="num">17.5kg</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>蚌式</b></td><td class="num">自重</td><td>2×10 (RIR 3-4)</td></tr>
+<tr><td><b>俯卧腿弯举</b></td><td class="num">—</td><td>2×10 (RIR 3-4)</td></tr>
+</tbody>
+</table>
+</div></div>
+
+<div class="note"><b>怎么算出来的 / 几个关键点：</b><br>
+① <b>起步重量</b>取自 5.x 节"历史最佳估算 ÷ 1.15"——你做过 30kg×10 的后蹲，所以起步是 27.5kg。<br>
+② <b>主复合动作渐进</b>=每周 +2.5kg 或 +1-2 次，<b>每周加 1 个就够</b>（加重量优先）。<br>
+③ <b>RIR</b>="再做几次到力竭"。RIR 3-4 = 还能做 3-4 次；RIR 0-1 = 力竭附近。<br>
+④ <b>第 10 周减载</b>=重量 ×0.7、2 组、RIR 3-4——主动恢复 ≠ 偷懒；前 9 周积累的疲劳会在这周转化为生长。<br>
+⑤ <b>引体向上</b>不按重量练，按 9.2 节的渐进变式走（死悬→负向→弹力带→strict）。<br>
+⑥ <b>W5+/W6+ 加的动作</b>（俯卧腿弯举/坐姿提踵/侧平举升 4 组）= 8.3 节诊断后的必改项，已经在矩阵和卡片里。
+</div>
+</section>
+
+  <!-- 13. 计划评估面板 -->
+<section>
+<h2>13. 计划评估面板 · 训练后看这里</h2>
+<p class="lead">这一节<b>读取你在动作手册里的实际训练记录</b>（localStorage 里的 <code>gym_handbook_v3</code>），结合本计划的预期，自动给出 4 维反馈。<b>每周训练完打开看一眼</b>就知道：你处在哪里、下一节该用多少重量、MEV/平衡有没有改善、是不是按渐进超负荷在走。</p>
+
+<!-- 计划起点设置 -->
+<div class="setup-box">
+  <p><b>① 先告诉系统你哪天开始第 1 节</b></p>
+  <p style="font-size:13px; color:var(--ink-2);">这决定了"今天是第几周第几节"。改一次就行，存在你的浏览器里。</p>
+  <div class="setup-controls">
+    <label>W1 第 1 节日期：<input type="date" id="planStartInput" /></label>
+    <button class="btn" id="saveStartBtn">保存</button>
+    <button class="btn btn-secondary" id="useTodayBtn">今天就是 W1 第 1 节</button>
+    <span id="setupStatus" class="setup-status"></span>
+  </div>
+</div>
+
+<div id="evalReady" style="display:none;">
+
+<!-- 整体进度 -->
+<h3>13.1 整体进度提示</h3>
+<div id="progressPanel" class="eval-panel"></div>
+
+<!-- 下一节建议 -->
+<h3 style="margin-top:18px;">13.2 下一节训练建议</h3>
+<div id="nextSessionPanel" class="eval-panel"></div>
+
+<!-- 重量渐进核对 -->
+<h3 style="margin-top:18px;">13.3 重量是否按计划渐进（本周 vs 上周）</h3>
+<div id="progressionPanel" class="eval-panel"></div>
+
+<!-- MEV / 平衡更新 -->
+<h3 style="margin-top:18px;">13.4 MEV / 平衡 指标（基于本周实际记录重算）</h3>
+<div id="metricsPanel" class="eval-panel"></div>
+
+<!-- 个性化 MEV 调整建议 -->
+<h3 style="margin-top:18px;">13.5 个性化 MEV 调整建议（基于最近 4 周）</h3>
+<p class="lead" style="font-size:12.5px;color:var(--muted);">默认的 MEV/MAV/MRV 是<b>群体平均</b>——你的个人 MEV 大概率是默认的 70-150%。等你训练 3-4 周后，下面会基于<b>实际记录 + 主复合动作渐进</b>给你个性化的方向建议。</p>
+<div id="personalMevPanel" class="eval-panel"></div>
+
+<div class="note" style="margin-top:14px;"><b>怎么用：</b>① 训练当天打开手册（手机版或电脑版）记录每个动作的重量×次×组×RIR；② 一周训练完三次后回到这一页看反馈；③ 反馈里的"下一节建议"直接写在动作手册里，本周训练时按这个走。<br><b>注意</b>：本面板只读 localStorage，<b>不会改你的数据</b>。如果记录不全，提示会缺失但不影响其他面板。</div>
+
+</div>
+
+<div id="evalEmpty" style="display:none;">
+  <div class="note"><b>还没设置开始日期，</b>把 W1 第 1 节的日期填上去（或点"今天就是"），然后才能看反馈。</div>
+</div>
+
+</section>
+
+<style>
+.setup-box{background:#fff8e3; border:1px solid #f0e2b8; border-radius:10px; padding:13px 16px; margin:10px 0;}
+.setup-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px;}
+.setup-controls label{font-size:13px; color:var(--ink-2);}
+.setup-controls input[type=date]{font-size:13px; padding:5px 8px; border:1px solid var(--line); border-radius:6px;}
+.btn{font-size:13px; padding:6px 13px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:6px; cursor:pointer;}
+.btn-secondary{background:#fff; color:var(--accent);}
+.setup-status{font-size:12px; color:var(--good);}
+.eval-panel{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:13px;}
+.eval-panel .row{padding:5px 0; border-bottom:1px dashed var(--line);}
+.eval-panel .row:last-child{border-bottom:0;}
+.eval-panel table{font-size:12.5px;}
+.eval-panel .ok{color:var(--good);}
+.eval-panel .warn{color:#a87018;}
+.eval-panel .bad{color:var(--accent);}
+.eval-panel .kpi-strip{display:flex; gap:10px; flex-wrap:wrap; margin:6px 0;}
+.eval-panel .kpi-mini{background:#f7f1e3; padding:6px 12px; border-radius:8px; font-size:12px;}
+.eval-panel .kpi-mini b{font-size:14px; color:var(--accent);}
+.next-action{background:#e3f1e6; border:1px solid #bcdcc4; border-radius:6px; padding:8px 11px; margin:4px 0; font-size:12.5px;}
+.next-action.skip{background:#f1efe8; border-color:var(--line-2); color:var(--ink-2);}
+</style>
+
+<script src="训练数据库.js"></script>
+<script>
+(function(){
+  // --- Plan configuration ---
+  const STORAGE_HANDBOOK = 'gym_handbook_v3';
+  const STORAGE_PLAN_START = 'gym_plan_start_v1';
+  
+  // Movement name → handbook ID mapping (uses cn from EXERCISE_DB)
+  const MOV_TO_ID = {
+    '杠铃后蹲':'back-squat', '罗马尼亚硬拉':'rdl', '杠铃臀推':'hip-thrust',
+    '引体向上(渐进)':'pullup', '帕罗夫推':'pallof',
+    '提踵(站姿)':'supp-calf-standing', '坐姿提踵':'supp-calf-seated',
+    '杠铃卧推':'bench-press', '杠铃俯身划船':'bb-row',
+    '站姿杠铃推举':'ohp', '上斜哑铃卧推':'incline-db',
+    '杠铃弯举':'bb-curl', '哑铃侧平举':'supp-db-lateral-raise',
+    '杠铃前蹲':'front-squat', '单臂哑铃划船':'db-row',
+    '双杠臂屈伸':'dip', '行进弓步':'walking-lunge',
+    '面拉':'face-pull', '蚌式':'supp-clamshell',
+    '俯卧腿弯举':'supp-leg-curl',
+    // pullup phase 1 supplemental
+    '高位下拉':'lat-pulldown'
+  };
+  
+  // Plan structure
+  const PLAN = {
+    // Course rotation: session n → ['A','B','C'][(n-1)%3]
+    courseForSession(n) { return ['A','B','C'][(n-1)%3]; },
+    weekOfSession(n) { return Math.floor((n-1)/3) + 1; },
+    
+    movementsForCourse(course, week) {
+      const base = {
+        A: ['杠铃后蹲','罗马尼亚硬拉','杠铃臀推','引体向上(渐进)','帕罗夫推','提踵(站姿)'],
+        B: ['杠铃卧推','杠铃俯身划船','站姿杠铃推举','上斜哑铃卧推','杠铃弯举','哑铃侧平举'],
+        C: ['杠铃前蹲','单臂哑铃划船','双杠臂屈伸','行进弓步','面拉','蚌式']
+      };
+      const list = base[course].slice();
+      if (course === 'A' && week >= 6) list.push('坐姿提踵');
+      if (course === 'C' && week >= 5) list.push('俯卧腿弯举');
+      return list;
+    },
+    
+    // Progression: start, peak (W9), deload at W10 -30%
+    progression: {
+      '杠铃后蹲':{start:27.5, peak:40.0},
+      '罗马尼亚硬拉':{start:30.0, peak:42.5},
+      '杠铃臀推':{start:45.0, peak:60.0},
+      '杠铃卧推':{start:15.0, peak:22.5},
+      '杠铃俯身划船':{start:25.0, peak:35.0},
+      '站姿杠铃推举':{start:15.0, peak:22.5},
+      '上斜哑铃卧推':{start:7.0, peak:12.0},
+      '杠铃弯举':{start:12.0, peak:17.5},
+      '哑铃侧平举':{start:4.0, peak:6.0},
+      '杠铃前蹲':{start:15.0, peak:22.5},
+      '单臂哑铃划船':{start:20.0, peak:28.0},
+      '行进弓步':{start:10.0, peak:15.0},
+      '面拉':{start:17.5, peak:25.0},
+      '俯卧腿弯举':{start:10.0, peak:17.5},
+      '坐姿提踵':{start:15.0, peak:25.0}
+    },
+    
+    weightFor(mov, week) {
+      const p = this.progression[mov];
+      if (!p) return null;
+      if (week <= 3) return p.start;
+      if (week >= 4 && week <= 9) {
+        const frac = (week - 4) / 5;
+        const w = p.start + (p.peak - p.start) * frac;
+        return Math.round(w*2)/2;
+      }
+      if (week === 10) return Math.round(p.peak*0.7*2)/2;
+      return null;
+    },
+    
+    setsFor(mov, week) {
+      if (week <= 3) {
+        if (['哑铃侧平举','蚌式','提踵(站姿)','面拉','帕罗夫推'].includes(mov)) return 3;
+        return 2;
+      }
+      if (week >= 4 && week <= 7) {
+        if (mov === '哑铃侧平举' && week >= 5) return 4;
+        return 3;
+      }
+      if (week >= 8 && week <= 9) {
+        if (mov === '哑铃侧平举') return 4;
+        return 3;
+      }
+      if (week === 10) return 2;
+      return 3;
+    }
+  };
+  
+  // --- Read data ---
+  function readHandbook() {
+    try {
+      const raw = localStorage.getItem(STORAGE_HANDBOOK);
+      return raw ? JSON.parse(raw) : {logs:{}};
+    } catch(e) { return {logs:{}}; }
+  }
+  
+  function planStart() {
+    return localStorage.getItem(STORAGE_PLAN_START);
+  }
+  
+  // --- Day calc ---
+  function daysSince(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    const now = new Date();
+    now.setHours(0,0,0,0);
+    return Math.floor((now - d) / 86400000);
+  }
+  
+  function currentWeekAndSession() {
+    const start = planStart();
+    if (!start) return null;
+    const days = daysSince(start);
+    if (days < 0) return {week:0, session:0, daysToStart: -days};
+    // Sessions on M/W/F: day 0=M=S1, day 2=W=S2, day 4=F=S3, day 7=M=S4...
+    // But user might not strictly follow M/W/F. Use a simpler heuristic:
+    // Week = floor(days/7) + 1, sessions in week = how many M/W/F days have passed within week
+    const week = Math.floor(days/7) + 1;
+    // Session index within week (0..2) based on days into week
+    const dayInWeek = days % 7;
+    // Approximate: 0-1 = S1 of week (Monday), 2-3 = S2, 4-6 = S3
+    let sessIdx;
+    if (dayInWeek <= 1) sessIdx = 0;
+    else if (dayInWeek <= 3) sessIdx = 1;
+    else sessIdx = 2;
+    const session = (week-1)*3 + sessIdx + 1;
+    return {week, session, dayInWeek, daysSinceStart:days};
+  }
+  
+  function logsInRange(handbook, startDate, endDate) {
+    const out = {};
+    for (const movId in handbook.logs) {
+      const arr = handbook.logs[movId].filter(l => l.date >= startDate && l.date <= endDate);
+      if (arr.length) out[movId] = arr;
+    }
+    return out;
+  }
+  
+  function dateOffsetISO(startISO, days) {
+    const d = new Date(startISO + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d.toISOString().slice(0,10);
+  }
+  
+  // --- Compute actual sets per muscle from logs ---
+  function musclesFromLogs(logs) {
+    // Use EXERCISE_DB.contrib
+    const muscleSets = {};
+    if (!window.EXERCISE_DB) return muscleSets;
+    
+    for (const movId in logs) {
+      // Find exercise by ID
+      let ex = null;
+      for (const key in EXERCISE_DB) {
+        if (EXERCISE_DB[key].id === movId) { ex = EXERCISE_DB[key]; break; }
+      }
+      if (!ex || !ex.contrib) continue;
+      
+      // Sum sets across all log entries for this movement in range
+      const totalSets = logs[movId].reduce((s,l) => s + (parseInt(l.sets)||0), 0);
+      for (const m in ex.contrib) {
+        muscleSets[m] = (muscleSets[m] || 0) + totalSets * ex.contrib[m];
+      }
+    }
+    return muscleSets;
+  }
+  
+  // --- Renders ---
+  function renderProgress(state) {
+    const {week, session, daysSinceStart} = state;
+    const totalSessions = 30;
+    const remaining = totalSessions - (session - 1);
+    
+    // Phase
+    let phase = '重建适应';
+    if (week >= 4 && week <= 7) phase = '增肌主训';
+    else if (week >= 8 && week <= 9) phase = '强化';
+    else if (week === 10) phase = '减载';
+    
+    // Next milestone
+    const milestones = [
+      {at:9,  name:'阶段一结束 / 准备进入主训段'},
+      {at:12, name:'阶段二第 1 周完成 / 升到 3 组'},
+      {at:15, name:'W5：俯卧腿弯举 + 侧平举升 4 组开始'},
+      {at:18, name:'W6：坐姿提踵开始 + 引体进入弹力带辅助'},
+      {at:21, name:'阶段二结束'},
+      {at:27, name:'强化段结束 / 准备减载'},
+      {at:30, name:'计划收尾 · 尝试 1 个 strict 引体'}
+    ];
+    const next = milestones.find(m => m.at >= session);
+    
+    let html = '<div class="kpi-strip">';
+    html += `<div class="kpi-mini">已开始 <b>${daysSinceStart}</b> 天</div>`;
+    html += `<div class="kpi-mini">本周 <b>W${week}</b></div>`;
+    html += `<div class="kpi-mini">预计第 <b>${session}</b> 节 / 30</div>`;
+    html += `<div class="kpi-mini">本阶段 <b>${phase}</b></div>`;
+    html += '</div>';
+    
+    if (next) {
+      const sessionsTo = next.at - (session - 1);
+      html += `<p>下一里程碑：<b>${next.name}</b>（第 ${next.at} 节，还有 ${sessionsTo} 节训练）</p>`;
+    } else {
+      html += `<p>✅ 30 节已完成。可以基于实际数据生成下一个周期的计划了。</p>`;
+    }
+    
+    return html;
+  }
+  
+  function renderNextSession(state, recentLogs) {
+    const nextN = state.session;
+    if (nextN > 30) return '<p>计划已经完成。</p>';
+    
+    const week = state.week;
+    const course = PLAN.courseForSession(nextN);
+    const movs = PLAN.movementsForCourse(course, week);
+    
+    let html = `<p><b>第 ${nextN} 节 · W${week} · 课型 ${course}</b></p>`;
+    html += '<table><thead><tr><th>动作</th><th>计划重量</th><th>组×次</th><th>建议调整</th></tr></thead><tbody>';
+    
+    for (const mov of movs) {
+      const plannedW = PLAN.weightFor(mov, week);
+      const plannedSets = PLAN.setsFor(mov, week);
+      const movId = MOV_TO_ID[mov];
+      const lastLogs = recentLogs[movId] || [];
+      
+      let plannedDisp = plannedW ? `${plannedW}kg` : '—';
+      if (mov === '引体向上(渐进)') plannedDisp = `W${week} 变式`;
+      
+      let advice = '按计划做';
+      if (plannedW && lastLogs.length) {
+        const last = lastLogs[lastLogs.length-1];
+        const lastW = parseFloat(last.weight) || 0;
+        const lastReps = parseInt(last.reps) || 0;
+        const lastSets = parseInt(last.sets) || 0;
+        if (lastW < plannedW * 0.95) {
+          advice = `<span class="warn">上次只到 ${lastW}kg×${lastReps}×${lastSets} → 这次先重复 ${lastW}kg×10×${plannedSets}</span>`;
+        } else if (lastReps >= 12 && lastW >= plannedW) {
+          advice = `<span class="ok">上次 ${lastW}kg×${lastReps} 完成度高 → 加 2.5kg 到 ${(lastW+2.5)}kg</span>`;
+        } else {
+          advice = `<span class="ok">上次 ${lastW}kg×${lastReps} → 按计划 ${plannedW}kg</span>`;
+        }
+      } else if (plannedW) {
+        advice = '<span class="warn">无近期记录，按计划起步</span>';
+      }
+      
+      html += `<tr><td><b>${mov}</b></td><td class="num">${plannedDisp}</td><td>${plannedSets}×${week<=3?'10':'8-10'}</td><td>${advice}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    return html;
+  }
+  
+  function renderProgression(state, thisWeekLogs, lastWeekLogs) {
+    // Show per main lift: last week's best weight vs this week's
+    const mainLifts = ['杠铃后蹲','罗马尼亚硬拉','杠铃臀推','杠铃卧推','杠铃俯身划船','站姿杠铃推举','上斜哑铃卧推','杠铃前蹲','单臂哑铃划船'];
+    
+    let html = '<p>主复合动作的<b>本周最佳 vs 上周最佳</b>对比（要看到 +2.5kg 或 +1-2 次的渐进）：</p>';
+    html += '<table><thead><tr><th>动作</th><th>上周最佳</th><th>本周最佳</th><th>变化</th><th>计划目标</th></tr></thead><tbody>';
+    
+    let cntProgress = 0, cntFlat = 0, cntDown = 0;
+    for (const mov of mainLifts) {
+      const movId = MOV_TO_ID[mov];
+      const lastBest = bestOf(lastWeekLogs[movId]);
+      const thisBest = bestOf(thisWeekLogs[movId]);
+      const plannedW = PLAN.weightFor(mov, state.week);
+      
+      let change = '—';
+      if (lastBest && thisBest) {
+        const dW = thisBest.w - lastBest.w;
+        const dR = thisBest.r - lastBest.r;
+        if (dW > 0 || (dW === 0 && dR > 0)) {
+          change = `<span class="ok">↑ +${dW.toFixed(1)}kg / +${dR}次</span>`;
+          cntProgress++;
+        } else if (dW === 0 && dR === 0) {
+          change = '<span class="warn">→ 持平</span>';
+          cntFlat++;
+        } else {
+          change = `<span class="bad">↓ ${dW.toFixed(1)}kg / ${dR}次</span>`;
+          cntDown++;
+        }
+      } else if (thisBest && !lastBest) {
+        change = '<span class="ok">新增基线</span>';
+      }
+      
+      html += `<tr><td>${mov}</td><td class="num">${lastBest?`${lastBest.w}×${lastBest.r}`:'—'}</td><td class="num">${thisBest?`${thisBest.w}×${thisBest.r}`:'—'}</td><td>${change}</td><td class="num">${plannedW||'—'}kg</td></tr>`;
+    }
+    html += '</tbody></table>';
+    html += `<div class="kpi-strip" style="margin-top:8px;">`;
+    html += `<div class="kpi-mini"><b class="ok">↑${cntProgress}</b> 渐进</div>`;
+    html += `<div class="kpi-mini"><b class="warn">→${cntFlat}</b> 持平</div>`;
+    html += `<div class="kpi-mini"><b class="bad">↓${cntDown}</b> 退步</div>`;
+    html += '</div>';
+    
+    if (cntDown > 2) {
+      html += '<p class="bad" style="margin-top:6px;">⚠ 退步项 &gt; 2 — 可能恢复不足或睡眠差，<b>本周可考虑降量 10% + 多睡 1 小时</b>。</p>';
+    } else if (cntProgress >= 4) {
+      html += '<p class="ok" style="margin-top:6px;">✓ 主线渐进良好——按计划继续走。</p>';
+    }
+    return html;
+  }
+  
+  function bestOf(logs) {
+    if (!logs || !logs.length) return null;
+    let best = null;
+    for (const l of logs) {
+      const w = parseFloat(l.weight) || 0;
+      const r = parseInt(l.reps) || 0;
+      if (!best || w > best.w || (w === best.w && r > best.r)) {
+        best = {w, r, sets:parseInt(l.sets)||0};
+      }
+    }
+    return best;
+  }
+  
+  function renderMetrics(state, weekLogs) {
+    const muscleSets = musclesFromLogs(weekLogs);
+    if (!window.MUSCLE_TARGETS) return '<p>需要 MUSCLE_TARGETS 数据未加载。</p>';
+    
+    // Bucket
+    let nMev=0, nClose=0, nShort=0, nUntrained=0;
+    const issues = [];
+    const targets = window.MUSCLE_TARGETS;
+    for (const m in targets) {
+      const mev = targets[m].mev;
+      const actual = muscleSets[m] || 0;
+      if (actual === 0) nUntrained++;
+      else if (actual >= mev) nMev++;
+      else if (actual >= mev*0.7) nClose++;
+      else { nShort++; issues.push({m, actual, mev}); }
+    }
+    
+    let html = '<div class="kpi-strip">';
+    html += `<div class="kpi-mini"><b class="ok">${nMev}</b> ✅ 达 MEV</div>`;
+    html += `<div class="kpi-mini"><b class="warn">${nClose}</b> 🟡 接近</div>`;
+    html += `<div class="kpi-mini"><b class="bad">${nShort}</b> 🔴 不足</div>`;
+    html += `<div class="kpi-mini"><b>${nUntrained}</b> ⚪ 未训</div>`;
+    html += '</div>';
+    
+    // Compare to plan target: at week>=4, should be 20+ ✅ if following plan
+    let verdict = '';
+    if (state.week >= 4) {
+      if (nMev >= 18) verdict = '<span class="ok">✓ 已达 MEV 数 &ge; 18，符合阶段二预期。</span>';
+      else if (nMev >= 12) verdict = '<span class="warn">⚠ 已达 MEV 数偏低，可能本周没做满组数或刚开始。</span>';
+      else verdict = '<span class="bad">⚠ 已达 MEV 数明显偏低——本周训练量大幅低于计划。</span>';
+    } else {
+      verdict = `<span style="color:var(--muted);">阶段一（W1-3）只 2 组，MEV 数自然偏低，不需要看这条。</span>`;
+    }
+    html += `<p>${verdict}</p>`;
+    
+    if (issues.length) {
+      const top5 = issues.sort((a,b)=>a.actual/a.mev - b.actual/b.mev).slice(0,5);
+      html += '<p style="font-size:12.5px;"><b>本周量最远低 MEV 的 5 块：</b>';
+      html += top5.map(i => `${i.m} (${i.actual.toFixed(1)}/${i.mev})`).join('、');
+      html += '</p>';
+    }
+    
+    // Simple balance check: 推 vs 拉
+    // 推 ≈ chest + 前束 + 三头; 拉 ≈ 背阔 + 后束 + 二头
+    let push = (muscleSets['胸大肌-中下部']||0) + (muscleSets['胸大肌-上部']||0) + (muscleSets['三角肌前束']||0) + (muscleSets['肱三头肌-外侧+内侧头']||0) + (muscleSets['肱三头肌-长头']||0);
+    let pull = (muscleSets['背阔肌']||0) + (muscleSets['菱形肌']||0) + (muscleSets['三角肌后束']||0) + (muscleSets['肱二头肌']||0);
+    const ratio = pull ? (push/pull).toFixed(2) : '—';
+    html += `<p>推/拉 比：<b>${ratio}</b>（目标 0.85-1.2，低于 0.85 偏拉，高于 1.2 偏推）</p>`;
+    
+    return html;
+  }
+  
+  // --- Init ---
+  const startInput = document.getElementById('planStartInput');
+  const status = document.getElementById('setupStatus');
+  const evalReady = document.getElementById('evalReady');
+  const evalEmpty = document.getElementById('evalEmpty');
+  
+  function refresh() {
+    const start = planStart();
+    if (!start) {
+      evalReady.style.display = 'none';
+      evalEmpty.style.display = 'block';
+      return;
+    }
+    startInput.value = start;
+    const state = currentWeekAndSession();
+    if (!state || state.week <= 0) {
+      evalReady.style.display = 'none';
+      evalEmpty.style.display = 'block';
+      document.getElementById('evalEmpty').innerHTML = `<div class="note">计划还没开始（还有 ${state.daysToStart} 天）。等到那天再回来看反馈。</div>`;
+      return;
+    }
+    evalReady.style.display = 'block';
+    evalEmpty.style.display = 'none';
+    
+    const hb = readHandbook();
+    // This week's range
+    const thisWeekStart = dateOffsetISO(start, (state.week-1)*7);
+    const thisWeekEnd = dateOffsetISO(thisWeekStart, 7);
+    const thisWeekLogs = logsInRange(hb, thisWeekStart, thisWeekEnd);
+    const lastWeekStart = dateOffsetISO(start, Math.max(0,(state.week-2))*7);
+    const lastWeekEnd = dateOffsetISO(lastWeekStart, 7);
+    const lastWeekLogs = logsInRange(hb, lastWeekStart, lastWeekEnd);
+    
+    // Recent logs (last 14 days) for next-session advice
+    const recentStart = dateOffsetISO(thisWeekStart, -14);
+    const recentLogs = logsInRange(hb, recentStart, thisWeekEnd);
+    
+    document.getElementById('progressPanel').innerHTML = renderProgress(state);
+    document.getElementById('nextSessionPanel').innerHTML = renderNextSession(state, recentLogs);
+    document.getElementById('progressionPanel').innerHTML = renderProgression(state, thisWeekLogs, lastWeekLogs);
+    document.getElementById('metricsPanel').innerHTML = renderMetrics(state, thisWeekLogs);
+
+    // Personal MEV: needs 4 weeks of data
+    const fourWeeksStart = dateOffsetISO(start, Math.max(0, (state.week-4))*7);
+    const fourWeeksLogs = logsInRange(hb, fourWeeksStart, thisWeekEnd);
+    document.getElementById('personalMevPanel').innerHTML = renderPersonalMev(state, fourWeeksLogs);
+  }
+
+  function renderPersonalMev(state, fourWeekLogs) {
+    const weeksObserved = Math.min(state.week, 4);
+    if (weeksObserved < 3) {
+      return `<p>需要至少 <b>3 周</b>训练数据才能给个性化建议。<br>你目前已完成 <b>${weeksObserved} 周</b>（W${state.week} 还在进行中）。回来再看。</p>`;
+    }
+
+    const muscleSets = musclesFromLogs(fourWeekLogs);
+    if (!window.MUSCLE_TARGETS) return '<p>MUSCLE_TARGETS 未加载。</p>';
+    const targets = window.MUSCLE_TARGETS;
+
+    // Get personal overrides from localStorage
+    const PERSONAL_KEY = 'gym_personal_mev_factor_v1';
+    let personalFactor = 1.0;
+    try {
+      const v = parseFloat(localStorage.getItem(PERSONAL_KEY));
+      if (!isNaN(v) && v >= 0.5 && v <= 2.0) personalFactor = v;
+    } catch(e) {}
+
+    // Compute avg weekly sets per muscle (over the observed weeks)
+    const avgPerWeek = {};
+    for (const m in muscleSets) {
+      avgPerWeek[m] = muscleSets[m] / weeksObserved;
+    }
+
+    // Heuristic: for each main muscle (those with MEV >= 6), compare actual vs default MEV
+    // Build a summary verdict
+    const mainMuscles = Object.keys(targets).filter(m => targets[m].mev >= 6);
+    const aboveCount = mainMuscles.filter(m => (avgPerWeek[m]||0) >= targets[m].mev).length;
+    const closeCount = mainMuscles.filter(m => {
+      const a = avgPerWeek[m]||0;
+      return a >= targets[m].mev*0.7 && a < targets[m].mev;
+    }).length;
+    const totalMain = mainMuscles.length;
+
+    // Trend: look at main lift progression as proxy for "is user growing?"
+    // For simplicity, just check if 杠铃后蹲 or 杠铃卧推 weights increased over 4 weeks
+    const mainLiftIds = ['back-squat','bench-press','rdl','hip-thrust','bb-row'];
+    let progressed = 0, total = 0;
+    for (const lid of mainLiftIds) {
+      const logs = (fourWeekLogs[lid] || []).slice().sort((a,b)=> (a.date||'').localeCompare(b.date||''));
+      if (logs.length < 2) continue;
+      total++;
+      const firstWeight = parseFloat(logs[0].weight) || 0;
+      const lastWeight = parseFloat(logs[logs.length-1].weight) || 0;
+      if (lastWeight > firstWeight) progressed++;
+    }
+
+    // Build verdict
+    let verdict = '';
+    let suggestedFactor = 1.0;
+
+    if (total === 0) {
+      verdict = '<span class="warn">⚠ 主复合动作记录不足，无法判断进展方向。先做完 3+ 周训练再看。</span>';
+    } else if (progressed/total >= 0.7 && aboveCount/totalMain >= 0.6) {
+      // Most muscles at MEV+, weights progressing — perfect
+      verdict = `<span class="ok"><b>✓ 默认 MEV 适合你</b></span><br>主复合动作 ${progressed}/${total} 在进步，约 ${aboveCount}/${totalMain} 块主肌每周训练量 ≥ MEV。<br><b>建议</b>：保持当前训练量，按默认 MEV 走。`;
+      suggestedFactor = 1.0;
+    } else if (progressed/total >= 0.7 && aboveCount/totalMain < 0.4) {
+      // Weights up but below MEV — high responder
+      verdict = `<span class="ok"><b>↓ 你的个人 MEV 可能比默认值低 20-30%</b></span><br>仅 ${aboveCount}/${totalMain} 块主肌达默认 MEV，但 ${progressed}/${total} 个主复合在进步——典型<b>高响应者</b>或新手。<br><b>建议</b>：暂用默认 MEV ×0.7 作为你的个人 MEV，继续轻松训练即可。`;
+      suggestedFactor = 0.7;
+    } else if (progressed/total < 0.3 && aboveCount/totalMain >= 0.7) {
+      // Above MEV but weights stalled — needs more volume OR more rest
+      verdict = `<span class="warn"><b>↑ 你的个人 MEV 可能比默认值高 20-30%</b></span><br>${aboveCount}/${totalMain} 块主肌已达默认 MEV，但主复合 ${progressed}/${total} 进步——可能你需要<b>更多刺激</b>才能增肌。<br><b>建议</b>：把目标推到默认 MAV（约 1.5× MEV）。同时检查睡眠/营养是否到位。`;
+      suggestedFactor = 1.3;
+    } else if (progressed/total < 0.3 && aboveCount/totalMain >= 0.4) {
+      // Mediocre — need to investigate
+      verdict = `<span class="warn"><b>~ 训练量大致到位但进步不明显</b></span><br>${aboveCount}/${totalMain} 块达默认 MEV、${progressed}/${total} 个主复合进步。<br><b>可能原因</b>：① 仍在神经适应期（W1-4 期间正常）；② 强度不够（RIR 经常 ≥4）；③ 恢复不足。先确认 RIR 是否 ≤3，再调整。`;
+      suggestedFactor = 1.0;
+    } else {
+      verdict = `<span class="warn">数据混合，需要更多周期才能判断个人 MEV 方向。</span>`;
+      suggestedFactor = 1.0;
+    }
+
+    // Build per-muscle comparison table (top 8 most-trained muscles)
+    const sorted = Object.entries(avgPerWeek)
+      .filter(([m,_]) => targets[m] && targets[m].mev >= 6)
+      .sort((a,b) => (b[1]||0) - (a[1]||0))
+      .slice(0, 8);
+
+    let table = '<table style="margin-top:8px;"><thead><tr><th>主肌</th><th class="num">实际周均</th><th class="num">默认 MEV</th><th class="num">实际/MEV</th></tr></thead><tbody>';
+    for (const [m, avg] of sorted) {
+      const mev = targets[m].mev;
+      const pct = Math.round(avg/mev*100);
+      const color = pct >= 100 ? 'var(--good)' : (pct >= 70 ? '#a87018' : 'var(--accent)');
+      table += `<tr><td>${m}</td><td class="num">${avg.toFixed(1)}</td><td class="num">${mev}</td><td class="num" style="color:${color};"><b>${pct}%</b></td></tr>`;
+    }
+    table += '</tbody></table>';
+
+    // Override control
+    let overrideUI = `<div style="margin-top:12px; padding:10px 12px; background:var(--paper-2); border-radius:8px; font-size:12.5px;">
+      <p><b>个人 MEV 修正系数：</b> <code>${personalFactor.toFixed(1)}×</code>（建议 ${suggestedFactor.toFixed(1)}×）</p>
+      <p>这个系数会乘到默认 MEV 上。如建议为 1.3，则胸大肌上部你的个人 MEV = 6 × 1.3 = 7.8 组/周。</p>
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
+        <button class="btn btn-secondary" onclick="window.__setMevFactor(0.7)">设为 0.7× (高响应/新手)</button>
+        <button class="btn btn-secondary" onclick="window.__setMevFactor(1.0)">设为 1.0× (默认)</button>
+        <button class="btn btn-secondary" onclick="window.__setMevFactor(1.3)">设为 1.3× (需要更多刺激)</button>
+        <button class="btn btn-secondary" onclick="window.__setMevFactor(${suggestedFactor.toFixed(1)})">采用建议 ${suggestedFactor.toFixed(1)}×</button>
+      </div>
+    </div>`;
+
+    return `<p><b>你已完成 ${weeksObserved} 周训练。基于实际数据的判断：</b></p>${verdict}${table}${overrideUI}`;
+  }
+
+  // Expose factor setter
+  window.__setMevFactor = function(f) {
+    localStorage.setItem('gym_personal_mev_factor_v1', f.toString());
+    refresh();
+  };
+  
+  document.getElementById('saveStartBtn').onclick = function() {
+    const v = startInput.value;
+    if (!v) return;
+    localStorage.setItem(STORAGE_PLAN_START, v);
+    status.textContent = '已保存 ' + v;
+    refresh();
+  };
+  document.getElementById('useTodayBtn').onclick = function() {
+    const t = new Date(); t.setHours(0,0,0,0);
+    const iso = t.toISOString().slice(0,10);
+    localStorage.setItem(STORAGE_PLAN_START, iso);
+    startInput.value = iso;
+    status.textContent = '已设为今天 ' + iso;
+    refresh();
+  };
+  
+  // Wait for EXERCISE_DB
+  function tryInit() {
+    if (typeof EXERCISE_DB !== 'undefined') {
+      refresh();
+    } else {
+      setTimeout(tryInit, 100);
+    }
+  }
+  tryInit();
+})();
+</script>
+
+  <footer>本计划基于个人历史训练数据 + 训练科学原理生成 · 仅供个人训练参考，不替代教练或医生建议</footer>
+</div>
+</body>
+</html>

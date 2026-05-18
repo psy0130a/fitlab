@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b03a2e">
+<title>FitLab · 给新用户的指南</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --line-2:#d6cfbe; --accent:#b03a2e; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8; --good:#2d6e3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.85; font-size:15.5px;
+    padding:28px 18px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:820px; margin:0 auto;}
+  header{text-align:center; margin-bottom:24px;}
+  .tag{font-size:11px; letter-spacing:.32em; color:var(--accent); text-transform:uppercase;}
+  h1{font-size:30px; margin:6px 0 4px; letter-spacing:1px;}
+  header .sub{color:var(--muted); font-size:14px; max-width:560px; margin:6px auto 0;}
+
+  section{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:24px 28px; margin-bottom:18px;
+  }
+  section h2{font-size:21px; color:var(--accent); letter-spacing:.5px; margin-bottom:10px;}
+  section h3{font-size:16px; margin:18px 0 8px; border-left:3px solid var(--accent); padding-left:10px;}
+  section h4{font-size:14.5px; margin:12px 0 6px; color:var(--ink);}
+  p{margin:8px 0; color:var(--ink-2);}
+  b{color:var(--ink);}
+  ul,ol{margin:6px 0 6px 24px;} li{color:var(--ink-2); margin:5px 0;}
+  blockquote{
+    background:#fdfaf2; border-left:3px solid var(--accent); border-radius:0 6px 6px 0;
+    padding:11px 16px; margin:8px 0; font-style:italic; color:var(--ink-2);
+  }
+  code{background:#f7f1e3; padding:1px 6px; border-radius:3px; font-family:ui-monospace,monospace; font-size:13px; color:var(--accent);}
+
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 11px; vertical-align:top; border-bottom:1px solid var(--line);}
+  th{background:#f7f1e3; color:var(--ink-2); font-size:12px; font-weight:600;}
+
+  .toc{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-bottom:22px;}
+  .toc h2{font-size:14px; color:var(--accent); margin-bottom:10px;}
+  .toc ol{margin-left:20px; font-size:14px;}
+  .toc a{color:var(--ink-2); text-decoration:none;}
+  .toc a:hover{color:var(--accent);}
+
+  .callout{
+    background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:8px;
+    padding:13px 16px; margin:10px 0; color:#7a5a1f; font-size:14px;
+  }
+  .callout.green{background:#e3f1e6; border-color:#bcdcc4; color:#2a4a30;}
+  .callout.red{background:var(--accent-light); border-color:var(--accent); color:var(--accent);}
+  .callout.blue{background:var(--soft-blue); border-color:#c5d4e3; color:var(--ink-2);}
+
+  .pill{display:inline-block; font-size:11px; padding:2px 9px; border-radius:9px; background:var(--accent-light); color:var(--accent); margin-right:4px;}
+  .pill.gray{background:#f1efe8; color:var(--muted);}
+  .pill.green{background:#e3f1e6; color:#2a4a30;}
+
+  .step{display:flex; gap:14px; padding:12px 0; border-bottom:1px solid var(--line);}
+  .step:last-child{border-bottom:0;}
+  .step-num{
+    flex:none; width:36px; height:36px; border-radius:50%;
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:15px;
+  }
+  .step-content{flex:1;}
+  .step-content .title{font-weight:700; color:var(--ink); margin-bottom:3px;}
+
+  .verdict-yes{color:var(--good); font-weight:700;}
+  .verdict-no{color:var(--accent); font-weight:700;}
+  .verdict-maybe{color:var(--gold); font-weight:700;}
+
+  .dev-story{
+    background:var(--paper-2); border-radius:10px; padding:16px 20px;
+    margin:10px 0; font-size:14.5px; line-height:1.85;
+  }
+  .dev-story p{margin:10px 0;}
+  .dev-quote{
+    color:var(--ink); font-weight:500;
+    border-left:3px solid var(--accent); padding-left:12px; margin:14px 0;
+  }
+
+  footer{text-align:center; color:var(--muted); font-size:12px; margin-top:14px;}
+
+  @media (max-width:680px){
+    body{padding:20px 12px;}
+    section{padding:18px 18px;}
+    h1{font-size:24px;}
+    section h2{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="tag">FITLAB · QUICK GUIDE</div>
+  <h1>FitLab · 给新用户的指南</h1>
+  <p class="sub">一个数据驱动的训练计划与复盘工具 · 5 分钟看懂"它是什么 / 适合谁 / 怎么用 / 为什么做"</p>
+</header>
+
+<!-- TOC -->
+<div class="toc">
+<h2>4 个问题</h2>
+<ol>
+<li><a href="#q1">这个 App 适合什么人？能做什么、做不了什么？</a></li>
+<li><a href="#q2">它怎么评估一个训练计划好不好？</a></li>
+<li><a href="#q3">它的工作流程：你给什么 → 它怎么处理 → 给你什么？</a></li>
+<li><a href="#q4">为什么会有这个 App？（开发者的故事）</a></li>
+</ol>
+<p style="margin-top:8px; font-size:13px;">→ <a href="版本历史与优化记录.html">版本历史与优化记录</a>（独立文档）</p>
+</div>
+
+<!-- ========== Q1 ========== -->
+<section id="q1">
+<h2>1. 这个 App 适合什么人？</h2>
+
+<h3>1.1 我们把健身水平分成 5 档</h3>
+<table>
+<thead><tr><th style="width:14%">档位</th><th style="width:30%">这是谁</th><th>特征</th></tr></thead>
+<tbody>
+<tr>
+  <td><b>L1</b> 零基础</td>
+  <td>从没系统训练过</td>
+  <td>不会基本动作、没有训练习惯。需要先学动作、建立训练频率</td>
+</tr>
+<tr>
+  <td><b>L2</b> 跟课/团课</td>
+  <td>偶尔上私教/团课</td>
+  <td>知道几个动作但不主动设计、不记录、不研究"为什么"</td>
+</tr>
+<tr style="background:#fff8e3;">
+  <td><b>L3</b> 学习型自主</td>
+  <td><b>← 目标用户</b></td>
+  <td>有 1+ 年基础，想自己设计计划，愿意学原理，希望靠数据判断而不是凭感觉</td>
+</tr>
+<tr>
+  <td><b>L4</b> 经验型</td>
+  <td>3+ 年训练，已有体系</td>
+  <td>自己读论文、自己设计周期。FitLab 能用但不是强需求</td>
+</tr>
+<tr>
+  <td><b>L5</b> 专业</td>
+  <td>运动员 / 教练</td>
+  <td>用专业软件、有团队支撑，FitLab 不在他们工具栈里</td>
+</tr>
+</tbody>
+</table>
+
+<h3>1.2 适合谁？</h3>
+<div class="callout green">
+<b>✓ 你符合这些特征，FitLab 就适合你：</b>
+<ul style="margin-top:6px;">
+<li>有<b>一点健身基础</b>（至少能完成深蹲、卧推等基本动作）</li>
+<li>愿意学一些健身原理（不是只想"被告诉做什么"）</li>
+<li>想<b>自主训练</b>，希望理解为什么这样安排</li>
+<li>需要一个工具帮你<b>记录训练数据 + 判断计划合理性 + 看数据分析</b></li>
+<li>愿意每周花 ~10 分钟记录和复盘</li>
+</ul>
+</div>
+
+<h3>1.3 不适合谁？</h3>
+<div class="callout red">
+<b>✗ 这几类用户用 FitLab 不会有好体验：</b>
+<ul style="margin-top:6px;">
+<li><b>完全零基础</b>（L1）—— 需要先找教练学动作，FitLab 不教你怎么做深蹲</li>
+<li><b>只想跟练不想研究</b>（L2 但不愿学）—— Keep / Fittime 那类视频跟练 App 更合适</li>
+<li><b>有伤需要康复</b>—— 个性化 RA/PT 程序，FitLab 用的是群体均值数据</li>
+<li><b>明显体态失衡或慢性疼痛</b>—— 先解决医学/姿势问题，再来用</li>
+<li><b>只追求"减脂数字"</b>—— FitLab 不管饮食，体脂率是系统问题</li>
+</ul>
+</div>
+
+<h3>1.4 它能做的 vs 做不了的</h3>
+
+<table>
+<thead><tr><th style="width:50%; color:var(--good);">✓ 能做</th><th style="width:50%; color:var(--accent);">✗ 做不了</th></tr></thead>
+<tbody>
+<tr>
+<td>
+• 基于你的目标 + 历史 + 时间预算 <b>生成完整 10 周训练计划</b><br>
+• 计划生成时<b>自检</b>：每块肌肉训练量是否够、平衡比率是否健康、时间是否撑得住<br>
+• 记录每次训练（重量/次数/组数/RIR/自评）<br>
+• 多时段复盘（日/周/月/季/年）<br>
+• 把抽象训练原理（MEV/平衡/渐进等）<b>翻译成你的真实数据</b><br>
+• 教你训练科学原理（16 条带原文出处）
+</td>
+<td>
+• <b>不能纠正动作姿势</b>——它看不到你怎么做的<br>
+• <b>不能评估发力是否到位</b>——靠你自填 RIR<br>
+• <b>不处理伤病/康复</b>——你需要康复师/PT<br>
+• <b>不针对体态失衡个性化</b>——默认数据是群体均值<br>
+• <b>不管饮食/减脂</b>——只看训练<br>
+• <b>不能替代教练</b>对动作的现场反馈
+</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout blue">
+<b>📌 关键限制：</b>FitLab 的所有数据假设（如"胸大肌 MEV = 6 组/周"）<b>基于群体平均</b>。要做个性化，你需要先训练 4-6 周，让系统从你的实际反馈中调整。第一个周期跑完后，App 会建议"你的个人 MEV 系数"，从此评估更准。
+</div>
+
+</section>
+
+<!-- ========== Q2 ========== -->
+<section id="q2">
+<h2>2. 它怎么评估一个训练计划好不好？</h2>
+<p class="lead" style="color:var(--muted); font-size:14px;">这部分回答"如果你给 FitLab 一份计划，它会从哪几个维度看？"</p>
+
+<h3>2.1 底层逻辑：肌肉是怎么长大的</h3>
+<p>身体里所有"长肌肉"的动力来源就 3 个：</p>
+<ol>
+<li><b>力学张力</b>——肌肉承受足够大的力（最主要）</li>
+<li><b>代谢应激</b>——足够时间堆代谢副产物（"泵感"）</li>
+<li><b>肌肉损伤</b>——离心阶段产生微撕裂，修复后变粗</li>
+</ol>
+<p>要让肌肉长，<b>这 3 个机制都得被触发</b>。这就要求训练有<b>足够重量 + 足够次数 + 接近力竭</b>。然后训练完 36-48 小时内是"长肉窗口"（肌肉蛋白合成 MPS 高峰），过了就回基线。</p>
+
+<h3>2.2 每个动作 = 多块肌肉参与，按"打折"算</h3>
+<p>"做了 1 组深蹲" 不等于 "练了 1 组股四"——一个动作往往同时刺激多块肌肉，按解剖激活程度<b>打折分配</b>给参与的肌肉：</p>
+
+<table>
+<thead><tr><th>1 组杠铃后蹲贡献给：</th><th style="width:18%; text-align:right;">系数</th></tr></thead>
+<tbody>
+<tr><td>股四头肌-外侧+中间头</td><td style="text-align:right;">1.0（主肌）</td></tr>
+<tr><td>臀大肌-下部</td><td style="text-align:right;">0.8（强协同）</td></tr>
+<tr><td>股直肌</td><td style="text-align:right;">0.5</td></tr>
+<tr><td>内收肌</td><td style="text-align:right;">0.4</td></tr>
+<tr><td>竖脊肌</td><td style="text-align:right;">0.3</td></tr>
+<tr><td>腘绳肌</td><td style="text-align:right;">0.3</td></tr>
+</tbody>
+</table>
+
+<p>所以 3 组深蹲 = 给股四 3.0 组、给臀大肌 2.4 组、给内收肌 1.2 组...... 加上其它动作的贡献，一周下来每块肌肉的"周有效组数"就清楚了。</p>
+
+<h3>2.3 每块肌肉需要：足够强度 + 足够频率</h3>
+
+<table>
+<thead><tr><th style="width:18%">维度</th><th>标准</th></tr></thead>
+<tbody>
+<tr>
+<td><b>强度</b></td>
+<td>
+单组要"重量 ≥ 65% 1RM" + "次数 6-15" + "RIR ≤4"——满足这 3 项才算 1 个<b>有效组</b>。<br>
+<span class="pill gray">来源</span>Schoenfeld &amp; Grgic 2018
+</td>
+</tr>
+<tr>
+<td><b>训练量</b></td>
+<td>
+每块肌肉每周要做<b>多少有效组</b>才能增肌？这有 3 个门槛：<br>
+• <b>MEV</b>（最低有效量）—— 低于它白练<br>
+• <b>MAV</b>（最佳量）—— 长得最快的甜区<br>
+• <b>MRV</b>（最大可恢复量）—— 超过它恢复跟不上<br>
+不同肌肉数字不同：背阔肌 MEV=10、肩袖 MEV=4
+</td>
+</tr>
+<tr>
+<td><b>频率</b></td>
+<td>
+每块肌肉每周训 <b>≥2 次</b>比 1 次效果更好（容量等同时）。因为 MPS 窗口只 36-48h，每次训练只开一次窗。<br>
+<span class="pill gray">来源</span>Schoenfeld 2016
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>2.4 肌肉之间要平衡，不平衡会怎样？</h3>
+<p>身体是个杠杆系统——每个关节两边都有相反方向的肌肉拉。如果一边训太多、另一边太少，关节会被"拉偏"，长期会出问题：</p>
+
+<table>
+<thead><tr><th style="width:25%">比率</th><th style="width:18%">健康区间</th><th>失衡后果</th></tr></thead>
+<tbody>
+<tr><td>胸 / 背</td><td>0.6 - 1.2</td><td>胸太强 → 圆肩 / 头前伸 / 长期颈痛</td></tr>
+<tr><td>推 / 拉</td><td>0.85 - 1.2</td><td>推 &gt;&gt; 拉 → 肩袖磨损 / 肩痛</td></tr>
+<tr><td>Q/H（大腿前/后）</td><td>1.0 - 1.7</td><td>股四 &gt;&gt; 腘绳 → 前交叉韧带 (ACL) 损伤风险</td></tr>
+<tr><td>上身 / 下身</td><td>0.5 - 1.3</td><td>极端失衡 → 体型不协调，下身基础不稳</td></tr>
+<tr><td>前链 / 后链</td><td>0.7 - 1.3</td><td>久坐多偏前链 → 慢性腰痛</td></tr>
+</tbody>
+</table>
+
+<p>FitLab 评估计划时<b>看这 10 个比率是否在区间内</b>。不在的话，要么自动加动作修复，要么明确告诉你这是"权衡"（如增肌取向天然上身偏多）。</p>
+
+<h3>2.5 一个完整例子：评估"30 节增肌计划"</h3>
+
+<div class="callout blue">
+<b>假设</b>：用户做完计划阶段二（W4-7），一周练 3 次（课型 A/B/C），每动作 3 组。FitLab 怎么评估？
+</div>
+
+<h4>步骤 1 · 算每块肌肉的周训练量</h4>
+<p>对 42 块肌肉，每块都用"动作组数 × 该动作对它的贡献系数"加总。例如：</p>
+<ul>
+<li><b>背阔肌</b>：A 课引体 3×1.0 + B 课划船 3×1.0 + C 课单臂划船 3×1.0 = <b>9.0 组/周</b></li>
+<li><b>三角肌中束</b>：B 课侧平举 3×1.0 + 推举 3×0.5 = <b>4.5 组/周</b></li>
+<li><b>比目鱼肌</b>：A 课站姿提踵 3×0.5 = <b>1.5 组/周</b></li>
+</ul>
+
+<h4>步骤 2 · 对照 MEV 门槛</h4>
+<table>
+<thead><tr><th>肌肉</th><th style="width:14%">实际</th><th style="width:14%">MEV</th><th>判断</th></tr></thead>
+<tbody>
+<tr><td>背阔肌</td><td>9.0</td><td>10</td><td><span class="verdict-maybe">🟡 接近 MEV (90%)</span></td></tr>
+<tr><td>三角肌中束</td><td>4.5</td><td>8</td><td><span class="verdict-no">🔴 不足 (56%)</span></td></tr>
+<tr><td>比目鱼肌</td><td>1.5</td><td>6</td><td><span class="verdict-no">🔴 严重不足 (25%)</span></td></tr>
+</tbody>
+</table>
+
+<h4>步骤 3 · 检查 10 个平衡比率</h4>
+<ul>
+<li>胸/背 = 19.4/36.9 = <b>0.52</b> ⚠（目标 0.6+）</li>
+<li>Q/H = 15.9/8.1 = <b>1.96</b> ⚠（目标 ≤1.7，膝健康风险）</li>
+<li>其它 8 个比率检查...</li>
+</ul>
+
+<h4>步骤 4 · 教练给出诊断 + 调整方案</h4>
+<div class="callout green">
+👨‍🏫 教练说：<br>
+"<b>这个计划主要肌群已经合格</b>（背阔/股四/臀大/胸大都 ≥ MEV）。<b>但有 2 个真问题</b>：① 比目鱼肌严重不足（站姿提踵主要练腓肠肌不练比目鱼）→ 建议加坐姿提踵；② Q/H 失衡 1.96 → 建议加俯卧腿弯举。<br><br>
+<b>另 2 个看似失衡其实可接受</b>：胸/背 0.52 对久坐人群是好纠偏（不修）；上身/下身 1.9 是增肌取向天然结果（接受）。"
+</div>
+
+<p>这就是 FitLab 评估计划的<b>完整逻辑</b>——把抽象的"训练原理"翻译成具体的、每个数字都能追问"为什么"的诊断。</p>
+
+</section>
+
+<!-- ========== Q3 ========== -->
+<section id="q3">
+<h2>3. App 工作流程：输入 → 处理 → 输出</h2>
+<p class="lead" style="color:var(--muted); font-size:14px;">这部分讲 App 内部怎么运转的——你给它什么，它怎么算，给你什么。</p>
+
+<h3>3.1 输入 · 你给系统什么信息</h3>
+<table>
+<thead><tr><th style="width:22%">类型</th><th>具体字段</th></tr></thead>
+<tbody>
+<tr>
+<td><b>个人数据</b></td>
+<td>身高、体重、年龄、性别、单位偏好</td>
+</tr>
+<tr>
+<td><b>训练目标</b></td>
+<td>主要目标（增肌/力量/耐力/健康维持）<br>具体里程碑（如"完成 1 个 strict 引体"）</td>
+</tr>
+<tr>
+<td><b>训练计划参数</b></td>
+<td>频率（2-5 次/周）· 单次时长（30/45/60/75 分）· 周期（4/8/10/12 周）</td>
+</tr>
+<tr>
+<td><b>历史训练（如有）</b></td>
+<td>过往动作记录（重量×次×组）· 系统据此算 e1RM 作为起步重量参考</td>
+</tr>
+<tr>
+<td><b>偏好与限制</b></td>
+<td>排除的动作（如膝伤不深蹲）· 设备约束（家训练 vs 商业健身房）</td>
+</tr>
+<tr>
+<td><b>身体数据</b></td>
+<td>定期体重、围度、体脂（可选，但有助于跟踪长期趋势）</td>
+</tr>
+</tbody>
+</table>
+
+<h3>3.2 数据库 · 系统知道什么</h3>
+<p>FitLab 的核心数据库（基于训练科学）：</p>
+
+<table>
+<thead><tr><th style="width:22%">数据集</th><th>包含什么</th></tr></thead>
+<tbody>
+<tr>
+<td><b>动作库</b><br>EXERCISE_DB</td>
+<td>
+40+ 个动作。每个动作有：<br>
+• 名称、英文、动作族、难度<br>
+• <b>contrib 系数</b>：这个动作对每块肌肉的贡献（0-1）<br>
+• 教学要点、推荐重量范围、退/进阶<br>
+• 系数来自 EMG 研究 + 解剖学 + 业界共识
+</td>
+</tr>
+<tr>
+<td><b>肌肉门槛表</b><br>MUSCLE_TARGETS</td>
+<td>
+42 块肌肉。每块有：<br>
+• MEV / MAV / MRV 三个训练量门槛（数字基于 Renaissance Periodization 框架 + Schoenfeld 2017 剂量-反应曲线）<br>
+• 父肌肉 / 子部位关系
+</td>
+</tr>
+<tr>
+<td><b>平衡比率定义</b></td>
+<td>
+10 个比率。每个有：<br>
+• 计算公式（哪些肌肉相除）<br>
+• 健康区间 + 失衡后果<br>
+• 文献依据（Cools 2007 / Q/H 研究 / Janda 等）
+</td>
+</tr>
+<tr>
+<td><b>训练原理库</b></td>
+<td>
+16 条原理（6 条底层生理 + 10 条训练原则）。每条带：原文引用 / PubMed 链接 / 通俗解释 / 在系统里的具体应用
+</td>
+</tr>
+<tr>
+<td><b>公式</b></td>
+<td>
+• e1RM 估算（Epley/Brzycki）<br>
+• RIR 强度衡量（Zourdos 2016）<br>
+• 有效组判定（Schoenfeld &amp; Grgic 2018）
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>3.3 处理 · 约束求解 + 自检</h3>
+<p>这是 App 最核心的部分——<b>计划生成不是"挑动作"，是约束求解问题</b>。</p>
+
+<h4>步骤 1：算个人化目标</h4>
+<p>把默认 MEV/MAV/MRV 乘以"个人 MEV 系数"（默认 1.0，4 周训练后自动调整）。例如背阔肌默认 MEV=10，你系数 1.3 → 你的个人 MEV = 13。</p>
+
+<h4>步骤 2：候选动作池 → 解约束</h4>
+<p>从 40+ 动作里选最少动作满足所有 MEV。优先选复合动作（一个动作覆盖多块肌肉，效率高）：</p>
+<div class="callout">
+<b>硬约束（必须满足）</b>：每个主肌周量 ≥ 个人 MEV · 单次时长 ≤ 用户预算 · 同肌肉间隔 ≥ 24h · 排除项不出现<br>
+<b>软约束（尽量满足）</b>：≥ 7/10 平衡比率在区间 · 主肌频率 ≥ 2 次/周 · 复合优先 · 疲劳总量受控
+</div>
+
+<h4>步骤 3：分配到课型 + 安排周期</h4>
+<p>把选出的动作分到 N 个课型（如 A/B/C），保证每块主肌每周练到 ≥2 次。再加 3 阶段周期化（重建 → 主训 → 强化 → 减载）和渐进超负荷（每周 +2.5kg 或 +1-2 次）。</p>
+
+<h4>步骤 4：跑自检</h4>
+<p>用 Q2 节的评估逻辑检查生成的计划：</p>
+<ul>
+<li>跑 MEV 检查：所有主肌 ≥ MEV ✓</li>
+<li>跑平衡检查：≥ 7/10 比率合格 ✓</li>
+<li>跑时间检查：每课时长 ≤ 预算 ✓</li>
+<li>跑频率检查：主肌 ≥ 2/周 ✓</li>
+</ul>
+
+<h4>步骤 5：协商权衡（如必要）</h4>
+<p>有些约束天然冲突（例：增肌目标 + 30 分/次 + 6 课型 ≠ 能覆盖全部 MEV）。这时系统<b>明确告诉用户冲突</b>，给 2-3 个选项让用户选：</p>
+<ul>
+<li>① 加时长？</li>
+<li>② 接受部分肌肉不达 MEV？</li>
+<li>③ 加频率？</li>
+</ul>
+
+<div class="callout green">
+<b>关键设计原则</b>：系统不替用户做价值权衡，而是把<b>权衡的代价</b>讲清楚让用户决定。
+</div>
+
+<h3>3.4 输出 · 你得到什么</h3>
+<table>
+<thead><tr><th style="width:22%">输出</th><th>是什么</th></tr></thead>
+<tbody>
+<tr>
+<td><b>完整训练计划</b></td>
+<td>
+10 周 × 3 次/周 = 30 节课的<b>逐节细节</b>：每节 6-7 个动作 · 每动作的重量/组数/次数/RIR
+</td>
+</tr>
+<tr>
+<td><b>计划评估</b></td>
+<td>
+设计层评估（理论上每块肌肉训练量、平衡比率）。在 P6 屏可查看。
+</td>
+</tr>
+<tr>
+<td><b>训练记录</b></td>
+<td>
+每次训练逐动作记录，自动算 e1RM、有效组数、对每块肌肉的实际贡献
+</td>
+</tr>
+<tr>
+<td><b>多时段复盘</b></td>
+<td>
+日 / 周 / 月 / 季 / 半年 / 年。展示实际训练量、MEV 达成率、平衡变化、PR、身体数据趋势
+</td>
+</tr>
+<tr>
+<td><b>教练建议</b></td>
+<td>
+基于实际执行数据，建议调整未来训练参数：个人 MEV 系数 / RIR 偏离 / 渐进失败修复等
+</td>
+</tr>
+</tbody>
+</table>
+
+<h3>3.5 一张图总结</h3>
+<pre style="background:#f7f1e3; padding:14px 16px; border-radius:8px; font-size:12px; line-height:1.6; overflow-x:auto;">
+输入                          处理                            输出
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+个人数据                      ▼
+训练目标             ┌─────────────────┐
+计划参数      ────▶ │  ① 算个人 MEV    │   ────▶  完整训练计划
+历史训练             │  ② 候选动作池     │
+偏好/限制            │  ③ ILP 解最少    │   ────▶  计划评估
+                     │     动作覆盖     │
+                     │  ④ 分课型周期化   │   ────▶  训练记录
+                     │  ⑤ 跑自检        │
+数据库               │     · MEV 检查   │   ────▶  多时段复盘
+EXERCISE_DB    ────▶ │     · 平衡检查   │
+MUSCLE_TARGETS       │     · 时间检查   │   ────▶  教练建议
+平衡比率定义          │  ⑥ 协商权衡      │
+原理库                └─────────────────┘
+公式                          ▲
+                              │
+                       (执行反馈循环：
+                        4 周后自动调整个人 MEV 系数)
+</pre>
+
+</section>
+
+<!-- ========== Q4 ========== -->
+<section id="q4">
+<h2>4. 为什么会有这个 App？开发者的故事</h2>
+
+<div class="dev-story">
+<h3 style="border:0; padding:0; margin-bottom:8px; font-size:15px; color:var(--ink);">健身背景</h3>
+<p>非健身专业教练或从业者。健身一直在<b>超级猩猩</b>上课、上过 <b>30 节私教课</b>。平均每月 5-20 次健身，根据时间和身体情况，多时多、少时少。</p>
+
+<h3 style="border:0; padding:0; margin-bottom:8px; font-size:15px; color:var(--ink);">为什么做这个东西</h3>
+
+<p><b>1. 过去半年多健身效果不好。</b></p>
+<p>觉得自己花了挺多时间健身，但历时半年多——身体围度没太大变化，<b>还胖了好几斤</b>。身体成分测试虽然有变化，但那个秤的误差非常大（一周肌肉重量可以增长一两公斤）。</p>
+<div class="dev-quote">个人认为用健身房单次的身体成分测试数据代表效果，就是自欺欺人。</div>
+
+<p><b>2. 教练也没想象中靠谱。</b></p>
+
+<p><b>第一</b>，目标设计就不对，但教练没有告诉我。最初健身的目标是按<b>体脂率</b>看的——稍微研究一下发现体脂率不是上几节课就能达成的，它涉及平时<b>生活/饮食/运动整体的系统问题</b>。</p>
+
+<p><b>第二</b>，过去 30 节课我学了 <b>100 多个新动作</b>。现在想追踪历史的进步，<b>完全追不出来</b>——因为每节课都在学新动作，感觉上了 30 节体验课。</p>
+
+<p><b>第三</b>，上了两个月之后，每次去上课都很烦躁。<b>没有正反馈</b>——没觉得力量变了、体能增了。反而是耐心逐渐变差、越来越不想去上课，两三个动作之后就不想再动了。</p>
+
+<p><b>从来没追问过为什么。</b></p>
+<p>从来没追问过"为什么每节课要练这些"、"为什么是这个次数"、"为什么是这个重量"。</p>
+<div class="dev-quote">觉得我已经找了这里看起来最厉害的教练了，我就不用再自己研究这些问题了。<br><br><b>结果发现并不是。</b></div>
+
+<p><b>这个 App 的初衷</b>：用一个工具，把"为什么这样训练"<b>讲清楚</b>，把"训练效果到底怎么样"<b>用数据真实呈现</b>。让自己（也让其他和我有类似困惑的人）不再只是"觉得自己练了"，而是<b>看到自己确实在变化或确实没在变化</b>，并且知道<b>原因</b>。</p>
+</div>
+
+</section>
+
+<footer>FitLab 给新用户的指南 · v0.5 · 2026-05</footer>
+</div>
+</body>
+</html>

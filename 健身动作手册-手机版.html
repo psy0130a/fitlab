@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="动作手册">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#b03a2e">
+<title>健身动作手册 · 手机版</title>
+<style>
+  :root{
+    --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+    --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+    --line:#e8e3d8; --line-2:#d6cfbe;
+    --accent:#b03a2e; --accent-2:#d65a4a; --accent-light:#fbe7e1;
+    --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8;
+    --good:#2d6e3a;
+    --tabbar-h:58px;
+    --topbar-h:52px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:var(--bg); color:var(--ink); font-size:15px; line-height:1.6;
+    -webkit-text-size-adjust:100%;
+  }
+  button,input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
+  button{cursor:pointer;}
+
+  /* ============ 屏幕容器 ============ */
+  .screen{
+    display:none; min-height:100vh;
+    padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
+  }
+  .screen.active{display:block;}
+  .screen.detail{
+    position:fixed; inset:0; z-index:30; background:var(--bg);
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 28px);
+  }
+
+  /* ============ 顶栏 ============ */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    height:var(--topbar-h);
+    display:flex; align-items:center; gap:6px;
+    padding:0 14px; padding-top:env(safe-area-inset-top);
+    height:calc(var(--topbar-h) + env(safe-area-inset-top));
+    background:var(--paper); border-bottom:1px solid var(--line);
+  }
+  .topbar h1{font-size:17px; margin:0; letter-spacing:1px; font-weight:700;}
+  .topbar .back{
+    background:none; border:0; font-size:26px; color:var(--accent);
+    width:34px; height:34px; margin-left:-6px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .topbar .grp-tag{
+    margin-left:auto; background:#f0eadd; color:#7a6c4f;
+    padding:3px 10px; border-radius:11px; font-size:11.5px;
+  }
+
+  /* ============ 列表屏 ============ */
+  .search-wrap{padding:10px 14px 4px; background:var(--bg); position:sticky; top:calc(var(--topbar-h) + env(safe-area-inset-top)); z-index:15;}
+  .search-wrap input{
+    width:100%; border:1px solid var(--line-2); border-radius:10px;
+    padding:9px 12px; background:var(--paper); font-size:14px;
+  }
+  .search-wrap input:focus{outline:2px solid var(--accent-light); border-color:var(--accent);}
+
+  .grp-header{
+    padding:14px 16px 5px; font-size:12px; letter-spacing:1px;
+    color:var(--accent); font-weight:700;
+    display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .grp-header .cnt{color:var(--muted); font-weight:400; font-size:11px;}
+
+  .move-row{
+    display:flex; align-items:center; gap:11px;
+    background:var(--paper); margin:0 12px 8px; padding:13px 14px;
+    border:1px solid var(--line); border-radius:13px;
+    transition:transform .08s;
+  }
+  .move-row:active{transform:scale(.985); background:var(--paper-2);}
+  .move-row .idx{
+    flex:none; width:30px; height:30px; border-radius:9px;
+    background:var(--accent-light); color:var(--accent);
+    font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .move-row .info{flex:1; min-width:0;}
+  .move-row .info .nm{font-size:15px; font-weight:600; line-height:1.3;}
+  .move-row .info .sub{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .move-row .right{flex:none; text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:3px;}
+  .move-row .right .cnt{font-size:10.5px; color:var(--muted);}
+  .move-row .arrow{flex:none; color:var(--line-2); font-size:20px;}
+
+  .badge{
+    display:inline-block; padding:2px 9px; border-radius:11px;
+    font-size:11px; font-weight:700; letter-spacing:.3px;
+    background:#f1eee7; color:var(--muted);
+  }
+  .badge.L0{background:#f1eee7; color:#8a857a;}
+  .badge.L1{background:#fde7d8; color:#b8642a;}
+  .badge.L2{background:#fde0c2; color:#a45a18;}
+  .badge.L3{background:#d8ead8; color:#3d7a3d;}
+  .badge.L4{background:#cbe2cb; color:#1f5c1f;}
+
+  .empty-hint{text-align:center; color:var(--muted); font-size:13px; padding:40px 20px;}
+
+  /* ============ 详情屏 ============ */
+  .detail-body{padding:14px 14px 0;}
+  .figure-box{
+    display:flex; gap:8px; justify-content:center; align-items:flex-start;
+    background:linear-gradient(180deg,#fdfaf2,#f5ede0);
+    border:1px solid var(--line); border-radius:14px;
+    padding:14px 8px; margin-bottom:12px;
+  }
+  .figure-box .view{display:flex; flex-direction:column; align-items:center; gap:3px;}
+  .figure-box .view-cap{font-size:10px; letter-spacing:1px; color:var(--muted);}
+  .figure-box .rbh-wrapper{width:118px !important; padding:0 !important;}
+  .figure-box .rbh-wrapper svg.rbh{width:100% !important; height:auto !important; display:block;}
+  .figure-box .rbh-wrapper svg.rbh polygon{stroke:#9c7c52; stroke-width:.4;}
+  .figure-box .loading-msg{
+    width:118px; height:200px; display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:var(--muted); text-align:center; padding:10px;
+  }
+  .figure-box .err-msg{
+    padding:14px; font-size:12px; color:var(--ink-2);
+    background:#fff4e8; border:1px dashed #e0c8a0; border-radius:8px; line-height:1.6;
+  }
+  .figure-box.has-pic{display:block; padding:8px;}
+  .figure-box img.pose-img{display:block; width:100%; border-radius:10px; background:#fff;}
+  .figure-box .pic-caption{font-size:10px; color:var(--muted); text-align:center; margin-top:5px;}
+
+  .chips{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; align-items:center;}
+  .chips .lab{font-size:11.5px; color:var(--muted); margin-right:1px;}
+  .chips .chip{
+    background:var(--accent-light); color:var(--accent);
+    padding:3px 10px; border-radius:12px; font-size:12px; font-weight:600;
+  }
+  .chips .chip.sec{background:#f3eee2; color:#7a6c4f; font-weight:400;}
+
+  .summary-card{
+    display:flex; gap:8px; margin-bottom:14px;
+  }
+  .summary-card .cell{
+    flex:1; background:var(--paper); border:1px solid var(--line);
+    border-radius:12px; padding:10px 8px; text-align:center;
+  }
+  .summary-card .cell .k{font-size:10.5px; color:var(--muted); margin-bottom:4px;}
+  .summary-card .cell .v{font-size:13px; font-weight:600;}
+
+  .block{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:13px; padding:14px 15px; margin-bottom:12px;
+  }
+  .block > h3{
+    margin:0 0 8px; font-size:13px; color:var(--accent);
+    letter-spacing:.5px; display:flex; align-items:center; gap:6px;
+  }
+  .block ul{margin:0; padding-left:20px;}
+  .block ul li{margin:4px 0; font-size:14px; color:var(--ink-2);}
+  .block p{margin:0; font-size:14px; color:var(--ink-2);}
+
+  .block.peak{background:#fffaef; border-color:#ecd9a3;}
+  .block.peak > h3{color:#a26a18;}
+  .peak-grid{display:flex; flex-wrap:wrap; gap:8px;}
+  .peak-grid label{
+    flex:1; min-width:96px; font-size:11px; color:var(--muted);
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .peak-grid select,.peak-grid input{
+    border:1px solid var(--line-2); border-radius:8px; padding:8px;
+    background:#fff; font-size:14px; font-variant-numeric:tabular-nums;
+  }
+  .peak-hint{
+    margin-top:8px; font-size:12px; color:var(--accent); font-weight:600;
+  }
+  .peak-hint.empty{color:var(--muted); font-weight:400;}
+  .block.peak textarea{
+    width:100%; margin-top:8px; border:1px solid #ecd9a3; border-radius:8px;
+    padding:8px; font-size:13px; background:#fff; min-height:40px; resize:vertical;
+  }
+
+  /* ============ 训练日志 ============ */
+  .log-head{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
+  }
+  .log-head h3{margin:0; font-size:13px; color:var(--accent); letter-spacing:.5px;}
+  .add-btn{
+    background:var(--accent); color:#fff; border:0; border-radius:10px;
+    padding:8px 14px; font-size:13px; font-weight:600;
+  }
+  .add-btn:active{background:var(--accent-2);}
+  .log-help{font-size:11.5px; color:var(--muted); margin:0 0 10px;}
+
+  .log-card{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:13px; padding:12px; margin-bottom:10px;
+  }
+  .log-card-top{display:flex; align-items:center; gap:8px; margin-bottom:9px;}
+  .log-card-top input[type=date]{
+    flex:1; border:1px solid var(--line-2); border-radius:8px;
+    padding:7px 9px; background:var(--soft-yellow); font-size:13.5px;
+  }
+  .log-card-top .del-btn{
+    flex:none; background:none; border:0; color:var(--muted);
+    font-size:17px; width:32px; height:32px; border-radius:8px;
+  }
+  .log-card-top .del-btn:active{background:var(--accent-light); color:var(--accent);}
+
+  .log-nums{display:flex; gap:7px; margin-bottom:9px;}
+  .log-nums label{
+    flex:1; font-size:10.5px; color:var(--muted);
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .log-nums select{
+    border:1px solid var(--line-2); border-radius:8px; padding:8px 6px;
+    background:var(--soft-yellow); font-size:14px; font-variant-numeric:tabular-nums;
+  }
+  .log-nums .dash{
+    display:flex; align-items:flex-end; justify-content:center;
+    padding-bottom:9px; color:var(--muted);
+  }
+  .log-note{
+    width:100%; border:1px solid var(--line-2); border-radius:8px;
+    padding:7px 9px; background:#fff; font-size:13px; margin-bottom:10px;
+  }
+  .log-evals{
+    display:grid; grid-template-columns:1fr 1fr; gap:7px;
+    border-top:1px dashed var(--line-2); padding-top:10px;
+  }
+  .log-evals .eval-item{
+    font-size:10.5px; color:var(--ink-2);
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .log-evals .eval-item select{
+    border:1px solid var(--line-2); border-radius:8px; padding:7px 6px;
+    background:#fff; font-size:12.5px;
+  }
+  .log-evals .eval-item select.set-L0{background:#f1eee7; color:#6a655a;}
+  .log-evals .eval-item select.set-L1{background:#fde7d8; color:#a85420;}
+  .log-evals .eval-item select.set-L2{background:#fde0c2; color:#9a5012;}
+  .log-evals .eval-item select.set-L3{background:#d8ead8; color:#2d6e3a;}
+  .log-evals .eval-item select.set-L4{background:#cbe2cb; color:#1f5c1f;}
+  .log-empty{
+    text-align:center; color:var(--muted); font-size:13px;
+    padding:22px 10px; background:var(--paper); border:1px dashed var(--line-2);
+    border-radius:12px;
+  }
+
+  /* ============ 原理屏 ============ */
+  .learn-body{padding:14px;}
+  .learn-card{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:13px; padding:15px 16px; margin-bottom:12px;
+  }
+  .learn-card h2{
+    margin:0 0 4px; font-size:16px; color:var(--accent); letter-spacing:.5px;
+  }
+  .learn-card .lead{font-size:12.5px; color:var(--muted); margin:0 0 10px;}
+  .learn-card h4{margin:12px 0 4px; font-size:14px; color:var(--ink);}
+  .learn-card p{margin:5px 0; font-size:13.5px; color:var(--ink-2);}
+  .learn-card ul{margin:5px 0; padding-left:20px; font-size:13.5px; color:var(--ink-2);}
+  .learn-card li{margin:3px 0;}
+  .learn-card b{color:var(--ink);}
+  .learn-card code{
+    background:#f3eee2; padding:1px 5px; border-radius:4px; font-size:12.5px;
+  }
+  .mini-note{
+    background:var(--soft-blue); border-left:3px solid #6e94c4;
+    padding:9px 11px; border-radius:7px; margin:9px 0; font-size:13px;
+  }
+  .ztable{width:100%; border-collapse:collapse; margin:8px 0; font-size:12.5px;}
+  .ztable th,.ztable td{border-bottom:1px solid var(--line); padding:7px 5px; text-align:left; vertical-align:top;}
+  .ztable th{background:#f7f1e3; font-size:11.5px;}
+
+  /* ============ 我的屏 ============ */
+  .me-body{padding:14px;}
+  .me-card{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:13px; padding:15px 16px; margin-bottom:12px;
+  }
+  .me-card h3{margin:0 0 4px; font-size:14px;}
+  .me-card .desc{font-size:12px; color:var(--muted); margin:0 0 11px;}
+  .me-card.bw{background:var(--soft-yellow); border-color:#f0e2b8;}
+  .me-card.bw input{
+    width:100%; border:1px solid var(--line-2); border-radius:9px;
+    padding:11px 12px; background:#fff; font-size:16px;
+  }
+  .me-btn{
+    display:block; width:100%; text-align:left;
+    background:var(--paper); border:1px solid var(--line-2);
+    border-radius:10px; padding:13px 14px; margin-bottom:9px; font-size:14px;
+  }
+  .me-btn:active{background:var(--accent-light); border-color:var(--accent);}
+  .me-btn .sub{display:block; font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .me-about{font-size:12px; color:var(--muted); line-height:1.7; text-align:center; padding:8px 4px 0;}
+
+  /* ============ 底部导航 ============ */
+  .tabbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:40;
+    height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+    padding-bottom:env(safe-area-inset-bottom);
+    display:flex; background:var(--paper); border-top:1px solid var(--line);
+  }
+  .tabbar button{
+    flex:1; background:none; border:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    font-size:10.5px; color:var(--muted); padding-top:4px;
+  }
+  .tabbar button .ic{font-size:20px; line-height:1;}
+  .tabbar button.active{color:var(--accent);}
+
+  .saved-flash{
+    position:fixed; left:50%; transform:translateX(-50%);
+    bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
+    background:var(--good); color:#fff; padding:8px 18px;
+    border-radius:20px; font-size:13px; opacity:0;
+    transition:opacity .25s; pointer-events:none; z-index:60;
+  }
+  .saved-flash.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- ========== 屏幕：动作列表 ========== -->
+<div class="screen active" id="screen-list">
+  <div class="topbar"><h1>动作手册</h1><span class="grp-tag" id="listCount">35 个动作</span></div>
+  <div class="search-wrap"><input id="search" type="search" placeholder="搜动作名 / 英文 / 分类…"></div>
+  <div id="moveList"></div>
+</div>
+
+<!-- ========== 屏幕：原理 ========== -->
+<div class="screen" id="screen-learn">
+  <div class="topbar"><h1>训练原理</h1></div>
+  <div class="learn-body" id="learnBody"></div>
+</div>
+
+<!-- ========== 屏幕：我的 ========== -->
+<div class="screen" id="screen-me">
+  <div class="topbar"><h1>我的</h1></div>
+  <div class="me-body">
+    <div class="me-card bw">
+      <h3>我的体重 (kg)</h3>
+      <p class="desc">用于自动评估每个动作的「负重水平」等级</p>
+      <input id="bwInput" type="number" inputmode="decimal" step="0.5" min="20" max="250" placeholder="例如 70">
+    </div>
+    <div class="me-card">
+      <h3>数据备份</h3>
+      <p class="desc">记录存在这台手机的浏览器里。定期导出 JSON，换手机/清缓存才不会丢。</p>
+      <button class="me-btn" id="btnExport">⬇️ 导出我的记录 (JSON)<span class="sub">下载一份当前全部训练数据</span></button>
+      <button class="me-btn" id="btnImport">⬆️ 导入记录<span class="sub">从之前导出的 JSON 恢复</span></button>
+    </div>
+    <div class="me-card">
+      <h3>关于</h3>
+      <p class="desc" id="aboutLine">—</p>
+    </div>
+    <p class="me-about">数据与电脑版手册共用同一份本地存储<br>始终从同一个网址打开，记录才会连续累积</p>
+  </div>
+</div>
+
+<!-- ========== 屏幕：动作详情（覆盖在列表之上） ========== -->
+<div class="screen detail" id="screen-detail">
+  <div class="topbar">
+    <button class="back" id="detailBack" aria-label="返回">‹</button>
+    <h1 id="detailTitle">—</h1>
+    <span class="grp-tag" id="detailGroup">—</span>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+
+<!-- ========== 底部导航 ========== -->
+<nav class="tabbar">
+  <button data-tab="list" class="active"><span class="ic">📒</span>动作</button>
+  <button data-tab="learn"><span class="ic">📖</span>原理</button>
+  <button data-tab="me"><span class="ic">⚙️</span>我的</button>
+</nav>
+
+<div class="saved-flash" id="savedFlash">已保存</div>
+
+<!-- 单一数据源：肌肉表 / 动作库 / 分类器（与电脑版、分析看板共用） -->
+<script src="训练数据库.js"></script>
+<script>
+/* ============================================================
+ * 健身动作手册 · 手机版
+ * 数据层 / 计算 / 持久化 与电脑版「健身动作手册.html」完全一致：
+ *   - 共用 localStorage key（gym_handbook_v3）→ 两版数据互通
+ *   - 共用 训练数据库.js → 动作库 / 肌肉系数 / 分类器同源
+ * 仅展示层（布局 + 导航 + 交互）按手机重做。
+ * ============================================================ */
+
+/* ---------- 动作数据：派生自共享数据源 EXERCISE_DB ---------- */
+const GROUP_ORDER = [
+  '下肢推','下肢拉','全身','上肢推','上肢拉','手臂','核心',
+  '热身激活','髋部活动度','筋膜放松','日常维持'
+];
+const MOVES = Object.values(EXERCISE_DB)
+  .filter(e => e.id !== 'kb-low-high-6' && !e.id.startsWith('supp-'))
+  .map(e => ({
+    id:e.id, group:e.category, cn:e.cn, en:e.en, pic:e.pic||'',
+    cues:e.cues, why:e.why,
+    bw:{ type:e.loadType, levels:e.bwLevels, note:e.bwNote||'' }
+  }))
+  .sort((a,b)=> GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
+
+/* ---------- 肌肉数据（共享分类器） ---------- */
+function muscleDataFor(move){
+  let c = null;
+  if (typeof classifyExercise === 'function') c = classifyExercise(move.cn);
+  if (!c || !c.contrib || Object.keys(c.contrib).length === 0){
+    return { primary: move.primary||[], secondary: move.secondary||[], mp: move.mp||[], ms: move.ms||[], contrib:{} };
+  }
+  const toLib = m => (typeof MUSCLE_TARGETS!=='undefined' && MUSCLE_TARGETS[m]) ? MUSCLE_TARGETS[m].lib : null;
+  const mp = [...new Set(c.primary.map(toLib).filter(Boolean))];
+  const ms = [...new Set(c.secondary.map(toLib).filter(Boolean))];
+  return { primary: c.primary, secondary: c.secondary, mp, ms, contrib: c.contrib };
+}
+
+/* ---------- 解剖示意图：开源库 body-highlighter (MIT) ---------- */
+let BodyHighlighter = null, BodyHighlighterFailed = false, bhTried = false;
+async function loadBodyHighlighter(){
+  if (bhTried) return typeof BodyHighlighter === 'function';
+  bhTried = true;
+  const urls = [
+    'https://cdn.jsdelivr.net/npm/body-highlighter@3.0.2/+esm',
+    'https://esm.sh/body-highlighter@3.0.2',
+    'https://cdn.jsdelivr.net/npm/body-highlighter/+esm'
+  ];
+  for (const u of urls){
+    try {
+      const mod = await import(/* @vite-ignore */ u);
+      BodyHighlighter = mod.default || mod.createBodyHighlighter || mod;
+      if (typeof BodyHighlighter !== 'function' && BodyHighlighter && typeof BodyHighlighter.default === 'function'){
+        BodyHighlighter = BodyHighlighter.default;
+      }
+      if (typeof BodyHighlighter === 'function') return true;
+    } catch(e){ /* try next */ }
+  }
+  BodyHighlighterFailed = true;
+  return false;
+}
+function renderBodyView(container, primary, secondary, type){
+  const data = [];
+  primary.forEach(m => { data.push({ name:'p', muscles:[m] }); data.push({ name:'p2', muscles:[m] }); });
+  secondary.forEach(m => data.push({ name:'s', muscles:[m] }));
+  try {
+    BodyHighlighter({
+      container, data, type,
+      highlightedColors:['#ec8d6a','#c8462c'],
+      bodyColor:'#dec7a4',
+      style:{ width:'118px', padding:'0' }
+    });
+  } catch(e){ container.innerHTML = '<div class="loading-msg">渲染失败</div>'; }
+}
+
+/* ---------- 选项 ---------- */
+function buildOpts(values, suffix){
+  return '<option value="">—</option>' + values.map(v=>`<option value="${v}">${v}${suffix}</option>`).join('');
+}
+const KG_VALUES = (function(){ const v=[]; for(let w=0;w<=300;w+=2.5){ v.push(w%1===0?w.toString():w.toFixed(1)); } return v; })();
+const REPS_VALUES = (function(){ const v=[]; for(let r=1;r<=30;r++) v.push(r); v.push(35,40,50,60,80,100); return v; })();
+const SETS_VALUES = Array.from({length:12},(_,i)=>i+1);
+const TIME_VALUES = (function(){ const v=[]; for(let s=5;s<=600;s+=s<60?5:(s<180?10:30)) v.push(s); return v; })();
+const KG_OPTS = buildOpts(KG_VALUES,' kg');
+const REPS_OPTS = buildOpts(REPS_VALUES,' 次');
+const SETS_OPTS = buildOpts(SETS_VALUES,' 组');
+const TIME_OPTS = buildOpts(TIME_VALUES,' 秒');
+
+/* ---------- 4 个自评维度 ---------- */
+const EVAL_DIMS = [
+  { key:'neural', name:'神经感知', options:[
+    ['L0','几乎完全感觉不到'],['L1','偶尔模糊感觉到'],['L2','大部分时间清晰'],
+    ['L3','全程清晰感觉发力'],['L4','能引导到具体分区'] ]},
+  { key:'form', name:'力线控制', options:[
+    ['L0','需镜子/视频纠正'],['L1','需主动注意才稳'],['L2','主动注意下稳定'],
+    ['L3','不刻意也能保持'],['L4','大重量下仍完美'] ]},
+  { key:'rom', name:'完整幅度', options:[
+    ['L0','只能半幅度'],['L1','大部分幅度，末端难'],['L2','完整幅度末端略不稳'],
+    ['L3','完整幅度流畅'],['L4','全幅度+慢离心稳'] ]},
+  { key:'volume', name:'容量耐受', options:[
+    ['L0','1 组就掉质量'],['L1','2–3 个有效组'],['L2','4–5 个有效组'],
+    ['L3','6+ 有效组稳'],['L4','多动作日仍保质'] ]}
+];
+
+/* ---------- 工具计算 ---------- */
+function estimate1RM(w,r){ return (!w||!r||w<=0||r<=0)?0:w*(1+0.0333*r); }
+function pickLevel(value, levels){
+  let i=0;
+  for(let j=0;j<levels.length;j++){ if(value>=levels[j]) i=j; else break; }
+  return i;
+}
+
+/* ============ 数据 + 持久化（与电脑版共用 localStorage key） ============ */
+const STORAGE_KEY = 'gym_handbook_v3';
+const DATA = { bodyWeight:'', records:{}, logs:{} };
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw){
+      const d = JSON.parse(raw);
+      DATA.bodyWeight = d.bodyWeight || '';
+      DATA.records = d.records || {};
+      DATA.logs = d.logs || {};
+      return;
+    }
+    const old = localStorage.getItem('gym_handbook_v2');
+    if (old){
+      const d = JSON.parse(old);
+      DATA.bodyWeight = d.bodyWeight || '';
+      DATA.records = d.records || {};
+      DATA.logs = d.logs || {};
+    }
+  }catch(e){}
+}
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+  const f = document.getElementById('savedFlash');
+  f.classList.add('show');
+  clearTimeout(window.__flashT);
+  window.__flashT = setTimeout(()=>f.classList.remove('show'), 800);
+}
+
+/* ============ 历史训练数据回填（与电脑版同源、同一个一次性标记） ============ */
+const SEED_HISTORY = (function(){
+  const H = (date,w,r,s,src)=>({ date, weight:w, reps:r, sets:s, note:'历史 · '+src, e_neural:'', e_form:'', e_rom:'', e_volume:'' });
+  return {
+    'back-squat': [
+      H('2026-01-31',30,10,5,'杠铃低杠位深蹲'),
+      H('2026-01-24',25,10,4,'杠铃高杠位深蹲'),
+      H('2025-12-23',25,10,5,'杠铃低杠位深蹲'),
+      H('2025-12-04',25,10,4,'杠铃低杠位深蹲')
+    ],
+    'front-squat': [
+      H('2026-03-24',12,12,2,'杠铃前架位深蹲'),
+      H('2025-12-30',10,10,4,'杠铃前蹲'),
+      H('2025-12-11',18,10,3,'杠铃前蹲'),
+      H('2025-12-11',15,10,1,'杠铃前蹲')
+    ],
+    'bss': [ H('2026-03-24',12,10,2,'保加利亚单腿深蹲') ],
+    'rdl': [
+      H('2025-12-23',35,10,5,'杠铃直腿硬拉'),
+      H('2025-12-18',20,10,5,'哑铃直腿硬拉'),
+      H('2025-12-11',35,10,4,'杠铃罗马尼亚硬拉')
+    ],
+    'hip-thrust': [ H('2026-04-02',50,10,2,'杠铃臀推') ],
+    'bench-press': [
+      H('2026-04-02',18,10,2,'杠铃卧推'),
+      H('2026-02-03',18,10,5,'杠铃宽距卧推')
+    ],
+    'incline-db': [ H('2025-12-27',12,10,5,'哑铃上斜卧推') ],
+    'dip': [ H('2026-01-13',0,10,5,'双杠臂屈伸（自重）') ],
+    'pullup': [
+      H('2026-02-03',0,10,5,'弹力带引体向上（助力）'),
+      H('2025-12-25',0,10,5,'弹力带引体向上（助力）')
+    ],
+    'bb-row': [
+      H('2026-01-20',20,12,1,'反握杠铃划船'),
+      H('2026-01-20',12,10,4,'反握杠铃划船')
+    ],
+    'db-row': [ H('2025-12-25',12,10,4,'手支撑单侧负重划船') ],
+    'lat-pulldown': [
+      H('2026-03-26',28,10,2,'坐姿后倾正握高位下拉'),
+      H('2026-01-13',30,10,2,'坐姿对握宽距高位下拉'),
+      H('2026-01-13',25,10,3,'坐姿对握宽距高位下拉'),
+      H('2025-12-06',30,10,1,'坐姿正握宽距高位下拉'),
+      H('2025-12-06',30,10,1,'坐姿正握宽距高位下拉'),
+      H('2025-12-06',25,10,2,'坐姿正握宽距高位下拉'),
+      H('2025-12-06',25,10,1,'坐姿正握宽距高位下拉'),
+      H('2025-12-04',25,10,4,'坐姿后倾正握高位下拉')
+    ],
+    'cg-bench': [ H('2026-02-10',15,10,5,'杠铃窄距卧推') ]
+  };
+})();
+function seedHistory(){
+  const FLAG = 'gym_handbook_seed_v1';
+  if (localStorage.getItem(FLAG)) return;
+  Object.keys(SEED_HISTORY).forEach(id => {
+    const existing = DATA.logs[id] || [];
+    DATA.logs[id] = existing.concat(SEED_HISTORY[id])
+      .sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+  });
+  localStorage.setItem(FLAG,'1');
+  save();
+}
+
+/* ============ 等级 / 摘要计算 ============ */
+function bestOf(moveId){
+  const move = MOVES.find(m=>m.id===moveId);
+  const rec = DATA.records[moveId] || {};
+  const log = DATA.logs[moveId] || [];
+  let bestWeight=0,bestReps=0,bestSeconds=0,bestORM=0;
+  function consider(w,r,s){
+    if (move.bw.type==='time'){ if (s>bestSeconds) bestSeconds=s; }
+    else if (move.bw.type==='reps'){
+      if (r>bestReps) bestReps=r; if (w>bestWeight) bestWeight=w;
+    } else {
+      if (w>0 && r>0){ const o=estimate1RM(w,r); if (o>bestORM){ bestORM=o; bestWeight=w; bestReps=r; } }
+    }
+  }
+  if (move.bw.type==='time') consider(0,0,parseFloat(rec.peakSeconds)||0);
+  else consider(parseFloat(rec.peakWeight)||0, parseFloat(rec.peakReps)||0, 0);
+  log.forEach(r=>{
+    consider(parseFloat(r.weight)||0, parseFloat(r.reps)||0,
+             move.bw.type==='time' ? (parseFloat(r.weight)||0) : 0);
+  });
+  return { bestWeight, bestReps, bestSeconds, bestORM };
+}
+function loadLevelFor(move, best, bw){
+  if (move.bw.type==='load' || move.bw.type==='load-bw'){
+    if (!bw || !best.bestWeight || !best.bestReps) return null;
+    const orm = estimate1RM(best.bestWeight, best.bestReps);
+    const ratio = move.bw.type==='load-bw' ? (orm+bw)/bw : orm/bw;
+    return { level: pickLevel(ratio, move.bw.levels), orm, ratio };
+  }
+  if (move.bw.type==='reps' && best.bestReps){
+    return { level: pickLevel(best.bestReps, move.bw.levels), reps: best.bestReps };
+  }
+  if (move.bw.type==='time' && best.bestSeconds){
+    return { level: pickLevel(best.bestSeconds, move.bw.levels), seconds: best.bestSeconds };
+  }
+  return null;
+}
+function recentEvalOf(moveId){
+  const log = DATA.logs[moveId] || [];
+  for (let i=0;i<log.length;i++){
+    const r = log[i];
+    if (r.e_neural||r.e_form||r.e_rom||r.e_volume){
+      const vals = ['e_neural','e_form','e_rom','e_volume'].map(k=>r[k]).filter(Boolean);
+      const min = Math.min(...vals.map(v=>parseInt(v.slice(1))));
+      return { level:min, date:r.date||'' };
+    }
+  }
+  return null;
+}
+function sessionCount(moveId){
+  return (DATA.logs[moveId]||[]).filter(r=>r.weight||r.reps||r.sets).length;
+}
+
+/* ============ 列表屏 ============ */
+function renderList(filter){
+  const wrap = document.getElementById('moveList');
+  const q = (filter||'').trim().toLowerCase();
+  wrap.innerHTML = '';
+  let shown = 0, idx = 0;
+  GROUP_ORDER.forEach(g => {
+    const inGroup = MOVES.map((m,i)=>({m,gi:i})).filter(x=>x.m.group===g);
+    // 维持稳定编号：所有动作按 MOVES 顺序编号
+    const rows = [];
+    inGroup.forEach(({m}) => {
+      idx++;
+      const hit = !q || m.cn.toLowerCase().includes(q) || (m.en||'').toLowerCase().includes(q) || m.group.toLowerCase().includes(q);
+      if (!hit) return;
+      shown++;
+      const bw = parseFloat(DATA.bodyWeight)||0;
+      const lv = loadLevelFor(m, bestOf(m.id), bw);
+      const cnt = sessionCount(m.id);
+      const badge = lv ? `<span class="badge L${lv.level}">L${lv.level}</span>` : `<span class="badge">—</span>`;
+      rows.push(`
+        <div class="move-row" data-move="${m.id}">
+          <div class="idx">${String(idx).padStart(2,'0')}</div>
+          <div class="info">
+            <div class="nm">${m.cn}</div>
+            <div class="sub">${m.en||''}</div>
+          </div>
+          <div class="right">
+            ${badge}
+            <div class="cnt">${cnt?('已记录 '+cnt+' 次'):'未记录'}</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>`);
+    });
+    if (rows.length){
+      wrap.insertAdjacentHTML('beforeend',
+        `<div class="grp-header"><span>${g}</span><span class="cnt">${rows.length} 个</span></div>` + rows.join(''));
+    }
+  });
+  if (!shown){
+    wrap.innerHTML = `<div class="empty-hint">没找到「${filter}」相关的动作</div>`;
+  }
+  document.getElementById('listCount').textContent = MOVES.length + ' 个动作';
+  wrap.querySelectorAll('.move-row').forEach(row=>{
+    row.addEventListener('click', ()=> openDetail(row.dataset.move));
+  });
+}
+
+/* ============ 详情屏 ============ */
+let currentMoveId = null;
+function openDetail(moveId){
+  const move = MOVES.find(m=>m.id===moveId);
+  if (!move) return;
+  currentMoveId = moveId;
+  const md = muscleDataFor(move);
+  document.getElementById('detailTitle').textContent = move.cn;
+  document.getElementById('detailGroup').textContent = move.group;
+
+  const customPic = (DATA.records[moveId] && DATA.records[moveId].customPic) || '';
+  const effectivePic = customPic || move.pic || '';
+  const isTime = move.bw.type==='time';
+
+  const peakInner = isTime
+    ? `<div class="peak-grid">
+         <label>最长时间<select data-rf="peakSeconds">${TIME_OPTS}</select></label>
+       </div>`
+    : move.bw.type==='reps'
+    ? `<div class="peak-grid">
+         <label>负重(可选)<select data-rf="peakWeight">${KG_OPTS}</select></label>
+         <label>单组最高次数<select data-rf="peakReps">${REPS_OPTS}</select></label>
+       </div>`
+    : `<div class="peak-grid">
+         <label>重量<select data-rf="peakWeight">${KG_OPTS}</select></label>
+         <label>完成次数<select data-rf="peakReps">${REPS_OPTS}</select></label>
+       </div>`;
+
+  const body = document.getElementById('detailBody');
+  body.innerHTML = `
+    <div class="figure-box" id="figureBox"
+         data-primary='${JSON.stringify(md.mp||[])}'
+         data-secondary='${JSON.stringify(md.ms||[])}'
+         ${effectivePic?`data-pic="${effectivePic.replace(/"/g,'&quot;')}"`:''}>
+      <div class="loading-msg">加载示意图…</div>
+    </div>
+
+    <div class="chips">
+      <span class="lab">主要</span>
+      ${md.primary.map(m=>`<span class="chip">${m}</span>`).join('') || '<span class="chip sec">—</span>'}
+      <span class="lab" style="margin-left:4px;">协同</span>
+      ${(md.secondary||[]).map(m=>`<span class="chip sec">${m}</span>`).join('') || '<span class="chip sec">—</span>'}
+    </div>
+
+    <div class="summary-card">
+      <div class="cell"><div class="k">负重等级</div><div class="v"><span class="badge" data-load-badge>—</span></div></div>
+      <div class="cell"><div class="k">最近自评</div><div class="v"><span class="badge" data-recent-badge>—</span></div></div>
+      <div class="cell"><div class="k">已记录</div><div class="v" data-count-cell>0 次</div></div>
+    </div>
+
+    <div class="block">
+      <h3>🎯 动作要领</h3>
+      <ul>${move.cues.map(c=>`<li>${c}</li>`).join('')}</ul>
+    </div>
+    <div class="block">
+      <h3>💡 推荐理由</h3>
+      <p>${move.why}</p>
+    </div>
+
+    <div class="block peak" data-move="${moveId}">
+      <h3>📌 历史最大记录 <span style="color:var(--muted);font-weight:400;font-size:11px;">${
+        isTime?'你曾支撑的最长时间': move.bw.type==='reps'?'单组最高次数':'最重一组(含次数)'}</span></h3>
+      ${peakInner}
+      <div class="peak-hint empty" data-peak-info>填写后自动估算等级</div>
+      <textarea data-rf="peakNote" placeholder="备注：什么时候达到的？当时体重、状态…"></textarea>
+    </div>
+
+    <div class="block" style="background:transparent;border:0;padding:0;">
+      <div class="log-head">
+        <h3>📝 训练日志</h3>
+        <button class="add-btn" id="addLogBtn">+ 添加本次训练</button>
+      </div>
+      <p class="log-help">每次训练一张卡：重量×次数×组数 + 4 维自评（综合取最低）。改完自动保存。</p>
+      <div id="logList"></div>
+    </div>
+  `;
+
+  // 填充历史最大记录的已存值 + 绑定
+  const rec = DATA.records[moveId] || (DATA.records[moveId] = {});
+  body.querySelectorAll('.block.peak [data-rf]').forEach(el=>{
+    const f = el.dataset.rf;
+    if (rec[f] !== undefined && rec[f] !== '') el.value = rec[f];
+    const handler = ()=>{ rec[f] = el.value; save(); updateDetailSummary(); };
+    el.addEventListener('input', handler);
+    el.addEventListener('change', handler);
+  });
+
+  document.getElementById('addLogBtn').addEventListener('click', ()=>{
+    if (!DATA.logs[moveId]) DATA.logs[moveId] = [];
+    const today = new Date().toISOString().slice(0,10);
+    DATA.logs[moveId].unshift({ date:today, weight:'', reps:'', sets:'', note:'', e_neural:'', e_form:'', e_rom:'', e_volume:'' });
+    save(); renderLogList(moveId);
+  });
+
+  renderLogList(moveId);
+  updateDetailSummary();
+  renderDetailFigure();
+  document.getElementById('screen-detail').classList.add('active');
+  document.getElementById('detailBody').scrollTop = 0;
+  window.scrollTo(0,0);
+}
+function closeDetail(){
+  document.getElementById('screen-detail').classList.remove('active');
+  currentMoveId = null;
+  renderList(document.getElementById('search').value);  // 刷新列表上的等级/次数
+}
+
+/* ---- 详情：解剖示意图 ---- */
+function renderDetailFigure(){
+  const wrap = document.getElementById('figureBox');
+  if (!wrap) return;
+  const mp = JSON.parse(wrap.dataset.primary || '[]');
+  const ms = JSON.parse(wrap.dataset.secondary || '[]');
+  const pic = wrap.dataset.pic || '';
+  if (pic){
+    const probe = new Image();
+    probe.onload = ()=>{
+      if (probe.naturalWidth>=50 && probe.naturalHeight>=50){
+        wrap.classList.add('has-pic');
+        wrap.innerHTML = `<img src="${pic}" alt="动作姿态" class="pose-img" referrerpolicy="no-referrer"><div class="pic-caption">动作姿态图</div>`;
+      } else { drawHighlighter(wrap, mp, ms); }
+    };
+    probe.onerror = ()=> drawHighlighter(wrap, mp, ms);
+    probe.referrerPolicy = 'no-referrer';
+    probe.src = pic;
+    return;
+  }
+  drawHighlighter(wrap, mp, ms);
+}
+function drawHighlighter(wrap, mp, ms){
+  if (BodyHighlighterFailed || typeof BodyHighlighter !== 'function'){
+    if (bhTried){
+      wrap.classList.remove('has-pic');
+      wrap.innerHTML = `<div class="err-msg">⚠ 解剖示意图未加载<br>需要联网从 CDN 拉取开源库 body-highlighter。<br>下面的「主要 / 协同」标签仍能看到这个动作发力到哪些肌肉。</div>`;
+    } else {
+      wrap.innerHTML = `<div class="loading-msg">加载示意图…</div>`;
+    }
+    return;
+  }
+  wrap.classList.remove('has-pic');
+  wrap.innerHTML = '';
+  const front = document.createElement('div'); front.className='view';
+  const fh = document.createElement('div'); front.appendChild(fh);
+  const fc = document.createElement('div'); fc.className='view-cap'; fc.textContent='前 FRONT'; front.appendChild(fc);
+  const back = document.createElement('div'); back.className='view';
+  const bh = document.createElement('div'); back.appendChild(bh);
+  const bc = document.createElement('div'); bc.className='view-cap'; bc.textContent='背 BACK'; back.appendChild(bc);
+  wrap.appendChild(front); wrap.appendChild(back);
+  renderBodyView(fh, mp, ms, 'anterior');
+  renderBodyView(bh, mp, ms, 'posterior');
+}
+
+/* ---- 详情：摘要卡（负重等级 / 最近自评 / 已记录） ---- */
+function updateDetailSummary(){
+  if (!currentMoveId) return;
+  const move = MOVES.find(m=>m.id===currentMoveId);
+  const body = document.getElementById('detailBody');
+  const bw = parseFloat(DATA.bodyWeight)||0;
+  const best = bestOf(currentMoveId);
+  const lv = loadLevelFor(move, best, bw);
+
+  const lb = body.querySelector('[data-load-badge]');
+  if (lv){ lb.textContent = 'L'+lv.level; lb.className = 'badge L'+lv.level; }
+  else { lb.textContent = '—'; lb.className = 'badge'; }
+
+  const rb = body.querySelector('[data-recent-badge]');
+  const re = recentEvalOf(currentMoveId);
+  if (re){ rb.textContent = 'L'+re.level; rb.className = 'badge L'+re.level; }
+  else { rb.textContent = '—'; rb.className = 'badge'; }
+
+  body.querySelector('[data-count-cell]').textContent = sessionCount(currentMoveId) + ' 次';
+
+  // 历史最大记录提示
+  const pi = body.querySelector('[data-peak-info]');
+  if (pi){
+    const rec = DATA.records[currentMoveId] || {};
+    if (move.bw.type==='time'){
+      const s = parseFloat(rec.peakSeconds)||0;
+      pi.classList.toggle('empty', !s);
+      pi.textContent = s ? (s+' 秒') : '填写后自动估算等级';
+    } else {
+      const w = parseFloat(rec.peakWeight)||0, r = parseFloat(rec.peakReps)||0;
+      const orm = (w&&r)?estimate1RM(w,r):0;
+      pi.classList.toggle('empty', !orm);
+      pi.textContent = orm ? ('估算 1RM ≈ '+orm.toFixed(1)+' kg') : '填写后自动估算';
+    }
+  }
+}
+
+/* ---- 详情：训练日志卡片 ---- */
+function selectWith(opts, value){
+  if (value===''||value===undefined||value===null) return opts;
+  return opts.replace(`value="${value}"`, `value="${value}" selected`);
+}
+function evalSelectFor(dim, value){
+  const opts = [`<option value="">— 选 —</option>`].concat(
+    dim.options.map(([lv,desc])=>`<option value="${lv}"${lv===value?' selected':''}>${lv} · ${desc}</option>`)
+  ).join('');
+  return `<select data-rf="e_${dim.key}" class="${value?('set-'+value):''}">${opts}</select>`;
+}
+function overallBadge(row){
+  const vals = ['e_neural','e_form','e_rom','e_volume'].map(k=>row[k]).filter(Boolean);
+  if (!vals.length) return '<span class="badge" data-row-overall>—</span>';
+  const min = Math.min(...vals.map(v=>parseInt(v.slice(1))));
+  return `<span class="badge L${min}" data-row-overall>L${min}</span>`;
+}
+function logCardHTML(row, isTime){
+  const numCells = isTime
+    ? `<label>秒数<select data-rf="weight">${selectWith(TIME_OPTS,row.weight)}</select></label>
+       <label>组数<select data-rf="sets">${selectWith(SETS_OPTS,row.sets)}</select></label>`
+    : `<label>重量<select data-rf="weight">${selectWith(KG_OPTS,row.weight)}</select></label>
+       <label>次数<select data-rf="reps">${selectWith(REPS_OPTS,row.reps)}</select></label>
+       <label>组数<select data-rf="sets">${selectWith(SETS_OPTS,row.sets)}</select></label>`;
+  return `
+    <div class="log-card">
+      <div class="log-card-top">
+        <input type="date" data-rf="date" value="${row.date||''}">
+        ${overallBadge(row)}
+        <button class="del-btn" data-del aria-label="删除">✕</button>
+      </div>
+      <div class="log-nums">${numCells}</div>
+      <input class="log-note" type="text" data-rf="note" placeholder="备注（可选）" value="${(row.note||'').replace(/"/g,'&quot;')}">
+      <div class="log-evals">
+        ${EVAL_DIMS.map(d=>`<label class="eval-item"><span>${d.name}</span>${evalSelectFor(d,row['e_'+d.key]||'')}</label>`).join('')}
+      </div>
+    </div>`;
+}
+function renderLogList(moveId){
+  const move = MOVES.find(m=>m.id===moveId);
+  const log = DATA.logs[moveId] || [];
+  const isTime = move.bw.type==='time';
+  const list = document.getElementById('logList');
+  if (!list) return;
+  if (!log.length){
+    list.innerHTML = `<div class="log-empty">还没有记录 — 点上面「+ 添加本次训练」开始第一次</div>`;
+    return;
+  }
+  list.innerHTML = log.map(r=>logCardHTML(r,isTime)).join('');
+  list.querySelectorAll('.log-card').forEach((card, idx)=>{
+    card.querySelectorAll('[data-rf]').forEach(input=>{
+      input.addEventListener('input', ()=>{
+        const f = input.dataset.rf;
+        if (!DATA.logs[moveId]) DATA.logs[moveId] = [];
+        if (!DATA.logs[moveId][idx]) DATA.logs[moveId][idx] = {};
+        DATA.logs[moveId][idx][f] = input.value;
+        if (f.startsWith('e_')){
+          input.className = input.value ? ('set-'+input.value) : '';
+          const ob = card.querySelector('[data-row-overall]');
+          if (ob){
+            const row = DATA.logs[moveId][idx];
+            const vals = ['e_neural','e_form','e_rom','e_volume'].map(k=>row[k]).filter(Boolean);
+            if (vals.length){
+              const min = Math.min(...vals.map(v=>parseInt(v.slice(1))));
+              ob.textContent = 'L'+min; ob.className = 'badge L'+min;
+            } else { ob.textContent = '—'; ob.className = 'badge'; }
+          }
+        }
+        save(); updateDetailSummary();
+      });
+    });
+    const del = card.querySelector('[data-del]');
+    if (del) del.addEventListener('click', ()=>{
+      if (!confirm('删除这条训练记录？')) return;
+      DATA.logs[moveId].splice(idx,1);
+      save(); renderLogList(moveId); updateDetailSummary();
+    });
+  });
+}
+
+/* ============ 原理屏（静态内容） ============ */
+function renderLearn(){
+  document.getElementById('learnBody').innerHTML = `
+    <div class="learn-card">
+      <h2>① 近期目标</h2>
+      <p class="lead">用最少的「好动作」覆盖全身主要肌群，并对每个动作的掌握度与负荷水平有清晰认知。</p>
+      <p><b>覆盖性</b>：动作集合照顾到下肢推/下肢拉/上肢推/上肢拉/核心/全身搬运 6 大模式。<br>
+      <b>熟练性</b>：对目标肌肉能「清晰感知 + 主动控制」发力。<br>
+      <b>进阶性</b>：清楚当前负荷水平，及合理的下一步增长方向。</p>
+      <div class="mini-note">覆盖一块肌群通常 1–2 个好动作就够。本手册 23 个力量动作 + 12 个活动度动作，常态保留 12–16 个力量动作即可。</div>
+      <h4>什么是「好动作」</h4>
+      <p>多关节复合 · 力线自然 · 效率高 · 幅度完整 · 可长期渐进 · 不易伤关节 · 可退/进阶 · 对恢复友好。任何一条明显不满足就该替换或退阶。</p>
+      <h4>「熟练掌握」的定义</h4>
+      <p>在完整 ROM 的每个区段都能明确感知目标肌发力，并能主动选择「加重」还是「加感」。</p>
+    </div>
+
+    <div class="learn-card">
+      <h2>② 神经-肌肉连接</h2>
+      <p class="lead">为什么必须「明确感知到哪里在发力」—— 有生理学和研究依据。</p>
+      <h4>运动单位与发力分级</h4>
+      <p><b>Henneman 大小原则</b>：负荷低时只招募小运动单位；负荷上升，大型（快肌主导、增长潜力大）运动单位才被招募。<b>你不「用上」它，它就不会增长。</b></p>
+      <h4>新手前 4–8 周的进步主要靠神经适应</h4>
+      <p>不是肌肉变大，而是神经系统学会更高效地招募、协调。这一阶段的「熟练」就是给目标肌建一条更顺的神经通路。</p>
+      <h4>内部聚焦 vs 外部聚焦</h4>
+      <p><b>Schoenfeld 2018</b>：同样练 8 周，「有意识感受目标肌」组二头肌增长约 <b>12.4%</b>，「外部聚焦」组只有 <b>6.9%</b>，几乎翻倍。中等以下负荷（≤60% 1RM）时优势最显著。</p>
+      <div class="mini-note">体感不到的肌肉长期增长一定打折 → 先建立感知再加重；中等重量（60–75% 1RM、8–12 次）最适合磨感觉。</div>
+    </div>
+
+    <div class="learn-card">
+      <h2>③ 肌肉增长的三大机制</h2>
+      <p class="lead">来自 Schoenfeld 2010 综述：机械张力是主因，其余是放大器。</p>
+      <h4>机械张力（最主要）</h4>
+      <p>肌纤维感受到的「拉力 × 时间」。张力够大、时间够长，就启动 mTOR 通路长肌原纤维。</p>
+      <h4>代谢压力（充血感来源）</h4>
+      <p>长组数、短间歇让目标肌局部缺氧、代谢物堆积、细胞肿胀。</p>
+      <h4>肌肉损伤（辅助，不必追求）</h4>
+      <p>离心阶段的微观撕裂触发修复，但过度损伤反而拖累恢复。是副产品，不该单独追求。</p>
+      <div class="mini-note">三种放大策略：① 加重 ② 加次数/缩间歇 ③ 加幅度/减速离心 —— 轮换使用避免单一刺激饱和。</div>
+    </div>
+
+    <div class="learn-card">
+      <h2>④ 1RM 与负荷区间</h2>
+      <p class="lead">把「原理」翻译成「今天该用多重」的桥梁。</p>
+      <h4>1RM 是什么</h4>
+      <p>以标准动作能恰好完成 1 次的最大重量。本手册自动用 Epley 公式估算：<br>
+      <code>1RM ≈ 重量 × (1 + 0.0333 × 次数)</code><br>例：80kg 干净做 8 次 → 1RM ≈ <b>101 kg</b>。</p>
+      <h4>三大负荷区间</h4>
+      <table class="ztable">
+        <tr><th>区间</th><th>次数</th><th>主要刺激</th></tr>
+        <tr><td>最大力量<br>85–100%</td><td>1–5 次</td><td>神经募集 + 肌原纤维肥大</td></tr>
+        <tr><td>肌肥大甜区<br>65–85%</td><td>6–12 次</td><td>体积增长最高效</td></tr>
+        <tr><td>耐力代谢<br>30–60%</td><td>15–30+ 次</td><td>肌耐力 + 毛细血管化</td></tr>
+      </table>
+      <div class="mini-note">只要接近力竭，30–85% 1RM 都能产生相似的肌肥大效果。65–85%（6–12 次）在效率/耐受/神经疲劳之间最平衡。</div>
+    </div>
+
+    <div class="learn-card">
+      <h2>⑤ 自评等级标准</h2>
+      <p class="lead">每条训练记录都自带 4 个维度的自评（L0–L4），综合 = 取最低维度（强调短板）。</p>
+      <h4>① 神经感知</h4>
+      <p>L0 感觉不到 → L2 大部分清晰 → L4 能引导到具体分区。</p>
+      <h4>② 力线控制</h4>
+      <p>L0 需镜子纠正 → L2 主动注意下稳定 → L4 大重量下仍完美。</p>
+      <h4>③ 完整幅度</h4>
+      <p>L0 只能半幅度 → L2 完整但末端略不稳 → L4 全幅度 + 慢离心都稳。</p>
+      <h4>④ 容量耐受</h4>
+      <p>L0 1 组就掉质量 → L2 4–5 个有效组 → L4 多动作叠加日仍保质量。</p>
+      <div class="mini-note">⑤ 负重水平不用选 —— 系统根据你的体重 + 历史最大记录 / 训练日志的最大估算 1RM 自动判定。</div>
+    </div>
+  `;
+}
+
+/* ============ 我的屏 ============ */
+function bindMe(){
+  const bw = document.getElementById('bwInput');
+  bw.value = DATA.bodyWeight || '';
+  bw.addEventListener('input', ()=>{
+    DATA.bodyWeight = bw.value;
+    save();
+    if (currentMoveId) updateDetailSummary();
+  });
+  document.getElementById('btnExport').addEventListener('click', exportData);
+  document.getElementById('btnImport').addEventListener('click', importData);
+  document.getElementById('aboutLine').textContent =
+    `共 ${MOVES.length} 个动作 · 数据键 ${STORAGE_KEY} · 与电脑版手册、训练分析共用同一份数据源`;
+}
+function exportData(){
+  const blob = new Blob([JSON.stringify(DATA,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '健身手册-我的记录-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+function importData(){
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const fr = new FileReader();
+    fr.onload = ()=>{
+      try{
+        const d = JSON.parse(fr.result);
+        DATA.bodyWeight = d.bodyWeight || '';
+        DATA.records = d.records || {};
+        DATA.logs = d.logs || {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+        location.reload();
+      }catch(err){ alert('JSON 解析失败：' + err.message); }
+    };
+    fr.readAsText(file);
+  };
+  input.click();
+}
+
+/* ============ 导航 ============ */
+function showTab(tab){
+  ['list','learn','me'].forEach(t=>{
+    document.getElementById('screen-'+t).classList.toggle('active', t===tab);
+  });
+  document.querySelectorAll('.tabbar button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab===tab);
+  });
+  // 切 tab 时收起详情
+  document.getElementById('screen-detail').classList.remove('active');
+  currentMoveId = null;
+  window.scrollTo(0,0);
+}
+function bindNav(){
+  document.querySelectorAll('.tabbar button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if (b.dataset.tab==='list') renderList(document.getElementById('search').value);
+      showTab(b.dataset.tab);
+    });
+  });
+  document.getElementById('detailBack').addEventListener('click', closeDetail);
+  document.getElementById('search').addEventListener('input', e=> renderList(e.target.value));
+  // 安卓返回键 / 手势：详情打开时优先关详情
+  window.addEventListener('popstate', ()=>{
+    if (document.getElementById('screen-detail').classList.contains('active')) closeDetail();
+  });
+}
+
+/* ============ Init ============ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  load();
+  seedHistory();
+  renderList();
+  renderLearn();
+  bindMe();
+  bindNav();
+  // 后台加载解剖图库，加载完若详情正开着就补渲染
+  loadBodyHighlighter().then(()=>{
+    if (currentMoveId) renderDetailFigure();
+  });
+});
+</script>
+</body>
+</html>
