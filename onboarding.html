@@ -795,6 +795,11 @@ function handleAction(e){
   const action = el.dataset.action;
   const id = el.dataset.id;
 
+  // 点击的是 details/summary（"看完整定义"展开）→ 让浏览器原生处理 toggle，不触发卡片的 set-goal
+  if(action === 'set-goal' && e.target.closest('details')){
+    return;
+  }
+
   switch(action){
     case 'start':
       state.step = 1;
