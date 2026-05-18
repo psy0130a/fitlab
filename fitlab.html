@@ -274,6 +274,8 @@ textarea.note-area{
 </nav>
 
 <script src="训练数据库.js"></script>
+<script src="fitlab-data.js"></script>
+<script src="plan-engine.js"></script>
 <script>
 //=================================================================
 // 1. 数据层 · State / Storage / Migration
@@ -329,108 +331,145 @@ function saveState() {
 function today() { return new Date().toISOString().slice(0,10); }
 
 //=================================================================
-// 2. 计划 · 默认 30 节计划模板
+// 2. 计划 · 从 onboarding 动态生成（无任何硬编码用户数据）
 //=================================================================
-const PLAN_TEMPLATE = {
-  name: '30 节增肌',
-  weeks: 10,
-  phases: [
-    { name:'重建适应', weeks:[1,2,3], setsBase:2, setsIso:3, rir:[3,4] },
-    { name:'增肌主训', weeks:[4,5,6,7], setsBase:3, setsIso:3, rir:[1,3] },
-    { name:'强化',     weeks:[8,9],   setsBase:3, setsIso:3, rir:[0,2] },
-    { name:'减载',     weeks:[10],    setsBase:2, setsIso:2, rir:[3,4], weightMult:0.7 }
-  ],
-  courses: {
-    A: ['杠铃后蹲','罗马尼亚硬拉','杠铃臀推','引体向上','帕罗夫推','提踵(站姿)'],
-    B: ['杠铃卧推','杠铃俯身划船','站姿杠铃推举','上斜哑铃卧推','杠铃弯举','哑铃侧平举'],
-    C: ['杠铃前蹲','单臂哑铃划船','双杠臂屈伸','行进弓步','面拉','蚌式']
-  },
-  weeklyAdds: { 5:{C:['俯卧腿弯举']}, 6:{A:['坐姿提踵']} },
-  // Movement → (start_kg, peak_kg) [W1 = start, W9 = peak, W10 = peak*0.7]
-  progression: {
-    '杠铃后蹲':{start:27.5,peak:40},
-    '罗马尼亚硬拉':{start:30,peak:42.5},
-    '杠铃臀推':{start:45,peak:60},
-    '杠铃卧推':{start:15,peak:22.5},
-    '杠铃俯身划船':{start:25,peak:35},
-    '站姿杠铃推举':{start:15,peak:22.5},
-    '上斜哑铃卧推':{start:7,peak:12},
-    '杠铃弯举':{start:12,peak:17.5},
-    '哑铃侧平举':{start:4,peak:6},
-    '杠铃前蹲':{start:15,peak:22.5},
-    '单臂哑铃划船':{start:20,peak:28},
-    '行进弓步':{start:10,peak:15},
-    '面拉':{start:17.5,peak:25},
-    '俯卧腿弯举':{start:10,peak:17.5},
-    '坐姿提踵':{start:15,peak:25}
-  }
-};
-// Isolation set as defaults
-const ISO_MOVS = new Set(['帕罗夫推','提踵(站姿)','蚌式','面拉','哑铃侧平举','坐姿提踵','俯卧腿弯举']);
 
-// Plan helpers
+// 从 onboarding 数据 + 计划生成引擎 构造一个可激活的 plan 对象
+function buildPlanFromOnboarding(startDate) {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    if (!obj.onboarding || !obj.onboarding.answers) return null;
+    if (!window.FITLAB_ENGINE) return null;
+    const rec = window.FITLAB_ENGINE.computeRecommendation(obj.onboarding.answers);
+    if (rec.is_boundary) return null;
+    const generated = window.FITLAB_ENGINE.generatePlan(rec);
+    if (!generated) return null;
+    const spw = rec.frequency.times_per_week;
+    const totalWeeks = generated.mesocycle.total_weeks || 0;
+    return {
+      startDate,
+      source: 'onboarding-v1',
+      name: rec.mesocycle.name,
+      sessions_per_week: spw,
+      total_weeks: totalWeeks,
+      total_sessions: totalWeeks ? totalWeeks * spw : 0,
+      is_indefinite: !!generated.mesocycle.is_indefinite,
+      phases: generated.mesocycle.phases,    // 兼容旧 phases.find(p => p.weeks.includes(week))
+      cached_sessions: generated.sessions,   // session 配置 + 动作 + 起步重量
+      goal_id: rec.goal.id,
+    };
+  } catch (e) { console.warn('buildPlanFromOnboarding failed', e); return null; }
+}
+
 function getActivePlan() {
-  if (state.plan && state.plan.startDate) return state.plan;
+  if (state.plan && state.plan.startDate && state.plan.cached_sessions) return state.plan;
   return null;
 }
 
-function ensureDefaultPlan(startDate) {
-  state.plan = Object.assign({}, PLAN_TEMPLATE, { startDate });
+function activatePlan(startDate) {
+  const plan = buildPlanFromOnboarding(startDate);
+  if (!plan) return false;
+  state.plan = plan;
   saveState();
+  return true;
+}
+
+// 通过课型 id 找到 cached_sessions 里的对应 session
+function findSessionByCourse(plan, courseId) {
+  return plan.cached_sessions.find(s => s.id === courseId);
+}
+
+// 通过动作中文名在 cached_sessions 里找到对应的 slot（含 exercise / start_load / is_compound）
+function findSlotByMovName(plan, movName) {
+  for (const sess of plan.cached_sessions) {
+    for (const slot of sess.slots) {
+      if (slot.exercise && slot.exercise.name === movName) return slot;
+    }
+  }
+  return null;
+}
+
+// 给某周次找对应的 phase（适配新 schema，weeks 永远是数组）
+function findPhaseForWeek(plan, week) {
+  return plan.phases.find(p => Array.isArray(p.weeks) && p.weeks.includes(week)) || plan.phases[0];
 }
 
 function planSessionInfo(plan, n) {
-  const week = Math.floor((n-1)/3) + 1;
-  const course = ['A','B','C'][(n-1)%3];
-  const phase = plan.phases.find(p => p.weeks.includes(week)) || plan.phases[0];
-  return { n, week, course, phase };
+  const spw = plan.sessions_per_week || 3;
+  const week = Math.floor((n-1)/spw) + 1;
+  const courseIdx = (n-1) % spw;
+  const courseSession = plan.cached_sessions[courseIdx];
+  const courseId = courseSession ? courseSession.id : ['A','B','C'][courseIdx];
+  const phase = findPhaseForWeek(plan, week);
+  return { n, week, course: courseId, phase, courseSession };
 }
 
-function movementsForSession(plan, week, course) {
-  const base = plan.courses[course].slice();
-  // Weekly adds
-  for (let w=1; w<=week; w++) {
-    if (plan.weeklyAdds[w] && plan.weeklyAdds[w][course]) {
-      base.push(...plan.weeklyAdds[w][course]);
-    }
+function movementsForSession(plan, week, courseId) {
+  const sess = findSessionByCourse(plan, courseId);
+  if (!sess) return [];
+  return sess.slots
+    .filter(slot => slot.exercise)
+    .map(slot => slot.exercise.name);
+}
+
+// 给一个动作 + 当前周次，算应该用的起步重量
+// 阶段递增逻辑：起步重量 = start_load 的中位 → 主训阶段线性 +到 1.25x → 减载阶段降到 70%
+function weightForMov(plan, movName, week) {
+  const slot = findSlotByMovName(plan, movName);
+  if (!slot || !slot.start_load || slot.start_load.type !== 'weight') return null;
+  const sl = slot.start_load;
+  const startKg = (sl.lo + sl.hi) / 2;
+  const phase = findPhaseForWeek(plan, week);
+  if (!phase) return Math.round(startKg * 2) / 2;
+  const phaseIdx = plan.phases.indexOf(phase);
+  const isLastPhase = phaseIdx === plan.phases.length - 1;
+  // 减载（最后一阶段，且 prescription 标了 load_pct）= 70%
+  if (isLastPhase && phase.prescription && phase.prescription.load_pct_of_previous) {
+    return Math.round(startKg * 0.7 * 2) / 2;
   }
-  return base;
+  // 第 1 阶段（适应）= start
+  if (phaseIdx <= 0) return Math.round(startKg * 2) / 2;
+  // 中间阶段（主训 / 强化）= 线性递增到 peak（startKg × 1.25）
+  const phaseWeeks = phase.weeks;
+  const firstWk = phaseWeeks[0];
+  const lastWk = phaseWeeks[phaseWeeks.length-1];
+  const denom = Math.max(1, lastWk - firstWk);
+  const progressPct = (week - firstWk) / denom;
+  const peakKg = startKg * 1.25;
+  return Math.round((startKg + (peakKg - startKg) * progressPct) * 2) / 2;
 }
 
-function weightForMov(plan, mov, week) {
-  const p = plan.progression[mov];
-  if (!p) return null;
-  if (week <= 3) return p.start;
-  if (week >= 4 && week <= 9) {
-    const frac = (week - 4) / 5;
-    return Math.round((p.start + (p.peak - p.start) * frac) * 2) / 2;
+function setsForMov(plan, movName, week) {
+  const slot = findSlotByMovName(plan, movName);
+  const phase = findPhaseForWeek(plan, week);
+  if (!phase || !phase.prescription) return 3;
+  const isCompound = slot && slot.is_compound;
+  return isCompound ? (phase.prescription.sets_per_main || 3) : (phase.prescription.sets_per_isolation || phase.prescription.sets_per_main || 2);
+}
+
+function repsForMov(movName, week) {
+  const plan = getActivePlan();
+  if (!plan) return '8-12';
+  const slot = findSlotByMovName(plan, movName);
+  const phase = findPhaseForWeek(plan, week);
+  if (!phase || !phase.prescription) return '8-12';
+  const isCompound = slot && slot.is_compound;
+  // 非负重动作（reps/duration）的特殊提示
+  if (slot && slot.start_load) {
+    if (slot.start_load.type === 'reps') return slot.start_load.display.replace('自重 ','');
+    if (slot.start_load.type === 'duration') return slot.start_load.display;
   }
-  if (week === 10) return Math.round(p.peak * 0.7 * 2) / 2;
-  return p.start;
-}
-
-function setsForMov(plan, mov, week) {
-  const phase = plan.phases.find(ph => ph.weeks.includes(week)) || plan.phases[0];
-  const base = ISO_MOVS.has(mov) ? phase.setsIso : phase.setsBase;
-  // 哑铃侧平举 W5+ 升 4 组
-  if (mov === '哑铃侧平举' && week >= 5 && week <= 9) return 4;
-  return base;
-}
-
-function repsForMov(mov, week) {
-  if (mov === '引体向上') return '变式（见笔记）';
-  if (ISO_MOVS.has(mov)) return '12-15';
-  if (week <= 3) return '10';
-  if (week <= 9) return '8-10';
-  return '10';
+  return isCompound ? (phase.prescription.reps_main || '8-12') : (phase.prescription.reps_isolation || phase.prescription.reps_main || '10-15');
 }
 
 function rirForWeek(plan, week) {
-  const phase = plan.phases.find(p => p.weeks.includes(week)) || plan.phases[0];
-  return phase.rir.join('-');
+  const phase = findPhaseForWeek(plan, week);
+  if (!phase || !phase.prescription) return '2-3';
+  return phase.prescription.rir || '2-3';
 }
 
-// Find which session number is "today"
+// 算"今天是计划的第几节"——按 sessions_per_week 均匀分布到一周内
 function currentSession(plan) {
   if (!plan || !plan.startDate) return null;
   const start = new Date(plan.startDate + 'T00:00:00');
@@ -438,18 +477,26 @@ function currentSession(plan) {
   now.setHours(0,0,0,0);
   const daysSince = Math.floor((now - start) / 86400000);
   if (daysSince < 0) return { n: 1, daysUntil: -daysSince };
-  // Sessions Mon/Wed/Fri pattern: day 0 = S1, day 2 = S2, day 4 = S3, day 7 = S4
-  // Simpler: 1 session per 2.33 days avg, but lock to M/W/F
-  // We compute week and session within week
   const week = Math.floor(daysSince/7) + 1;
   const dayInWeek = daysSince % 7;
+  const spw = plan.sessions_per_week || 3;
   let sessIdx;
-  if (dayInWeek <= 1) sessIdx = 0;
-  else if (dayInWeek <= 3) sessIdx = 1;
-  else if (dayInWeek <= 5) sessIdx = 2;
-  else sessIdx = 2; // weekend = still pointing to last session
-  const n = (week-1)*3 + sessIdx + 1;
-  return { n: Math.min(n, 30), daysSince, week, dayInWeek };
+  if (spw === 2) sessIdx = dayInWeek <= 2 ? 0 : 1;
+  else if (spw === 3) {
+    if (dayInWeek <= 1) sessIdx = 0;
+    else if (dayInWeek <= 3) sessIdx = 1;
+    else sessIdx = 2;
+  } else if (spw === 4) {
+    if (dayInWeek <= 0) sessIdx = 0;
+    else if (dayInWeek <= 1) sessIdx = 1;
+    else if (dayInWeek <= 3) sessIdx = 2;
+    else sessIdx = 3;
+  } else { // 5+
+    sessIdx = Math.min(dayInWeek, spw-1);
+  }
+  const n = (week-1) * spw + sessIdx + 1;
+  const cap = plan.total_sessions || (plan.is_indefinite ? Infinity : 999);
+  return { n: Math.min(n, cap === Infinity ? n : cap), daysSince, week, dayInWeek };
 }
 
 //=================================================================
@@ -484,29 +531,64 @@ function render() {
 window.addEventListener('hashchange', render);
 
 //=================================================================
-// 4. 设置首次启动屏（让用户设 W1 起始日期）
+// 4. 设置首次启动屏
 //=================================================================
 function showSetup() {
+  const raw = localStorage.getItem(LS_KEY);
+  const obj = raw ? JSON.parse(raw) : {};
+  const hasOnboarding = obj.onboarding && obj.onboarding.answers;
+
   const overlay = document.createElement('div');
   overlay.className = 'setup-overlay';
+
+  if (!hasOnboarding) {
+    // 没做 onboarding → 引导跳转
+    overlay.innerHTML = `
+      <h2>👋 欢迎使用 FitLab</h2>
+      <p>这是一个数据驱动的训练计划与复盘工具。</p>
+      <p>第一次用，请先做一次评估（约 3-5 分钟，7 个问题），系统会基于训练科学原理为你生成<b>个性化训练计划</b>——频率、周期、动作、起步重量都按你的档位定制。</p>
+      <a href="onboarding.html" class="btn" style="text-decoration:none; display:block; text-align:center; margin-top:14px;">去做评估 →</a>
+      <button class="btn ghost" id="skipBtn">先看看 App，暂不创建计划</button>
+      <p style="font-size:11.5px; color:var(--muted); margin-top:18px;">
+        评估完成后会自动回到这里，激活你的训练计划。
+      </p>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('skipBtn').onclick = () => {
+      state.plan = { skipped:true };
+      saveState();
+      overlay.remove();
+      render();
+    };
+    return;
+  }
+
+  // 已做 onboarding → 询问起始日期，激活计划
+  const summary = obj.onboarding.recommendation_summary || {};
   overlay.innerHTML = `
     <h2>👋 欢迎使用 FitLab</h2>
-    <p>这是一个数据驱动的训练计划与复盘工具。开始前，请确认 <b>30 节增肌计划</b>的起始日期。</p>
-    <p>第 1 节训练（W1 课型 A）将从这一天起算。建议选今天或本周一。</p>
+    <p>你已经完成 onboarding，系统识别你的档位是：</p>
+    <p style="background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:8px; padding:10px 14px; margin:10px 0; font-size:13.5px; color:#7a5a1f;">
+      <b>${summary.goal || '增肌'} · ${summary.experience || '中级'}</b> ·
+      ${summary.frequency || '3'} 次/周 ·
+      ${summary.mesocycle_name || ''}
+    </p>
+    <p>选一个起始日期来激活计划。第 1 节训练将从这一天起算，建议选今天或本周一。</p>
     <div style="margin:14px 0;">
       <input type="date" id="planStart" value="${today()}" />
     </div>
-    <button class="btn" id="startBtn">开始 →</button>
-    <button class="btn ghost" id="skipBtn">先看看，不开始计划</button>
-    <p style="font-size:11.5px; color:var(--muted); margin-top:18px;">
-      如果你之前用过动作手册，记录会自动迁移。设置之后可以在「我的 → 设置」里改。
-    </p>
+    <button class="btn" id="startBtn">激活计划 →</button>
+    <a href="onboarding.html" style="display:block; text-align:center; margin-top:14px; color:var(--accent); font-size:13px; text-decoration:none;">重新评估 →</a>
+    <button class="btn ghost" id="skipBtn">先看看，不激活</button>
   `;
   document.body.appendChild(overlay);
   document.getElementById('startBtn').onclick = () => {
     const v = document.getElementById('planStart').value;
     if (!v) return;
-    ensureDefaultPlan(v);
+    if (!activatePlan(v)) {
+      alert('激活失败：onboarding 数据异常，请重新评估');
+      return;
+    }
     overlay.remove();
     render();
   };
@@ -526,12 +608,19 @@ function showSetup() {
 route('plan', () => {
   const plan = getActivePlan();
   if (!plan) {
+    // 检查是否做过 onboarding
+    const raw = localStorage.getItem(LS_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    const hasOnboarding = obj.onboarding && obj.onboarding.answers;
     return `<div class="screen">
       <div class="scr-head"><h1>计划</h1></div>
       <div class="empty">
         <span class="emoji">📋</span>
-        还没有激活的计划<br>
-        <button class="btn" style="max-width:200px; margin:14px auto;" onclick="showSetup()">开始 30 节增肌计划</button>
+        ${hasOnboarding ? '已有 onboarding，但还没激活计划' : '还没有训练计划'}<br>
+        <button class="btn" style="max-width:240px; margin:14px auto;" onclick="showSetup()">
+          ${hasOnboarding ? '激活我的计划 →' : '去做评估 →'}
+        </button>
+        ${hasOnboarding ? `<a href="plan.html" style="display:block; margin-top:14px; color:var(--accent); font-size:13px; text-decoration:none;">查看计划详情</a>` : ''}
       </div>
     </div>`;
   }
@@ -549,11 +638,14 @@ route('plan', () => {
 
   const info = planSessionInfo(plan, cur.n);
   const movs = movementsForSession(plan, info.week, info.course);
-  const courseFocus = { A:'下肢+核心', B:'上肢推+拉', C:'全身均衡' }[info.course];
+  // courseFocus 从 cached_session.focus 拿（动态，不再 ABC 硬编码）
+  const courseFocus = info.courseSession ? (info.courseSession.focus || info.courseSession.name) : '';
 
-  // Sessions in this week
-  const wStart = (info.week-1)*3 + 1;
-  const wSessions = [wStart, wStart+1, wStart+2].map(n => planSessionInfo(plan, n));
+  // 本周的 sessions（按 sessions_per_week 排）
+  const spw = plan.sessions_per_week || 3;
+  const wStart = (info.week-1)*spw + 1;
+  const wSessions = [];
+  for (let i = 0; i < spw; i++) wSessions.push(planSessionInfo(plan, wStart + i));
 
   // Check completed sessions
   function isSessionDone(n) {
@@ -561,15 +653,18 @@ route('plan', () => {
     return ses && ses.completed;
   }
 
+  const totalWeeks = plan.total_weeks || 0;
+  const hasUpcoming = !plan.is_indefinite && info.week < totalWeeks;
+
   return `<div class="screen">
     <div class="scr-head">
       <h1>我的计划</h1>
     </div>
-    <div class="scr-sub">${plan.name} · W${info.week} 第 ${info.n} 节 · ${new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'})}</div>
+    <div class="scr-sub">${plan.name} · W${info.week}${plan.is_indefinite ? '' : '/' + totalWeeks} 第 ${info.n} 节 · ${new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',weekday:'short'})}</div>
 
     <div class="today-card">
       <div class="label">今天</div>
-      <div class="head">第 ${info.n} 节 · 课型 ${info.course} ${courseFocus}</div>
+      <div class="head">第 ${info.n} 节 · 课型 ${info.course}${courseFocus ? ' · ' + courseFocus : ''}</div>
       <div class="phase">${info.phase.name} · ${movs.length} 个动作 · RIR ${rirForWeek(plan, info.week)}</div>
       <div class="movs">${movs.join(' · ')}</div>
       <button class="btn" onclick="goto('train/${info.n}')">${isSessionDone(info.n) ? '查看记录' : '开始训练 →'}</button>
@@ -582,27 +677,32 @@ route('plan', () => {
         const isToday = s.n === info.n;
         return `<div class="list-item" onclick="goto('train/${s.n}')">
           <div class="ico">${done ? '✓' : (isToday ? '⚡' : '○')}</div>
-          <div class="lbl"><b>第 ${s.n} 节 · 课型 ${s.course}</b><div class="meta">${s.phase.name}</div></div>
+          <div class="lbl"><b>第 ${s.n} 节 · 课型 ${s.course}</b><div class="meta">${s.phase.name}${s.courseSession ? ' · ' + (s.courseSession.focus || s.courseSession.name) : ''}</div></div>
           ${done ? '<div class="meta" style="color:var(--good);">已完成</div>' : (isToday ? '<div class="meta" style="color:var(--accent);">今天</div>' : '')}
           <div class="chev">›</div>
         </div>`;
       }).join('')}
     </div>
 
-    <div class="sec-h">后续</div>
+    ${hasUpcoming ? `<div class="sec-h">后续</div>
     <div class="list-group">
-      ${[2,3,4].filter(w => info.week + w*0 <= plan.weeks && info.week < plan.weeks).map((_,i) => {
-        const startW = info.week + i + 1;
-        if (startW > plan.weeks) return '';
-        const endW = Math.min(startW + 2, plan.weeks);
-        const ph = plan.phases.find(p => p.weeks.includes(startW)) || {};
-        return `<div class="list-item">
+      ${(() => {
+        // 列出剩余周次按阶段分组
+        const items = [];
+        for (let w = info.week + 1; w <= totalWeeks; w++) {
+          const ph = findPhaseForWeek(plan, w);
+          // 同一 phase 内合并显示
+          const last = items[items.length-1];
+          if (last && last.phaseName === ph.name) { last.endW = w; }
+          else { items.push({ startW: w, endW: w, phaseName: ph.name }); }
+        }
+        return items.map(it => `<div class="list-item">
           <div class="ico">📅</div>
-          <div class="lbl"><b>W${startW}${startW===endW?'':' - W'+endW}</b><div class="meta">${ph.name||'-'}</div></div>
+          <div class="lbl"><b>W${it.startW}${it.startW===it.endW?'':' - W'+it.endW}</b><div class="meta">${it.phaseName}</div></div>
           <div class="chev">›</div>
-        </div>`;
-      }).filter(Boolean).join('') || '<div class="list-item single"><div class="lbl meta">已是最后阶段</div></div>'}
-    </div>
+        </div>`).join('') || '<div class="list-item single"><div class="lbl meta">已是最后阶段</div></div>';
+      })()}
+    </div>` : ''}
 
     <div class="sec-h">入口</div>
     <div class="list-group">
@@ -1039,12 +1139,17 @@ route('post', (args) => {
       ${Object.keys(muscleContrib).length > 6 ? `<div style="padding:5px 0; color:var(--muted); font-size:12px;">...还有 ${Object.keys(muscleContrib).length-6} 块</div>` : ''}
     </div>
 
-    ${n < 30 ? `
+    ${(() => {
+      const cap = plan.total_sessions || (plan.is_indefinite ? Infinity : 0);
+      if (n >= cap) return '';
+      const nextInfo = planSessionInfo(plan, n+1);
+      return `
     <div class="sec-h">下一节</div>
     <div class="card">
-      <div class="title">第 ${n+1} 节 · 课型 ${['A','B','C'][n%3]}</div>
-      <div class="meta">${planSessionInfo(plan,n+1).phase.name}</div>
-    </div>` : ''}
+      <div class="title">第 ${n+1} 节 · 课型 ${nextInfo.course}${nextInfo.courseSession ? ' · ' + (nextInfo.courseSession.focus || nextInfo.courseSession.name) : ''}</div>
+      <div class="meta">${nextInfo.phase.name}</div>
+    </div>`;
+    })()}
 
     <button class="btn" onclick="goto('plan')">完成 · 返回计划</button>
     <button class="btn secondary" onclick="goto('review')">查看本周复盘 →</button>
@@ -1067,8 +1172,10 @@ route('review', () => {
   if (!cur) return `<div class="screen"><div class="scr-head"><h1>复盘</h1></div></div>`;
 
   const info = planSessionInfo(plan, cur.n);
-  const wStart = (info.week-1)*3 + 1;
-  const wSessions = [wStart, wStart+1, wStart+2];
+  const spw = plan.sessions_per_week || 3;
+  const wStart = (info.week-1)*spw + 1;
+  const wSessions = [];
+  for (let i = 0; i < spw; i++) wSessions.push(wStart + i);
   const wDone = wSessions.filter(n => {
     const s = getStoredSession(n);
     return s && s.completed;
@@ -1143,26 +1250,24 @@ route('review', () => {
 
     <div class="sec-h">① 周期定位</div>
     <div class="card">
-      <div style="font-size:13px;"><b>计划</b>: ${plan.name}（W1 → W${plan.weeks}）</div>
+      <div style="font-size:13px;"><b>计划</b>: ${plan.name}${plan.is_indefinite ? '' : '（W1 → W' + plan.total_weeks + '）'}</div>
       <div style="font-size:13px; margin-top:3px;"><b>当前</b>: W${info.week} · ${info.phase.name}</div>
-      <div class="meta" style="margin-top:3px;">这阶段任务：${info.phase.name === '重建适应' ? '建立动作模式 + 肌肉感知' :
-        (info.phase.name === '增肌主训' ? '把训练量推到 MEV 甜区' :
-        (info.phase.name === '强化' ? '冲本周期峰值' : '主动恢复，让前面疲劳兑现增长'))}</div>
+      <div class="meta" style="margin-top:3px;">这阶段任务：${info.phase.focus || '按处方训练'}</div>
     </div>
 
     <div class="sec-h">② 当初的假设（阶段处方）</div>
     <div class="card">
       <table style="font-size:13px; width:100%;">
-        <tr><td><b>容量</b></td><td>每动作 ${info.phase.setsBase} 组</td></tr>
-        <tr><td><b>强度</b></td><td>RIR ${info.phase.rir.join('-')}</td></tr>
-        <tr><td><b>重量</b></td><td>${info.week<=3 ? '起步保守' : (info.week<=7 ? '渐进 +2.5kg/周' : info.week<=9 ? '冲峰值' : '减载 -30%')}</td></tr>
-        <tr><td><b>训练量预测</b></td><td>主肌达 ${info.phase.name === '重建适应' ? '~60% MEV' : (info.phase.name === '减载' ? '~50% MEV' : 'MEV+')}</td></tr>
+        <tr><td><b>容量</b></td><td>主动作 ${info.phase.prescription?.sets_per_main || '-'} 组${info.phase.prescription?.sets_per_isolation ? ' · 孤立 ' + info.phase.prescription.sets_per_isolation + ' 组' : ''}</td></tr>
+        <tr><td><b>强度</b></td><td>RIR ${info.phase.prescription?.rir || '-'}</td></tr>
+        <tr><td><b>次数</b></td><td>主 ${info.phase.prescription?.reps_main || '-'}${info.phase.prescription?.reps_isolation ? ' · 孤立 ' + info.phase.prescription.reps_isolation : ''}</td></tr>
+        <tr><td><b>进阶规则</b></td><td>${info.phase.prescription?.progression || '-'}</td></tr>
       </table>
     </div>
 
     <div class="sec-h">③ 本周实际</div>
     <div class="kpi-row">
-      <div class="kpi"><b>${wDone}/3</b><span>节完成</span></div>
+      <div class="kpi"><b>${wDone}/${plan.sessions_per_week || 3}</b><span>节完成</span></div>
       <div class="kpi"><b>${nMev}</b><span>达 MEV</span></div>
       <div class="kpi"><b>${nClose}</b><span>接近</span></div>
       <div class="kpi"><b>${avgRIR}</b><span>平均 RIR</span></div>
@@ -1181,17 +1286,18 @@ route('review', () => {
     ` : ''}
 
     <div class="sec-h">④ 一致 vs 偏离</div>
-    <div class="card ${wDone === 3 ? 'green' : 'muted'}">
-      ${wDone === 3 ? '✓ 完成度按预期' : `⚠ 本周完成 ${wDone}/3 节`}<br>
+    <div class="card ${wDone === (plan.sessions_per_week||3) ? 'green' : 'muted'}">
+      ${wDone === (plan.sessions_per_week||3) ? '✓ 完成度按预期' : `⚠ 本周完成 ${wDone}/${plan.sessions_per_week||3} 节`}<br>
       <span style="font-size:11.5px; color:var(--muted);">完整偏离分析待 Phase B 实现</span>
     </div>
 
     <div class="sec-h">⑤ 教练建议 · ⑥ 前瞻</div>
     <div class="card accent">
       <div style="font-size:13px;">
-        ${info.week < plan.weeks ?
-          `下周 W${info.week+1} 进入${plan.phases.find(p=>p.weeks.includes(info.week+1))?.name || '...'}。继续按计划走。` :
-          `计划已接近完成（W${info.week}/${plan.weeks}）。准备开始下个周期。`
+        ${plan.is_indefinite ? '维持目标无固定周期。保持当前训练习惯，定期复盘。' :
+          (info.week < plan.total_weeks ?
+            `下周 W${info.week+1} 进入${findPhaseForWeek(plan, info.week+1)?.name || '...'}。继续按计划走。` :
+            `计划已接近完成（W${info.week}/${plan.total_weeks}）。准备开始下个周期。`)
         }
       </div>
     </div>
@@ -1268,7 +1374,9 @@ route('me', () => {
 
 window.exportData = function() {
   const sessions = {};
-  for (let n=1; n<=30; n++) {
+  const plan = getActivePlan();
+  const cap = (plan && plan.total_sessions) ? plan.total_sessions : 200;
+  for (let n=1; n<=cap; n++) {
     const s = getStoredSession(n);
     if (s) sessions[n] = s;
   }
@@ -1316,15 +1424,23 @@ document.querySelectorAll('#tabbar .tab').forEach(t => {
 //=================================================================
 loadState();
 
+// 迁移：旧版 state.plan（PLAN_TEMPLATE 硬编码结构，有 progression 或 courses 字段）→ 清掉，让用户走新流程
+if (state.plan && (state.plan.progression || state.plan.courses) && !state.plan.cached_sessions) {
+  console.log('Migrating legacy plan → null, will prompt re-activation');
+  state.plan = null;
+  saveState();
+}
+
 // Wait for EXERCISE_DB (it loads via <script src>)
 function init() {
-  if (typeof EXERCISE_DB === 'undefined' || typeof MUSCLE_TARGETS === 'undefined') {
+  if (typeof EXERCISE_DB === 'undefined' || typeof MUSCLE_TARGETS === 'undefined' ||
+      typeof window.FITLAB_DATA === 'undefined' || typeof window.FITLAB_ENGINE === 'undefined') {
     setTimeout(init, 100);
     return;
   }
-  // First time? Show setup
-  if (!state.plan) {
-    showSetup();
+  // First time or skipped/cleared? Show setup
+  if (!state.plan || state.plan.skipped) {
+    if (!state.plan || !state.plan.skipped) showSetup();
     render();
   } else {
     render();
