@@ -4,3 +4,7 @@ Thumbs.db
 *~
 .vscode/
 .idea/
+
+# 私人数据：开发者本人的训练历史和私人计划实例，不入公开仓库
+_my_private_*.html
+历史动作肌肉贡献数据库_*.xlsx

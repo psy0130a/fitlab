@@ -57,7 +57,29 @@
     <div class="sub">训练时记录 · 周期性复盘</div>
   </header>
 
-  <a class="card" href="fitlab.html" style="border-color:var(--accent); background:var(--accent-light);">
+  <a class="card" href="onboarding.html" id="onboarding-entry" style="border-color:var(--accent); background:var(--accent-light);">
+    <div class="row">
+      <div class="icon">🧭</div>
+      <div>
+        <h2 id="onboarding-title">开始你的训练规划</h2>
+        <p id="onboarding-sub">回答 7 件事 → 生成你专属的训练计划（频率/周期/动作/起步重量）</p>
+      </div>
+      <div class="arrow">›</div>
+    </div>
+  </a>
+
+  <a class="card" href="plan.html" id="plan-entry" style="display:none;">
+    <div class="row">
+      <div class="icon">📋</div>
+      <div>
+        <h2>我的训练计划</h2>
+        <p id="plan-sub">查看为你生成的训练计划详情</p>
+      </div>
+      <div class="arrow">›</div>
+    </div>
+  </a>
+
+  <a class="card" href="fitlab.html">
     <div class="row">
       <div class="icon">🚀</div>
       <div>
@@ -96,17 +118,6 @@
       <div>
         <h2>肌肉图鉴</h2>
         <p>34 块训练肌肉 — 3D 模型 + 解剖位置对照</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="30节课训练计划.html">
-    <div class="row">
-      <div class="icon">🗓️</div>
-      <div>
-        <h2>30 节课训练计划</h2>
-        <p>增肌 · 3 次/周 · 三阶段周期 — 基于历史水平设计</p>
       </div>
       <div class="arrow">›</div>
     </div>
@@ -177,5 +188,33 @@
 
   <footer>始终从同一个网址打开，记录才会连续累积</footer>
 </div>
+<script>
+// 动态：检查 onboarding 是否完成，调整入口卡片
+(function(){
+  try{
+    const raw = localStorage.getItem('fitlab_v1');
+    const obj = raw ? JSON.parse(raw) : {};
+    if(obj.onboarding && obj.onboarding.recommendation_summary){
+      // 已完成：调整 onboarding 入口为"重新答"，显示 plan 入口
+      const ob = document.getElementById('onboarding-title');
+      const obSub = document.getElementById('onboarding-sub');
+      const planEntry = document.getElementById('plan-entry');
+      const planSub = document.getElementById('plan-sub');
+      const obEntry = document.getElementById('onboarding-entry');
+      if(ob) ob.textContent = '重新评估训练规划';
+      if(obSub) obSub.textContent = '再答一次 7 件事，生成新的计划';
+      if(planEntry) planEntry.style.display = 'block';
+      if(obEntry){
+        obEntry.style.borderColor = 'var(--line)';
+        obEntry.style.background = 'var(--paper)';
+      }
+      const s = obj.onboarding.recommendation_summary;
+      if(planSub && s){
+        planSub.textContent = `${s.goal||''} · ${s.experience||''} · ${s.frequency||''} 次/周 · ${s.mesocycle_name||''}`;
+      }
+    }
+  }catch(e){console.warn(e);}
+})();
+</script>
 </body>
 </html>

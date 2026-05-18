@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FitLab Onboarding">
+<meta name="theme-color" content="#b03a2e">
+<title>FitLab · 开始引导</title>
+<style>
+:root{
+  --bg:#faf8f3; --paper:#fff; --paper-2:#fdfaf2;
+  --ink:#1f1d1a; --ink-2:#4a463f; --muted:#8a857a;
+  --line:#e8e3d8; --line-2:#d6cfbe;
+  --accent:#b03a2e; --accent-light:#fbe7e1;
+  --gold:#c08a2e; --soft-yellow:#fff8e3; --soft-blue:#eef3f8; --good:#2d6e3a;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html,body{min-height:100vh;}
+body{
+  background:var(--bg); color:var(--ink); line-height:1.65; font-size:15px;
+  font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  padding:0 0 calc(20px + env(safe-area-inset-bottom)); min-height:100vh;
+}
+.wrap{max-width:540px; margin:0 auto; padding:0 18px;}
+
+/* 顶部进度条 */
+.topbar{
+  position:sticky; top:0; background:var(--bg); padding:18px 18px 14px;
+  border-bottom:1px solid var(--line); z-index:10;
+  max-width:540px; margin:0 auto;
+}
+.topbar .row{display:flex; align-items:center; gap:12px;}
+.back{
+  background:transparent; border:0; color:var(--muted); font-size:14px; cursor:pointer;
+  padding:4px 0;
+}
+.back:hover, .back:active{color:var(--accent);}
+.progress{flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden;}
+.progress .fill{height:100%; background:var(--accent); transition:width .3s;}
+.step-label{font-size:12px; color:var(--muted); white-space:nowrap;}
+
+/* 卡片基础 */
+.card{
+  background:var(--paper); border:1px solid var(--line); border-radius:12px;
+  padding:18px 18px; margin-bottom:12px; cursor:pointer;
+  transition:.15s; position:relative;
+}
+.card:active{background:var(--paper-2);}
+.card.selected{
+  border-color:var(--accent); background:var(--accent-light);
+  box-shadow:0 0 0 1px var(--accent) inset;
+}
+.card h3{font-size:17px; margin-bottom:6px; color:var(--ink);}
+.card .pill{
+  display:inline-block; font-size:11px; padding:2px 8px; border-radius:9px;
+  background:var(--accent-light); color:var(--accent); margin-bottom:6px; font-weight:600;
+  letter-spacing:.5px;
+}
+.card.selected .pill{background:var(--paper);}
+.card p{font-size:13.5px; color:var(--ink-2); line-height:1.65;}
+.card details{margin-top:8px; font-size:13px;}
+.card details summary{
+  color:var(--accent); cursor:pointer; font-weight:500; padding:4px 0;
+  list-style:none; display:flex; align-items:center; gap:4px;
+}
+.card details summary::before{content:'ⓘ '; font-style:normal;}
+.card details[open] summary{margin-bottom:6px;}
+.card details .detail-body{padding:8px 12px; background:var(--paper-2); border-radius:6px; border-left:3px solid var(--accent); color:var(--ink-2); font-size:13px; line-height:1.7;}
+.card details .detail-body b{color:var(--ink);}
+.card details .detail-body em{color:var(--good); font-style:normal; font-weight:600;}
+.card details .detail-body .not-fit{color:var(--accent);}
+
+/* Section 标题 */
+.section-head{margin:20px 0 14px;}
+.section-head h1{font-size:22px; margin-bottom:4px;}
+.section-head .lead{font-size:13.5px; color:var(--muted); line-height:1.7;}
+
+/* 多选 checkbox 卡片 */
+.multi-item{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; margin-bottom:8px; cursor:pointer;
+  display:flex; align-items:center; gap:12px;
+  transition:.15s;
+}
+.multi-item:active{background:var(--paper-2);}
+.multi-item.selected{border-color:var(--accent); background:var(--accent-light);}
+.multi-item .checkbox{
+  width:20px; height:20px; border:2px solid var(--line-2); border-radius:4px;
+  flex:none; display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:#fff;
+}
+.multi-item.selected .checkbox{background:var(--accent); border-color:var(--accent);}
+.multi-item.selected .checkbox::after{content:'✓';}
+.multi-item .label{font-size:14.5px; color:var(--ink);}
+.multi-item.disabled-by-other{opacity:.45; pointer-events:none;}
+
+/* 单选 radio 卡片 */
+.radio-item{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; margin-bottom:8px; cursor:pointer;
+  display:flex; align-items:flex-start; gap:12px;
+  transition:.15s;
+}
+.radio-item:active{background:var(--paper-2);}
+.radio-item.selected{border-color:var(--accent); background:var(--accent-light);}
+.radio-item .radio{
+  width:20px; height:20px; border:2px solid var(--line-2); border-radius:50%;
+  flex:none; display:flex; align-items:center; justify-content:center;
+  margin-top:1px;
+}
+.radio-item.selected .radio{border-color:var(--accent);}
+.radio-item.selected .radio::after{
+  content:''; width:10px; height:10px; border-radius:50%; background:var(--accent);
+}
+.radio-item .label{font-size:14.5px; color:var(--ink); flex:1;}
+.radio-item .label .sub{font-size:12.5px; color:var(--muted); margin-top:2px; line-height:1.5;}
+
+/* 输入框 */
+.form-row{margin-bottom:14px;}
+.form-row label{font-size:13.5px; color:var(--ink-2); display:block; margin-bottom:6px; font-weight:500;}
+.form-row input, .form-row select{
+  width:100%; padding:13px 14px; border:1px solid var(--line);
+  border-radius:9px; font-size:15px; background:var(--paper);
+  font-family:inherit;
+}
+.form-row input:focus, .form-row select:focus{
+  outline:none; border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-light);
+}
+.form-row .hint{font-size:12px; color:var(--muted); margin-top:4px;}
+
+/* 底部 next 按钮 */
+.btn-row{
+  position:sticky; bottom:0; padding:14px 0 calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent, var(--bg) 30%);
+  display:flex; gap:10px;
+}
+.btn{
+  flex:1; padding:14px; border-radius:10px; border:0;
+  font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;
+  transition:.15s;
+}
+.btn-primary{background:var(--accent); color:#fff;}
+.btn-primary:disabled{background:var(--line-2); color:#fff; cursor:not-allowed;}
+.btn-primary:active:not(:disabled){background:#8e2f25;}
+.btn-secondary{background:transparent; color:var(--ink-2); border:1px solid var(--line-2);}
+.btn-secondary:active{background:var(--paper-2);}
+
+/* 边界提示页 */
+.boundary{
+  background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:14px;
+  padding:22px 22px;
+}
+.boundary .emoji{font-size:42px; display:block; margin-bottom:10px;}
+.boundary h2{font-size:19px; margin-bottom:10px; color:#7a5a1f;}
+.boundary p{font-size:14px; color:#7a5a1f; line-height:1.85; margin-bottom:10px;}
+.boundary ul{margin:8px 0 8px 22px; color:#7a5a1f;}
+.boundary li{margin:4px 0;}
+.boundary b{color:#5a4015;}
+
+/* 欢迎页 */
+.welcome{text-align:center; padding:36px 16px 24px;}
+.welcome .brand{font-size:12px; letter-spacing:4px; color:var(--accent); font-weight:700;}
+.welcome h1{font-size:28px; margin:8px 0 12px; letter-spacing:1px;}
+.welcome .lead{font-size:14.5px; color:var(--ink-2); line-height:1.85; margin-bottom:20px;}
+.welcome .steps-preview{
+  background:var(--paper); border:1px solid var(--line); border-radius:12px;
+  padding:18px 22px; text-align:left; margin-bottom:20px;
+}
+.welcome .steps-preview b{font-size:13px; color:var(--accent); letter-spacing:.5px;}
+.welcome .steps-preview ol{margin:8px 0 0 22px; font-size:14px; color:var(--ink-2);}
+.welcome .steps-preview li{margin:4px 0;}
+.welcome .restart-row{margin-top:12px; font-size:13px;}
+.welcome .restart-row button{
+  background:transparent; border:0; color:var(--accent); cursor:pointer;
+  text-decoration:underline; font-size:13px; font-family:inherit;
+}
+
+/* 已完成页 */
+.done{padding:36px 16px 24px; text-align:center;}
+.done h2{font-size:22px; margin:8px 0 14px;}
+.done .summary-box{
+  background:var(--paper); border:1px solid var(--line); border-radius:14px;
+  padding:20px; text-align:left; margin:0 0 18px;
+}
+.done .summary-box .row{display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;}
+.done .summary-box .row:last-child{border:0;}
+.done .summary-box .row .k{color:var(--muted);}
+.done .summary-box .row .v{color:var(--ink); font-weight:600;}
+
+/* 通用 */
+.center{text-align:center;}
+.muted{color:var(--muted);}
+.small{font-size:12px;}
+.spacer{height:14px;}
+.warn-pill{
+  display:inline-block; background:var(--accent-light); color:var(--accent);
+  font-size:11.5px; padding:3px 10px; border-radius:10px; margin-bottom:8px;
+  font-weight:600;
+}
+
+</style>
+</head>
+<body>
+
+<!-- 顶部进度条（动态显示/隐藏） -->
+<div id="topbar" class="topbar" style="display:none;">
+  <div class="row">
+    <button class="back" id="btn-back">← 上一步</button>
+    <div class="progress"><div class="fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="step-label" id="step-label">1/7</span>
+  </div>
+</div>
+
+<!-- 主内容 -->
+<div class="wrap">
+  <main id="main"></main>
+</div>
+
+<script src="fitlab-data.js"></script>
+<script src="plan-engine.js"></script>
+<script>
+/* ================== 状态管理 ================== */
+const STORAGE_KEY = 'fitlab_v1';
+const STATE_KEY = 'onboarding_state';
+
+const TOTAL_STEPS = 7;  // 用户感知的步数（不含欢迎页和结果页）
+
+// 默认 state
+const defaultState = {
+  step: 0,           // 0=welcome, 1-7=步骤, 8=结果
+  answers: {
+    goal: null,
+    q1_known_exercises: [],
+    q2_rir_perception: null,
+    q3_recent_freq: null,
+    q4_returning: null,
+    gender: null,
+    body_weight_kg: null,
+    max_freq_per_week: null,
+    session_duration_min: null,
+    injuries: [],
+    stress_level: null,
+  },
+  bypass_boundary: false,
+  show_q4: false,    // 是否显示题 4
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    if(obj[STATE_KEY]) return Object.assign({}, defaultState, obj[STATE_KEY]);
+  }catch(e){console.warn('loadState failed', e);}
+  return Object.assign({}, defaultState);
+}
+function saveState(state){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    obj[STATE_KEY] = state;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  }catch(e){console.warn('saveState failed', e);}
+}
+
+function loadCompleted(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    return obj.onboarding || null;
+  }catch(e){return null;}
+}
+function saveCompleted(result){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    obj.onboarding = {
+      answers: result.answers,
+      recommendation_summary: {
+        goal: result.recommendation.goal?.name,
+        experience: window.FITLAB_ENGINE.levelName(result.recommendation.experience.level),
+        frequency: result.recommendation.frequency?.times_per_week,
+        total_weeks: result.recommendation.mesocycle?.total_weeks,
+        mesocycle_name: result.recommendation.mesocycle?.name,
+      },
+      completed_at: new Date().toISOString(),
+      version: 1,
+    };
+    obj.profile = {
+      gender: result.answers.gender,
+      body_weight_kg: result.answers.body_weight_kg,
+      injuries: result.answers.injuries,
+    };
+    // 清除 in-progress state
+    delete obj[STATE_KEY];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  }catch(e){console.warn('saveCompleted failed', e);}
+}
+function clearAllOnboarding(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    delete obj[STATE_KEY];
+    delete obj.onboarding;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  }catch(e){}
+}
+
+let state = loadState();
+
+/* ================== 渲染 ================== */
+function render(){
+  saveState(state);
+  const main = document.getElementById('main');
+  const topbar = document.getElementById('topbar');
+  const fill = document.getElementById('progress-fill');
+  const label = document.getElementById('step-label');
+  const backBtn = document.getElementById('btn-back');
+
+  // 顶部进度条显示逻辑
+  if(state.step >= 1 && state.step <= TOTAL_STEPS){
+    topbar.style.display = 'block';
+    fill.style.width = (state.step / TOTAL_STEPS * 100) + '%';
+    label.textContent = `${state.step}/${TOTAL_STEPS}`;
+    backBtn.style.visibility = state.step > 1 ? 'visible' : 'hidden';
+  } else {
+    topbar.style.display = 'none';
+  }
+
+  // 路由
+  if(state.step === -1){ // 已完成
+    main.innerHTML = renderDoneScreen();
+  } else if(state.step === 0){
+    main.innerHTML = renderWelcome();
+  } else if(state.step === 1){
+    main.innerHTML = renderGoal();
+  } else if(state.step === 2){
+    main.innerHTML = renderQ1KnownExercises();
+  } else if(state.step === '2.5-boundary'){
+    main.innerHTML = renderBoundary();
+  } else if(state.step === 3){
+    main.innerHTML = renderQ2Q3RirAndFreq();
+  } else if(state.step === '3.5-q4'){
+    main.innerHTML = renderQ4Returning();
+  } else if(state.step === 4){
+    main.innerHTML = renderGenderWeight();
+  } else if(state.step === 5){
+    main.innerHTML = renderTimeConstraints();
+  } else if(state.step === 6){
+    main.innerHTML = renderInjuries();
+  } else if(state.step === 7){
+    main.innerHTML = renderConfirmAndCompute();
+  }
+
+  attachHandlers();
+  window.scrollTo(0, 0);
+}
+
+/* ================== 各步骤渲染函数 ================== */
+function renderWelcome(){
+  const completed = loadCompleted();
+  if(completed){
+    return `
+      <div class="welcome">
+        <div class="brand">FITLAB · ONBOARDING</div>
+        <h1>欢迎回来</h1>
+        <div class="lead">你已经完成过引导。可以查看上次的推荐，或重新评估。</div>
+        <div class="summary-box" style="background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px 22px; text-align:left; margin-bottom:14px;">
+          <div class="row" style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span class="muted">目标</span><b>${escapeHtml(completed.recommendation_summary.goal||'')}</b></div>
+          <div class="row" style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span class="muted">经验等级</span><b>${escapeHtml(completed.recommendation_summary.experience||'')}</b></div>
+          <div class="row" style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span class="muted">推荐频率</span><b>${escapeHtml(String(completed.recommendation_summary.frequency||'')+' 次/周')}</b></div>
+          <div class="row" style="display:flex; justify-content:space-between; padding:6px 0; font-size:14px;"><span class="muted">Mesocycle</span><b>${escapeHtml(completed.recommendation_summary.mesocycle_name||'')}</b></div>
+        </div>
+        <a href="plan.html" class="btn btn-primary" style="display:block; text-decoration:none; text-align:center;">查看我的计划 →</a>
+        <div class="restart-row" style="margin-top:18px;">
+          <button data-action="restart">重新答（清掉旧推荐）</button>
+        </div>
+      </div>
+    `;
+  }
+  // 中断恢复
+  const hasInProgress = state.step > 0;
+  return `
+    <div class="welcome">
+      <div class="brand">FITLAB · ONBOARDING</div>
+      <h1>开始你的训练规划</h1>
+      <div class="lead">
+        我们会问你 ${TOTAL_STEPS} 件事，然后基于训练科学原理给你一份完整的训练计划——<br>
+        包括<b>每周练几次、一个周期多长、每节课练什么动作、起步重量参考</b>。
+      </div>
+      <div class="steps-preview">
+        <b>会问的 7 件事</b>
+        <ol>
+          <li>你的训练目标（增肌 / 力量 / 减脂 / 维持）</li>
+          <li>你做哪些基础动作熟悉</li>
+          <li>你的 RIR 感知 + 最近 3 个月训练频率</li>
+          <li>性别 + 体重</li>
+          <li>你能投入的频率上限 + 单次时长</li>
+          <li>身体有没有受伤/限制</li>
+          <li>当前生活压力（可选）</li>
+        </ol>
+      </div>
+      <div class="btn-row" style="position:static; padding:0;">
+        ${hasInProgress
+          ? `<button class="btn btn-secondary" data-action="restart">从头开始</button><button class="btn btn-primary" data-action="resume">继续上次（第 ${state.step} 步）</button>`
+          : `<button class="btn btn-primary" data-action="start">开始 →</button>`}
+      </div>
+    </div>
+  `;
+}
+
+function renderGoal(){
+  const cards = [
+    {
+      id:'hypertrophy', tag:'增肌', title:'变壮 · 增肌',
+      lead:'让肌肉变粗变厚，身材更"壮"——胸更厚、肩更圆、腿更粗',
+      detail:`<b>生理本质</b>：肌肉纤维变粗变多，肌肉体积增大。<br>
+              <b>训练特征</b>：中等重量（60-80% 1RM）× 中高次数（6-15 次）× 接近力竭（RIR 0-3）× 大训练量。<br>
+              <em>谁该选</em>：想"变得更壮 / 身材线条更明显"。<br>
+              <span class="not-fit">不该选</span>：想专攻举重大重量；从未做过力量训练（先建议从"力量"路径起步建立基础）。`,
+    },
+    {
+      id:'strength', tag:'力量', title:'变强 · 力量',
+      lead:'让你能举起的最大重量提升（1RM），不一定变壮但能蹲推拉更重',
+      detail:`<b>生理本质</b>：神经系统更高效地驱动肌肉，最大力量 1RM 提升。<br>
+              <b>训练特征</b>：大重量（80-95% 1RM）× 低次数（1-5 次）× 长间歇（3-5 分钟）。<br>
+              <em>谁该选</em>：已经练了一段时间，想冲刺最大重量 / 参加力量举比赛 / 从事需要绝对力量的运动。<br>
+              <span class="not-fit">不该选</span>：第一次接触力量训练（身体还没建立承受大重量的基础）；只关心身材的人。`,
+    },
+    {
+      id:'cutting', tag:'减脂塑形', title:'变瘦 · 减脂塑形',
+      lead:'体脂下降、肌肉保留，视觉上"更瘦更紧致"',
+      detail:`<b>生理本质</b>：体脂下降，肌肉量保留。<b>主要靠饮食赤字</b>，训练的作用是保住肌肉不掉。<br>
+              <b>训练特征</b>：跟增肌类似（中等重量、中高次数），但训练量略降避免过度疲劳；<b>频率反而要高</b>（增加日常热量消耗）。<br>
+              <em>谁该选</em>：体脂偏高（男 >18%、女 >28%），想先减脂再增肌；保持健康体型。<br>
+              <span class="not-fit">不该选</span>：体脂已经很低还想瘦；想增加力量或肌肉量。`,
+    },
+    {
+      id:'maintenance', tag:'维持', title:'保持 · 维持现状',
+      lead:'保留现有的肌肉和力量，不追求进步，最低训练量',
+      detail:`<b>生理本质</b>：保住现有水平，<b>不追求进步</b>。<br>
+              <b>训练特征</b>：每肌群每周 4-8 组就够（仅是增肌期的 1/3-1/2）。McMaster Univ. 研究证明低量足以维持。<br>
+              <em>谁该选</em>：工作/学业很忙；受伤恢复期；增肌减脂之间过渡。<br>
+              <span class="not-fit">不该选</span>：刚开始训练（还没有要"维持"的基础）；想要任何方向进步。`,
+    },
+  ];
+
+  return `
+    <div class="section-head">
+      <h1>你的目标是什么？</h1>
+      <div class="lead">选 1 个最贴近你想要的方向。点 ⓘ 看完整定义。</div>
+    </div>
+    ${cards.map(c => `
+      <div class="card ${state.answers.goal===c.id ? 'selected':''}" data-action="set-goal" data-id="${c.id}">
+        <span class="pill">${c.tag}</span>
+        <h3>${c.title}</h3>
+        <p>${c.lead}</p>
+        <details>
+          <summary>看完整定义</summary>
+          <div class="detail-body">${c.detail}</div>
+        </details>
+      </div>
+    `).join('')}
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next" ${state.answers.goal ? '' : 'disabled'}>下一步 →</button>
+    </div>
+  `;
+}
+
+function renderQ1KnownExercises(){
+  const items = [
+    { id:'squat', label:'杠铃后蹲 / 哑铃高脚杯深蹲' },
+    { id:'hinge', label:'硬拉 / 罗马尼亚硬拉' },
+    { id:'bench', label:'杠铃卧推 / 哑铃平板卧推' },
+    { id:'ohp', label:'杠铃推举 / 哑铃推举' },
+    { id:'pullup', label:'引体向上 / 高位下拉' },
+    { id:'row', label:'划船（杠铃 / 哑铃 / 坐姿）' },
+  ];
+  const selected = new Set(state.answers.q1_known_exercises || []);
+  const isNone = selected.has('none');
+
+  return `
+    <div class="section-head">
+      <h1>你能独立做哪些动作？</h1>
+      <div class="lead">这是力量训练的 6 大基础模式。"独立做" = 能完成 + 知道哪里发力 + 不需要别人盯着。可多选。</div>
+    </div>
+    ${items.map(it => `
+      <div class="multi-item ${selected.has(it.id) ? 'selected':''} ${isNone ? 'disabled-by-other':''}" data-action="toggle-q1" data-id="${it.id}">
+        <div class="checkbox"></div>
+        <div class="label">${it.label}</div>
+      </div>
+    `).join('')}
+    <div class="multi-item ${isNone ? 'selected':''}" data-action="toggle-q1" data-id="none" style="margin-top:14px;">
+      <div class="checkbox"></div>
+      <div class="label">一个都不太熟</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next" ${(selected.size===0) ? 'disabled':''}>下一步 →</button>
+    </div>
+  `;
+}
+
+function renderBoundary(){
+  return `
+    <div class="section-head">
+      <h1>需要先建立动作基础</h1>
+    </div>
+    <div class="boundary">
+      <span class="emoji">🛠️</span>
+      <h2>FitLab 不教动作</h2>
+      <p>你刚才说基础动作都不熟。FitLab 的所有计划都<b>假设你能独立完成基础力量动作</b>——它解决的是"练什么、练多久、加多重"，不是"怎么做这个动作"。</p>
+      <p><b>建议路径</b>：</p>
+      <ul>
+        <li>线下找专业场馆上 <b>5-10 节私教课</b>，把杠铃 5 大动作（蹲/硬拉/卧推/推举/划船 + 引体）的动作模式学下来</li>
+        <li>同时多看 YouTube 上 <b>Squat University / Athlean-X / Jeff Nippard</b> 的动作教学视频</li>
+        <li>等你能"独立完成 + 知道哪里发力"，再回来用 FitLab 规划完整训练</li>
+      </ul>
+      <p>这样做的原因：动作做错的训练 = 浪费时间 + 增加受伤风险。先解决"做对"，再谈"练多少"。</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="card" style="background:var(--soft-blue); border-color:#c5d4e3;">
+      <h3 style="color:var(--ink); font-size:15px;">还是想看 FitLab 会怎么推荐？</h3>
+      <p style="font-size:13px;">理解你想了解产品。可以继续完成 onboarding 看推荐结果，但我们仍然建议你先把动作学了再实际开练。</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" data-action="back">← 返回修改</button>
+      <button class="btn btn-primary" data-action="bypass-boundary">还是继续 →</button>
+    </div>
+  `;
+}
+
+function renderQ2Q3RirAndFreq(){
+  const rirOptions = [
+    { id:'high', label:'能，RIR 是我训练里常用的概念', sub:'明确知道每组"还能再做几次"' },
+    { id:'mid', label:'大概能，但不太确定准不准', sub:'有概念但不太敢说精确' },
+    { id:'low', label:'不太能，经常做到力竭才知道', sub:'通常要做不动了才停' },
+    { id:'unknown', label:'RIR 是什么？', sub:'没接触过这个词' },
+  ];
+  const freqOptions = [
+    { id:0, label:'0 次（没在练或刚开始）' },
+    { id:1.5, label:'1-2 次' },
+    { id:3, label:'3 次' },
+    { id:4.5, label:'4-5 次' },
+    { id:6, label:'6+ 次' },
+  ];
+
+  return `
+    <div class="section-head">
+      <h1>关于训练习惯</h1>
+      <div class="lead">两个小问题，回答完点下一步。</div>
+    </div>
+
+    <h3 style="font-size:15.5px; margin:12px 0 8px; color:var(--ink);">① 训练时你能不能准确判断 RIR？</h3>
+    <p class="small muted" style="margin-bottom:10px; line-height:1.6;">RIR = Reps in Reserve（余力次数）。"做完这组还能再做几次"——这是肌肥大训练里所有进阶规则的依据。</p>
+    ${rirOptions.map(o => `
+      <div class="radio-item ${state.answers.q2_rir_perception===o.id ? 'selected':''}" data-action="set-q2" data-id="${o.id}">
+        <div class="radio"></div>
+        <div class="label">${o.label}<div class="sub">${o.sub}</div></div>
+      </div>
+    `).join('')}
+
+    <h3 style="font-size:15.5px; margin:22px 0 8px; color:var(--ink);">② 最近 3 个月，你平均每周做几次力量训练？</h3>
+    <p class="small muted" style="margin-bottom:10px; line-height:1.6;">不算跑步、瑜伽、球类。只算针对肌肉的力量训练。</p>
+    ${freqOptions.map(o => `
+      <div class="radio-item ${state.answers.q3_recent_freq===o.id ? 'selected':''}" data-action="set-q3" data-id="${o.id}">
+        <div class="radio"></div>
+        <div class="label">${o.label}</div>
+      </div>
+    `).join('')}
+
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next-q2q3"
+        ${(state.answers.q2_rir_perception && state.answers.q3_recent_freq !== null) ? '' : 'disabled'}>
+        下一步 →
+      </button>
+    </div>
+  `;
+}
+
+function renderQ4Returning(){
+  // 仅在题 3 = 0 且题 1 选 ≥ 3 个动作时触发
+  const opts = [
+    { id:'never', label:'没有，从来没有过持续训练' },
+    { id:'paused-3m+', label:'有，但已停训 3 个月以上' },
+    { id:'still-training', label:'有，目前还在训练' },
+  ];
+  return `
+    <div class="section-head">
+      <h1>你过去有过持续训练吗？</h1>
+      <div class="lead">系统注意到你最近没练但动作很熟——可能是中断回归型用户。这种情况我们的计划会做调整（动作熟悉度 + 新手起步重量的组合）。</div>
+    </div>
+    ${opts.map(o => `
+      <div class="radio-item ${state.answers.q4_returning===o.id ? 'selected':''}" data-action="set-q4" data-id="${o.id}">
+        <div class="radio"></div>
+        <div class="label">${o.label}</div>
+      </div>
+    `).join('')}
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next" ${state.answers.q4_returning ? '' : 'disabled'}>下一步 →</button>
+    </div>
+  `;
+}
+
+function renderGenderWeight(){
+  return `
+    <div class="section-head">
+      <h1>基本信息</h1>
+      <div class="lead">这两项用来推算每个动作的起步重量参考（按性别 × 体重 × 经验等级查表）。</div>
+    </div>
+
+    <div class="form-row">
+      <label>性别</label>
+      ${['male','female'].map(g => `
+        <div class="radio-item ${state.answers.gender===g ? 'selected':''}" data-action="set-gender" data-id="${g}" style="margin-bottom:6px;">
+          <div class="radio"></div>
+          <div class="label">${g==='male' ? '男' : '女'}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="form-row">
+      <label>体重（kg）</label>
+      <input type="number" inputmode="decimal" id="input-weight" min="30" max="200" step="0.5"
+        value="${state.answers.body_weight_kg || ''}" placeholder="如 70" />
+      <div class="hint">用来按你的体重比例算起步重量</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next-gender-weight"
+        ${(state.answers.gender && state.answers.body_weight_kg) ? '' : 'disabled'}>
+        下一步 →
+      </button>
+    </div>
+  `;
+}
+
+function renderTimeConstraints(){
+  const freqs = [
+    { id:2, label:'最多 2 次/周', sub:'每次需覆盖全身' },
+    { id:3, label:'最多 3 次/周', sub:'经典分化' },
+    { id:4, label:'最多 4 次/周', sub:'上下分化' },
+    { id:5, label:'最多 5 次/周', sub:'推拉腿' },
+    { id:6, label:'6+ 次/周', sub:'按 5 次安排' },
+  ];
+  const durations = [
+    { id:30, label:'30 分钟以内', sub:'频率会自动 +1' },
+    { id:45, label:'45 分钟左右' },
+    { id:60, label:'60 分钟左右', sub:'标准' },
+    { id:75, label:'75 分钟左右' },
+    { id:90, label:'90 分钟以上', sub:'后期皮质醇升高，超 75 分钟收益递减' },
+  ];
+
+  return `
+    <div class="section-head">
+      <h1>你能投入多少时间？</h1>
+      <div class="lead">告诉我们你的<b>上限</b>，系统会基于训练科学给你<b>建议值</b>（可能比上限少）。</div>
+    </div>
+
+    <h3 style="font-size:15.5px; margin:12px 0 8px;">每周可投入次数（上限）</h3>
+    ${freqs.map(o => `
+      <div class="radio-item ${state.answers.max_freq_per_week===o.id ? 'selected':''}" data-action="set-max-freq" data-id="${o.id}">
+        <div class="radio"></div>
+        <div class="label">${o.label}${o.sub?`<div class="sub">${o.sub}</div>`:''}</div>
+      </div>
+    `).join('')}
+
+    <h3 style="font-size:15.5px; margin:22px 0 8px;">每次训练时长（上限）</h3>
+    ${durations.map(o => `
+      <div class="radio-item ${state.answers.session_duration_min===o.id ? 'selected':''}" data-action="set-duration" data-id="${o.id}">
+        <div class="radio"></div>
+        <div class="label">${o.label}${o.sub?`<div class="sub">${o.sub}</div>`:''}</div>
+      </div>
+    `).join('')}
+
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next"
+        ${(state.answers.max_freq_per_week && state.answers.session_duration_min) ? '' : 'disabled'}>
+        下一步 →
+      </button>
+    </div>
+  `;
+}
+
+function renderInjuries(){
+  const items = [
+    { id:'lower-back', label:'腰部', sub:'会替换硬拉、俯身划船等屈髋负重' },
+    { id:'knee', label:'膝盖', sub:'会替换深蹲、弓步等屈膝负重' },
+    { id:'shoulder', label:'肩膀', sub:'会替换推举、卧推等肩负重' },
+    { id:'elbow', label:'肘部', sub:'会避免大重量推/拉' },
+    { id:'wrist', label:'手腕', sub:'会避免负重支撑动作' },
+  ];
+  const stressOpts = [
+    { id:'low', label:'低（睡眠规律、工作不紧）' },
+    { id:'mid', label:'中（一般）' },
+    { id:'high', label:'高（最近压力大、睡得少）', sub:'mesocycle 会缩短 2 周' },
+  ];
+  const selected = new Set(state.answers.injuries || []);
+
+  return `
+    <div class="section-head">
+      <h1>身体限制（最后两个）</h1>
+      <div class="lead">系统会避开会触发不适的动作。</div>
+    </div>
+
+    <h3 style="font-size:15.5px; margin:12px 0 8px;">受伤/不适部位（可多选，没有就跳过）</h3>
+    ${items.map(it => `
+      <div class="multi-item ${selected.has(it.id) ? 'selected':''}" data-action="toggle-injury" data-id="${it.id}">
+        <div class="checkbox"></div>
+        <div class="label">${it.label}<div class="sub" style="font-size:12px; color:var(--muted); margin-top:2px;">${it.sub}</div></div>
+      </div>
+    `).join('')}
+
+    <h3 style="font-size:15.5px; margin:22px 0 8px;">当前生活压力（可选）</h3>
+    ${stressOpts.map(o => `
+      <div class="radio-item ${state.answers.stress_level===o.id ? 'selected':''}" data-action="set-stress" data-id="${o.id}">
+        <div class="radio"></div>
+        <div class="label">${o.label}${o.sub?`<div class="sub">${o.sub}</div>`:''}</div>
+      </div>
+    `).join('')}
+
+    <div class="btn-row">
+      <button class="btn btn-primary" data-action="next">下一步 →</button>
+    </div>
+  `;
+}
+
+function renderConfirmAndCompute(){
+  const a = state.answers;
+  return `
+    <div class="section-head">
+      <h1>确认你的回答</h1>
+      <div class="lead">下面是我们要拿来计算你计划的所有 input。确认无误就生成计划。</div>
+    </div>
+    <div class="card" style="cursor:default; background:var(--paper);">
+      <div style="font-size:13.5px; line-height:2;">
+        <div><span class="muted">目标：</span><b>${getGoalName(a.goal)}</b></div>
+        <div><span class="muted">熟悉的动作：</span><b>${(a.q1_known_exercises||[]).filter(x=>x!=='none').length} 个</b></div>
+        <div><span class="muted">RIR 感知：</span><b>${describeQ2(a.q2_rir_perception)}</b></div>
+        <div><span class="muted">最近 3 月频率：</span><b>${describeQ3(a.q3_recent_freq)}</b></div>
+        ${a.q4_returning?`<div><span class="muted">中断回归：</span><b>${describeQ4(a.q4_returning)}</b></div>`:''}
+        <div><span class="muted">性别 / 体重：</span><b>${a.gender==='male'?'男':'女'} / ${a.body_weight_kg} kg</b></div>
+        <div><span class="muted">每周训练上限 / 单次时长上限：</span><b>${a.max_freq_per_week} 次 · ${a.session_duration_min} 分钟</b></div>
+        <div><span class="muted">伤病：</span><b>${(a.injuries&&a.injuries.length)?a.injuries.map(i=>describeInjury(i)).join(' / '):'无'}</b></div>
+        <div><span class="muted">生活压力：</span><b>${describeStress(a.stress_level)}</b></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" data-action="back">← 修改</button>
+      <button class="btn btn-primary" data-action="generate">生成我的计划 →</button>
+    </div>
+  `;
+}
+
+/* ================== 辅助文案 ================== */
+function getGoalName(g){return ({hypertrophy:'变壮·增肌',strength:'变强·力量',cutting:'变瘦·减脂塑形',maintenance:'保持·维持'})[g]||'';}
+function describeQ2(q){return ({high:'感知准',mid:'大致能',low:'不太能',unknown:'没接触过 RIR'})[q]||'-';}
+function describeQ3(q){
+  if(q===0) return '0 次';
+  if(q===1.5) return '1-2 次/周';
+  if(q===3) return '3 次/周';
+  if(q===4.5) return '4-5 次/周';
+  if(q===6) return '6+ 次/周';
+  return '-';
+}
+function describeQ4(q){return ({never:'没有过',['paused-3m+']:'有，停训 3 个月以上','still-training':'还在训练'})[q]||'-';}
+function describeInjury(i){return ({['lower-back']:'腰',knee:'膝',shoulder:'肩',elbow:'肘',wrist:'腕'})[i]||i;}
+function describeStress(s){return ({low:'低',mid:'中',high:'高'})[s]||'-';}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({['&']:'&amp;',['<']:'&lt;',['>']:'&gt;',['"']:'&quot;',["'"]:'&#39;'})[c]);}
+
+/* ================== 事件处理 ================== */
+function attachHandlers(){
+  document.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', handleAction);
+  });
+  // 体重 input 即时同步到 state，让 Next 按钮 enable
+  const wInput = document.getElementById('input-weight');
+  if(wInput){
+    wInput.addEventListener('input', () => {
+      const v = parseFloat(wInput.value);
+      if(v && v >= 30 && v <= 200){
+        state.answers.body_weight_kg = v;
+      } else {
+        state.answers.body_weight_kg = null;
+      }
+      // 即时更新 Next 按钮 disabled 状态（不重新 render 避免输入光标跳出）
+      const btn = document.querySelector('[data-action="next-gender-weight"]');
+      if(btn) btn.disabled = !(state.answers.gender && state.answers.body_weight_kg);
+      saveState(state);
+    });
+  }
+}
+
+function handleAction(e){
+  const el = e.currentTarget;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+
+  switch(action){
+    case 'start':
+      state.step = 1;
+      render();
+      break;
+    case 'resume':
+      // step 已是上次的进度，直接 render
+      render();
+      break;
+    case 'restart':
+      clearAllOnboarding();
+      state = Object.assign({}, defaultState);
+      state.step = 1;
+      render();
+      break;
+    case 'set-goal':
+      state.answers.goal = id;
+      render();
+      break;
+    case 'toggle-q1':
+      toggleQ1(id);
+      render();
+      break;
+    case 'bypass-boundary':
+      state.bypass_boundary = true;
+      state.step = 3;
+      render();
+      break;
+    case 'back':
+      goBack();
+      break;
+    case 'next':
+      goNext();
+      break;
+    case 'set-q2':
+      state.answers.q2_rir_perception = id;
+      render();
+      break;
+    case 'set-q3':
+      state.answers.q3_recent_freq = parseFloat(id);
+      render();
+      break;
+    case 'next-q2q3':
+      // 是否触发题 4
+      const known = (state.answers.q1_known_exercises || []).filter(x=>x!=='none');
+      if(state.answers.q3_recent_freq === 0 && known.length >= 3){
+        state.show_q4 = true;
+        state.step = '3.5-q4';
+      } else {
+        state.step = 4;
+      }
+      render();
+      break;
+    case 'set-q4':
+      state.answers.q4_returning = id;
+      render();
+      break;
+    case 'set-gender':
+      state.answers.gender = id;
+      render();
+      break;
+    case 'next-gender-weight':
+      const w = parseFloat(document.getElementById('input-weight').value);
+      if(!w || w < 30 || w > 200){
+        alert('请输入有效体重（30-200 kg）');
+        return;
+      }
+      state.answers.body_weight_kg = w;
+      state.step = 5;
+      render();
+      break;
+    case 'set-max-freq':
+      state.answers.max_freq_per_week = parseInt(id);
+      render();
+      break;
+    case 'set-duration':
+      state.answers.session_duration_min = parseInt(id);
+      render();
+      break;
+    case 'toggle-injury':
+      const injuries = state.answers.injuries || [];
+      const idx = injuries.indexOf(id);
+      if(idx >= 0) injuries.splice(idx, 1);
+      else injuries.push(id);
+      state.answers.injuries = injuries;
+      render();
+      break;
+    case 'set-stress':
+      state.answers.stress_level = id;
+      render();
+      break;
+    case 'generate':
+      doGenerate();
+      break;
+  }
+}
+
+function toggleQ1(id){
+  const arr = state.answers.q1_known_exercises || [];
+  if(id === 'none'){
+    state.answers.q1_known_exercises = arr.includes('none') ? [] : ['none'];
+  } else {
+    if(arr.includes('none')) return;
+    const idx = arr.indexOf(id);
+    if(idx >= 0) arr.splice(idx, 1);
+    else arr.push(id);
+    state.answers.q1_known_exercises = arr;
+  }
+}
+
+function goNext(){
+  if(state.step === 1){
+    state.step = 2;
+  } else if(state.step === 2){
+    // 检测边界
+    const arr = state.answers.q1_known_exercises || [];
+    if(arr.includes('none') && !state.bypass_boundary){
+      state.step = '2.5-boundary';
+    } else {
+      state.step = 3;
+    }
+  } else if(state.step === '3.5-q4'){
+    state.step = 4;
+  } else if(state.step === 6){
+    state.step = 7;
+  } else if(typeof state.step === 'number'){
+    state.step++;
+  }
+  render();
+}
+
+function goBack(){
+  if(state.step === '2.5-boundary'){
+    state.bypass_boundary = false;
+    state.step = 2;
+  } else if(state.step === '3.5-q4'){
+    state.step = 3;
+  } else if(state.step === 4 && state.show_q4){
+    state.step = '3.5-q4';
+  } else if(state.step === 7){
+    state.step = 6;
+  } else if(typeof state.step === 'number'){
+    state.step--;
+  }
+  render();
+}
+
+function doGenerate(){
+  // 调用 engine
+  const recommendation = window.FITLAB_ENGINE.computeRecommendation(state.answers);
+  // 保存完整答案 + 推荐摘要
+  saveCompleted({
+    answers: state.answers,
+    recommendation,
+  });
+  // 跳计划页
+  window.location.href = 'plan.html';
+}
+
+/* ================== 启动 ================== */
+document.getElementById('btn-back').addEventListener('click', goBack);
+render();
+</script>
+</body>
+</html>
