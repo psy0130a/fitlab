@@ -469,6 +469,80 @@ function rirForWeek(plan, week) {
   return phase.prescription.rir || '2-3';
 }
 
+// 实时重算 onboarding 推荐结果（带原理 / 冲突说明等元数据）
+// 用于"计划设计说明"区域展示"为什么这样设计"
+function getCurrentRecommendation() {
+  try {
+    const obj = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
+    if (!obj.onboarding || !obj.onboarding.answers) return null;
+    if (!window.FITLAB_ENGINE) return null;
+    const rec = window.FITLAB_ENGINE.computeRecommendation(obj.onboarding.answers);
+    return rec && !rec.is_boundary ? rec : null;
+  } catch(e) { return null; }
+}
+
+// 肌群英文 → 中文
+function muscleZh(m){
+  const map = {
+    'quadriceps':'股四头肌', 'glutes':'臀大肌', 'hamstrings':'腘绳肌', 'erector':'竖脊肌', 'adductors':'内收肌',
+    'core':'核心', 'upper-back':'上背', 'chest':'胸大肌', 'chest-upper':'上胸',
+    'delt-front':'三角肌前束','delt-mid':'三角肌中束','delt-rear':'三角肌后束',
+    'triceps':'肱三头肌','biceps':'肱二头肌','forearms':'前臂',
+    'back-lat':'背阔肌','back-rhomboid':'菱形肌','rotator-cuff':'肩袖',
+    'glute-med':'臀中肌','abs':'腹直肌','obliques':'腹斜肌',
+    'calves':'小腿','hip-flexors':'髋屈肌',
+  };
+  return map[m] || m;
+}
+
+// 算"一周内每个肌群被多少不同 session 刺激"——评估肌群覆盖平衡性
+// 增肌科学下限：每个目标肌群每周 ≥ 2 次刺激（Schoenfeld 2016）
+function computeMuscleCoverage(plan){
+  const hits = {};  // muscle → { times: N, in: [course_id, ...] }
+  plan.cached_sessions.forEach(sess => {
+    const seenInSession = new Set();
+    sess.slots.forEach(slot => {
+      if (!slot.exercise) return;
+      (slot.exercise.primary || []).forEach(m => {
+        if (seenInSession.has(m)) return;
+        seenInSession.add(m);
+        hits[m] = hits[m] || { times: 0, in: [] };
+        hits[m].times++;
+        hits[m].in.push(sess.id);
+      });
+    });
+  });
+  return hits;
+}
+
+// 进阶规则文案（按目标）
+function progressionTipsFor(goalId){
+  const tips = {
+    'hypertrophy': [
+      '主复合动作每周 <b>+2.5kg 或 +1-2 次</b>（哪个更稳定就先加哪个）',
+      '能干净做完次数上限（如 6-12 中的 12 次），下次加 2.5kg',
+      '加不动重量、做不到次数上限，<b>保持原重量把组做满</b>，下周再尝试加',
+      '连续 2 周完全没进步 → 检查睡眠/营养/压力；考虑提前进入减载',
+    ],
+    'strength': [
+      '每次训练给主动作 +2.5kg（新手）/ 每周 +2.5kg（中级）',
+      '加不上去 → 减负重 10%，重做 2-3 周再尝试',
+      '强度日做不动 1RM 的 85%+ → 进入减载',
+    ],
+    'cutting': [
+      '<b>强度优先</b>。能掉训练量不掉强度：先掉组数（3→2），再掉次数，最后才掉重量',
+      '体重下降速度 0.5-1% 体重/周 = 健康赤字',
+      '一周训练量掉了 30% 但身材改善依然 → 算成功',
+    ],
+    'maintenance': [
+      '保持当前重量，不强求进步',
+      '感到疲劳/没动力 → 直接减组数',
+      '需要恢复进步 → 切换到"增肌"目标重做 onboarding',
+    ],
+  };
+  return tips[goalId] || tips.hypertrophy;
+}
+
 // 算"今天是计划的第几节"——按 sessions_per_week 均匀分布到一周内
 function currentSession(plan) {
   if (!plan || !plan.startDate) return null;
@@ -703,6 +777,110 @@ route('plan', () => {
         </div>`).join('') || '<div class="list-item single"><div class="lbl meta">已是最后阶段</div></div>';
       })()}
     </div>` : ''}
+
+    ${(() => {
+      const rec = getCurrentRecommendation();
+      if (!rec) return '';
+      const coverage = computeMuscleCoverage(plan);
+      const tips = progressionTipsFor(plan.goal_id);
+      // 把肌群按"覆盖次数"排序：覆盖少的（≤1）排前面（提示用户哪些可能不足）
+      const coverageList = Object.entries(coverage).sort((a,b) => a[1].times - b[1].times);
+      return `
+    <div class="sec-h">计划设计说明 · 为什么这样练</div>
+
+    <div class="card">
+      <div style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--accent);">① 我们怎么定下这个计划的</div>
+      <table style="font-size:13px; width:100%; line-height:1.7;">
+        <tr><td style="width:90px; color:var(--muted);"><b>你的档位</b></td><td>${window.FITLAB_ENGINE.levelName(rec.experience.level)} · ${rec.goal.name}</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px;"><b>判定依据</b></td><td style="padding-top:6px;">${rec.experience.reason}</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px;"><b>推荐频率</b></td><td style="padding-top:6px;">${rec.frequency.times_per_week} 次/周（${rec.frequency.optimal_range}）</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px; vertical-align:top;"><b>为什么</b></td><td style="padding-top:6px; color:var(--ink-2);">${rec.frequency.reason}</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px;"><b>周期长度</b></td><td style="padding-top:6px;">${plan.is_indefinite ? '无限循环' : plan.total_weeks + ' 周'}</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px; vertical-align:top;"><b>为什么</b></td><td style="padding-top:6px; color:var(--ink-2);">${rec.mesocycle.rationale}</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px;"><b>课型分化</b></td><td style="padding-top:6px;">${rec.split.name}</td></tr>
+        <tr><td style="color:var(--muted); padding-top:6px; vertical-align:top;"><b>为什么</b></td><td style="padding-top:6px; color:var(--ink-2);">${rec.split.rationale}</td></tr>
+      </table>
+      ${rec.frequency.conflict_note ? `<div style="background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:6px; padding:10px 12px; margin-top:10px; color:#7a5a1f; font-size:12.5px;">${rec.frequency.conflict_note}</div>` : ''}
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--accent);">② 分阶段练什么、练到什么程度</div>
+      <table style="font-size:12.5px; width:100%; border-collapse:collapse;">
+        <thead><tr style="background:var(--paper-2);">
+          <th style="text-align:left; padding:6px 8px;">阶段</th>
+          <th style="text-align:left; padding:6px 8px;">周次</th>
+          <th style="text-align:left; padding:6px 8px;">组数</th>
+          <th style="text-align:left; padding:6px 8px;">次数</th>
+          <th style="text-align:left; padding:6px 8px;">RIR</th>
+        </tr></thead>
+        <tbody>
+        ${plan.phases.map(p => {
+          const pr = p.prescription || {};
+          const weeks = Array.isArray(p.weeks) ? (p.weeks.length === 1 ? 'W'+p.weeks[0] : 'W'+p.weeks[0]+'-W'+p.weeks[p.weeks.length-1]) : p.weeks;
+          const sets = pr.sets_per_main + (pr.sets_per_isolation ? '/'+pr.sets_per_isolation : '');
+          const reps = pr.reps_main + (pr.reps_isolation && pr.reps_isolation !== pr.reps_main ? '/'+pr.reps_isolation : '');
+          return `<tr style="border-top:1px solid var(--line);">
+            <td style="padding:6px 8px;"><b>${p.name}</b></td>
+            <td style="padding:6px 8px;">${weeks}</td>
+            <td style="padding:6px 8px;">${sets}</td>
+            <td style="padding:6px 8px;">${reps}</td>
+            <td style="padding:6px 8px;">${pr.rir || '-'}</td>
+          </tr>
+          <tr><td colspan="5" style="padding:0 8px 8px; color:var(--muted); font-size:11.5px;">${p.focus || ''}${pr.progression ? ' · 进阶：'+pr.progression : ''}</td></tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+      <div class="meta" style="margin-top:6px; font-size:11.5px;">组数列：主复合动作/孤立动作 · 次数列同</div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--accent);">③ 这周每块主肌群被刺激几次（平衡性）</div>
+      <div class="meta" style="margin-bottom:10px; font-size:12px;">增肌科学下限：<b>每个目标肌群每周 ≥ 2 次</b>（Schoenfeld 2016 元分析）。少于 2 次的提示在最上面。</div>
+      <table style="font-size:12.5px; width:100%; border-collapse:collapse;">
+        ${coverageList.map(([m, info]) => {
+          const status = info.times >= 2 ? '✅' : (info.times === 1 ? '⚠️' : '🔴');
+          const cls = info.times >= 2 ? 'color:var(--good);' : (info.times === 1 ? 'color:var(--gold);' : 'color:var(--accent);');
+          return `<tr style="border-top:1px solid var(--line);">
+            <td style="padding:6px 8px; ${cls}"><b>${status} ${muscleZh(m)}</b></td>
+            <td style="padding:6px 8px; text-align:right;">${info.times} 次/周</td>
+            <td style="padding:6px 8px; color:var(--muted);">${info.in.map(id => '课型 '+id).join(', ')}</td>
+          </tr>`;
+        }).join('')}
+      </table>
+      <div class="meta" style="margin-top:8px; font-size:11.5px;">仅统计每个动作的"主训"肌群。"协同"肌群额外受刺激不在表内。</div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--accent);">④ 每周怎么"加"——进阶规则</div>
+      <ul style="margin:6px 0 4px 22px; font-size:13px; color:var(--ink-2); line-height:1.85;">
+        ${tips.map(t => `<li>${t}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px; font-weight:700; margin-bottom:8px; color:var(--accent);">⑤ 起步重量这事</div>
+      <div style="font-size:13px; color:var(--ink-2); line-height:1.85;">
+        <p><b>每个动作的起步重量是<u>参考</u>，不是命令。</b></p>
+        <ol style="margin:8px 0 8px 22px;">
+          <li>第 1 次做每个动作，按 <b>"能干净完成 + 还留 3-4 次余力（RIR 3-4）"</b> 来微调</li>
+          <li>比参考值轻或重都正常。每个人杠杆/技术/力量水平不同</li>
+          <li><b>实际用的重量记进训练日志</b>，那才是你真正的基线</li>
+          <li>后面所有 +2.5kg / +1-2 次的进阶都从真基线往上走</li>
+        </ol>
+        <p style="font-size:11.5px; color:var(--muted); margin-top:6px;">起步重量参考来自 <b>StrengthLevel.com</b> 公开统计 · 按你性别(${plan.cached_sessions[0]?.slots[0]?.start_load ? '已填' : '-'}) × 体重 × 经验等级查表 · 取 1RM 的 60-65%</p>
+      </div>
+    </div>
+
+    <a class="card" href="plan.html" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit;">
+      <div style="font-size:24px;">📋</div>
+      <div style="flex:1;">
+        <div style="font-weight:700; color:var(--ink);">看完整计划详情页</div>
+        <div class="meta" style="font-size:12px;">每节课的动作 + 起步重量 + 完整原理</div>
+      </div>
+      <div style="color:var(--accent); font-size:20px;">›</div>
+    </a>
+    `;
+    })()}
 
     <div class="sec-h">入口</div>
     <div class="list-group">
