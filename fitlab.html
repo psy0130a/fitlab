@@ -328,7 +328,14 @@ function saveState() {
   } catch(e){}
 }
 
-function today() { return new Date().toISOString().slice(0,10); }
+function today() {
+  // 用本地时区的"今天"，避免 toISOString() 在凌晨/接近半夜时返回 UTC 日期，
+  // 导致 startDate 跟用户本地认知差一天
+  const d = new Date();
+  return d.getFullYear() + '-' +
+         String(d.getMonth()+1).padStart(2, '0') + '-' +
+         String(d.getDate()).padStart(2, '0');
+}
 
 //=================================================================
 // 2. 计划 · 从 onboarding 动态生成（无任何硬编码用户数据）
@@ -705,7 +712,9 @@ route('plan', () => {
       <div class="scr-head"><h1>计划</h1></div>
       <div class="card gold">
         <div class="title">计划还没开始</div>
-        <div class="meta">距离 W1 第 1 节还有 ${cur && cur.daysUntil ? cur.daysUntil : '?'} 天</div>
+        <div class="meta">起始日设的是 <b>${plan.startDate}</b>，距离 W1 第 1 节还有 ${cur && cur.daysUntil ? cur.daysUntil : '?'} 天</div>
+        <button class="btn" style="margin-top:14px;" onclick="state.plan.startDate=today();saveState();render();">立即开始 · 用今天作为起始日</button>
+        <button class="btn secondary" style="margin-top:8px;" onclick="showSetup()">改起始日 →</button>
       </div>
     </div>`;
   }
