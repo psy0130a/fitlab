@@ -1442,7 +1442,25 @@ function init() {
     setTimeout(init, 100);
     return;
   }
-  // First time or skipped/cleared? Show setup
+
+  // 刚完成 onboarding 跳过来 → 自动用今天激活计划（避免 setup overlay 卡住用户）
+  try {
+    if (state.pending_auto_activate && state.onboarding && state.onboarding.answers) {
+      // 同时清 state 和 LS 里的 flag（saveState 会用 state 整个覆盖 LS）
+      delete state.pending_auto_activate;
+      saveState();
+      // 只在尚未激活时才激活，避免重复打开 fitlab.html 重置起始日期
+      if (!state.plan || !state.plan.cached_sessions) {
+        if (activatePlan(today())) {
+          render();
+          return;
+        }
+        // 激活失败（boundary 等），落回 setup overlay
+      }
+    }
+  } catch(e) { console.warn('auto-activate failed', e); }
+
+  // 没 plan 或被 skipped → 走 setup overlay 引导
   if (!state.plan || state.plan.skipped) {
     if (!state.plan || !state.plan.skipped) showSetup();
     render();

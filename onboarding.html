@@ -968,7 +968,14 @@ function doGenerate(){
     answers: state.answers,
     recommendation,
   });
-  // 跳 FitLab App（3-tab）的计划首屏；用户首次进会被 showSetup 引导激活计划
+  // 标记"等待自动激活"，fitlab.html init 会自动用今天作为起始日期激活计划
+  // 避免用户被 setup overlay 卡住、关掉后看到空计划页
+  try {
+    const obj = JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+    obj.pending_auto_activate = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  } catch(e) { console.warn('mark pending_auto_activate failed', e); }
+  // 跳 FitLab App（3-tab）的计划首屏；init 检测到 flag 会自动激活
   window.location.href = 'fitlab.html';
 }
 
