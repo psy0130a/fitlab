@@ -4,217 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="健身系统">
+<meta name="apple-mobile-web-app-title" content="FitLab">
 <meta name="theme-color" content="#b03a2e">
-<title>健身系统</title>
+<meta http-equiv="refresh" content="0; url=fitlab.html">
+<link rel="manifest" href="fitlab-manifest.json">
+<title>FitLab</title>
 <style>
-  :root{
-    --bg:#faf8f3; --paper:#fff; --ink:#1f1d1a; --ink-2:#4a463f;
-    --muted:#8a857a; --line:#e8e2d4; --accent:#b03a2e; --accent-light:#fbe7e1;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--bg); color:var(--ink); line-height:1.7;
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-    min-height:100vh; padding:32px 20px calc(32px + env(safe-area-inset-bottom));
-    display:flex; flex-direction:column; align-items:center;
-  }
-  .wrap{width:100%; max-width:440px;}
-  header{text-align:center; margin-bottom:28px;}
-  .brand{font-size:13px; letter-spacing:4px; color:var(--accent); font-weight:700;}
-  h1{font-size:25px; margin-top:6px; letter-spacing:1px;}
-  .sub{font-size:13px; color:var(--muted); margin-top:4px;}
-  a.card{
-    display:block; text-decoration:none; color:inherit;
-    background:var(--paper); border:1px solid var(--line); border-radius:16px;
-    padding:20px 18px; margin-bottom:14px; transition:.15s;
-  }
-  a.card:active{background:var(--accent-light); border-color:var(--accent);}
-  .card .row{display:flex; align-items:center; gap:14px;}
-  .icon{
-    width:46px; height:46px; flex:none; border-radius:12px;
-    background:var(--accent-light); display:flex; align-items:center;
-    justify-content:center; font-size:24px;
-  }
-  .card h2{font-size:17px; letter-spacing:.5px;}
-  .card p{font-size:13px; color:var(--muted); margin-top:2px;}
-  .arrow{margin-left:auto; color:var(--accent); font-size:20px;}
-  .tip{
-    background:#fff; border:1px solid var(--line); border-radius:14px;
-    padding:14px 16px; margin-top:8px; font-size:12.5px; color:var(--ink-2);
-  }
-  .tip b{color:var(--accent);}
-  .tip ol{margin:8px 0 0 18px;}
-  .tip li{margin-bottom:4px;}
-  footer{margin-top:22px; font-size:11px; color:var(--muted); text-align:center;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:#faf8f3; color:#1f1d1a;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:100vh; padding:24px;
+  text-align:center;
+}
+.logo{font-size:14px; letter-spacing:4px; color:#b03a2e; font-weight:700; margin-bottom:10px;}
+h1{font-size:22px; margin-bottom:8px;}
+.muted{color:#8a857a; font-size:13.5px; margin-bottom:24px;}
+a{color:#b03a2e; text-decoration:none; font-weight:600;}
+.spinner{
+  width:32px; height:32px; border:3px solid #e8e3d8; border-top-color:#b03a2e;
+  border-radius:50%; animation:spin 0.8s linear infinite; margin:8px 0 18px;
+}
+@keyframes spin{ to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="brand">FITNESS SYSTEM</div>
-    <h1>我的健身系统</h1>
-    <div class="sub">训练时记录 · 周期性复盘</div>
-  </header>
-
-  <a class="card" href="onboarding.html" id="onboarding-entry" style="border-color:var(--accent); background:var(--accent-light);">
-    <div class="row">
-      <div class="icon">🧭</div>
-      <div>
-        <h2 id="onboarding-title">开始你的训练规划</h2>
-        <p id="onboarding-sub">回答 7 件事 → 生成你专属的训练计划（频率/周期/动作/起步重量）</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="plan.html" id="plan-entry" style="display:none;">
-    <div class="row">
-      <div class="icon">📋</div>
-      <div>
-        <h2>我的训练计划</h2>
-        <p id="plan-sub">查看为你生成的训练计划详情</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="fitlab.html">
-    <div class="row">
-      <div class="icon">🚀</div>
-      <div>
-        <h2>FitLab App（MVP）</h2>
-        <p>整合 PWA · 3 tab · 训练记录 + 复盘 + 我的</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="健身动作手册-手机版.html">
-    <div class="row">
-      <div class="icon">📒</div>
-      <div>
-        <h2>动作手册（v0）</h2>
-        <p>训练时用 — 每个动作的要点 + 逐组记录</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="分析.html">
-    <div class="row">
-      <div class="icon">📊</div>
-      <div>
-        <h2>训练分析</h2>
-        <p>看肌肉训练分布、平衡、下次该练什么</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="肌肉图鉴.html">
-    <div class="row">
-      <div class="icon">🫀</div>
-      <div>
-        <h2>肌肉图鉴</h2>
-        <p>34 块训练肌肉 — 3D 模型 + 解剖位置对照</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="计划原理科普.html">
-    <div class="row">
-      <div class="icon">📚</div>
-      <div>
-        <h2>计划原理科普</h2>
-        <p>10 条训练科学原理 — 原文+出处+通俗解释+真实例子</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="应用设计文档.html">
-    <div class="row">
-      <div class="icon">📐</div>
-      <div>
-        <h2>应用设计文档</h2>
-        <p>FitLab 整合 PWA — IA + 线框图 + 数据模型 + 路线图</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="给新用户的指南.html">
-    <div class="row">
-      <div class="icon">📖</div>
-      <div>
-        <h2>给新用户的指南</h2>
-        <p>FitLab 是什么 — 适合谁 · 怎么评估 · 工作流程 · 开发者故事</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="版本历史与优化记录.html">
-    <div class="row">
-      <div class="icon">📝</div>
-      <div>
-        <h2>版本历史与优化记录</h2>
-        <p>每个版本改了什么 · 为什么改 — 演变追溯</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <a class="card" href="上线指南.html">
-    <div class="row">
-      <div class="icon">🚀</div>
-      <div>
-        <h2>上线指南</h2>
-        <p>怎么把 FitLab 变成手机里能用的 App — PWA 路径 4 步</p>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </a>
-
-  <div class="tip">
-    <b>第一次用，做两件事：</b>
-    <ol>
-      <li>点浏览器「分享 → 添加到主屏幕」，之后就像 App 一样打开</li>
-      <li>数据存在这台手机的浏览器里 —— 每隔一阵在动作手册「我的」页点<b>「导出我的记录 (JSON)」</b>备份一次，换手机/清缓存才不会丢</li>
-    </ol>
-  </div>
-
-  <footer>始终从同一个网址打开，记录才会连续累积</footer>
-</div>
+  <div class="logo">FITLAB</div>
+  <h1>启动中…</h1>
+  <div class="spinner"></div>
+  <div class="muted">正在打开 FitLab App</div>
+  <p style="font-size:12px; margin-top:18px; color:#8a857a;">
+    没有自动跳转?<br>
+    <a href="fitlab.html">点这里进入 App →</a><br>
+    <a href="docs.html" style="color:#8a857a; font-weight:400;">查看项目文档</a>
+  </p>
 <script>
-// 动态：检查 onboarding 是否完成，调整入口卡片
-(function(){
-  try{
-    const raw = localStorage.getItem('fitlab_v1');
-    const obj = raw ? JSON.parse(raw) : {};
-    if(obj.onboarding && obj.onboarding.recommendation_summary){
-      // 已完成：调整 onboarding 入口为"重新答"，显示 plan 入口
-      const ob = document.getElementById('onboarding-title');
-      const obSub = document.getElementById('onboarding-sub');
-      const planEntry = document.getElementById('plan-entry');
-      const planSub = document.getElementById('plan-sub');
-      const obEntry = document.getElementById('onboarding-entry');
-      if(ob) ob.textContent = '重新评估训练规划';
-      if(obSub) obSub.textContent = '再答一次 7 件事，生成新的计划';
-      if(planEntry) planEntry.style.display = 'block';
-      if(obEntry){
-        obEntry.style.borderColor = 'var(--line)';
-        obEntry.style.background = 'var(--paper)';
-      }
-      const s = obj.onboarding.recommendation_summary;
-      if(planSub && s){
-        planSub.textContent = `${s.goal||''} · ${s.experience||''} · ${s.frequency||''} 次/周 · ${s.mesocycle_name||''}`;
-      }
-    }
-  }catch(e){console.warn(e);}
-})();
+// 比 meta refresh 更快的 JS 跳转，避免任何残留 history 干扰返回键
+window.location.replace('fitlab.html');
 </script>
 </body>
 </html>
