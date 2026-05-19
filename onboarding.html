@@ -308,6 +308,17 @@ function clearAllOnboarding(){
 
 let state = loadState();
 
+// 守卫：每次进入 onboarding.html 都强制返回欢迎/欢迎回来页，
+// 避免"残留 state.step > 0 + 旧 onboarding 被清"造成"莫名其妙又要重新选"的体验
+// （已完成的用户看到"欢迎回来"页，没完成的看"开始"按钮，半路被清的用户也不会被困）
+if (state.step !== 0) {
+  state.step = 0;
+  // 同时清掉 in-progress 答案残留（避免选目标页显示之前选过的高亮）
+  state.answers = Object.assign({}, defaultState.answers);
+  state.bypass_boundary = false;
+  state.show_q4 = false;
+}
+
 /* ================== 渲染 ================== */
 function render(){
   saveState(state);
@@ -371,7 +382,8 @@ function renderWelcome(){
           <div class="row" style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span class="muted">推荐频率</span><b>${escapeHtml(String(completed.recommendation_summary.frequency||'')+' 次/周')}</b></div>
           <div class="row" style="display:flex; justify-content:space-between; padding:6px 0; font-size:14px;"><span class="muted">Mesocycle</span><b>${escapeHtml(completed.recommendation_summary.mesocycle_name||'')}</b></div>
         </div>
-        <a href="plan.html" class="btn btn-primary" style="display:block; text-decoration:none; text-align:center;">查看我的计划 →</a>
+        <a href="fitlab.html" class="btn btn-primary" style="display:block; text-decoration:none; text-align:center;">进入 FitLab App →</a>
+        <a href="plan.html" style="display:block; text-align:center; margin-top:8px; color:var(--accent); font-size:13px; text-decoration:none;">看计划详情页 →</a>
         <div class="restart-row" style="margin-top:18px;">
           <button data-action="restart">重新答（清掉旧推荐）</button>
         </div>
