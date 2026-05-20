@@ -274,8 +274,8 @@ textarea.note-area{
 </nav>
 
 <script src="训练数据库.js"></script>
-<script src="fitlab-data.js"></script>
-<script src="plan-engine.js"></script>
+<script src="fitlab-data.js?v=3"></script>
+<script src="plan-engine.js?v=3"></script>
 <script>
 //=================================================================
 // 1. 数据层 · State / Storage / Migration
@@ -291,6 +291,12 @@ let state = {
   plan: null,        // active plan with startDate
   logs: {},          // moveId -> [{date, weight, reps, sets, rir, e_neural, e_form, e_rom, e_volume, note}]
   custom_exercises: {},  // id -> { name, primary, synergist, is_compound, pattern, user_starting_load, user_starting_unit, pinned_to_courses[], notes, created_at }
+  ai_config: {           // 用户/部署者配置的 LLM API（OpenAI Chat Completions 兼容）
+    enabled: false,
+    api_url: '',         // 完整 URL，如 https://api.openai.com/v1/chat/completions
+    api_key: '',
+    model: '',           // 模型名，如 gpt-4o-mini / qwen-plus
+  },
   personalization: { mevFactor: 1.0 },
   settings: { weekStart:'Mon' }
 };
@@ -1713,6 +1719,13 @@ route('me', () => {
         </div>
         <div class="chev">›</div>
       </div>
+      <div class="list-item" onclick="openAIConfigEditor()">
+        <div class="ico">🤖</div>
+        <div class="lbl">AI 识别动作
+          <div class="meta">${state.ai_config?.enabled ? '已启用 · ' + (state.ai_config.model||'未填模型名') : '未启用（默认用本地规则）'}</div>
+        </div>
+        <div class="chev">›</div>
+      </div>
     </div>
 
     <div class="sec-h">学习与参考</div>
@@ -1848,22 +1861,343 @@ window.confirmDeleteCustomExercise = function(id) {
   render();
 };
 
-// 弹出添加/编辑自定义动作 overlay
+// ============= AI 适配层（OpenAI Chat Completions 兼容） =============
+// 调任意支持 OpenAI Chat Completions 协议的 LLM 服务（OpenAI / 通义 / 智谱 / Groq / OpenRouter 等）
+// 失败/未配置 → 返回 null，由调用方走规则引擎或手动 fallback
+async function identifyExerciseByAI(rawName) {
+  const cfg = state.ai_config || {};
+  if (!cfg.enabled || !cfg.api_url || !cfg.api_key || !cfg.model) {
+    return null;  // 未配置
+  }
+  const muscleList = MUSCLE_OPTIONS.map(([k,zh]) => k+'='+zh).join('、');
+  const patternList = PATTERN_OPTIONS.map(([k,zh]) => k+'='+zh).join('、');
+  const prompt = `识别下面这个力量训练动作的元数据，返回严格 JSON。
+
+动作名："${rawName}"
+
+字段要求：
+- primary: string[] 主训肌群，必须从这些值里选：${muscleList}
+- synergist: string[] 协同肌群（同上字典），可为空
+- is_compound: boolean 是否复合动作（跨多个关节）
+- pattern: string 动作模式，必须从这些值里选：${patternList}
+- confidence: number 识别置信度 0-100。不认识就给 0
+
+只返回 JSON，不要任何其它文字、解释、markdown 标记。例如：
+{"primary":["quadriceps","glutes"],"synergist":["hamstrings","core"],"is_compound":true,"pattern":"squat","confidence":90}`;
+
+  try {
+    const res = await fetch(cfg.api_url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + cfg.api_key,
+      },
+      body: JSON.stringify({
+        model: cfg.model,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.1,
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn('AI API error:', res.status, errText);
+      return { _error: 'API 返回 ' + res.status + '。检查 API URL/Key/Model 配置是否正确' };
+    }
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content || '';
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return { _error: 'AI 没返回 JSON：' + content.slice(0, 80) };
+    const parsed = JSON.parse(jsonMatch[0]);
+    if ((parsed.confidence || 0) < 30) return { _error: 'AI 不认识这个动作（置信度 ' + (parsed.confidence||0) + '）' };
+    return {
+      source: 'ai',
+      name: rawName.trim(),
+      primary: Array.isArray(parsed.primary) ? parsed.primary : [],
+      synergist: Array.isArray(parsed.synergist) ? parsed.synergist : [],
+      is_compound: !!parsed.is_compound,
+      pattern: parsed.pattern || 'isolation',
+      confidence: parsed.confidence || 0,
+    };
+  } catch (e) {
+    console.warn('AI identify failed:', e);
+    return { _error: '网络/解析错误：' + (e.message || e) };
+  }
+}
+
+// ============= AI 配置 UI =============
+window.openAIConfigEditor = function() {
+  const cfg = state.ai_config || {};
+  const overlay = document.createElement('div');
+  overlay.className = 'setup-overlay';
+  overlay.innerHTML = `
+    <h2>AI 识别动作配置</h2>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">
+      配置任何<b>支持 OpenAI Chat Completions 协议</b>的 LLM 服务（OpenAI / 通义千问 / 智谱 / Groq / OpenRouter / 自部署 LLM 等都行）。
+      没配置或调用失败时会 fallback 到本地规则引擎。
+    </p>
+
+    <div style="margin:10px 0 6px; font-size:13px;"><b>启用 AI 识别</b></div>
+    <label style="display:flex; align-items:center; gap:8px; font-size:14px;">
+      <input type="checkbox" id="ai-enabled" ${cfg.enabled?'checked':''} /> 开启（关闭后只用本地规则）
+    </label>
+
+    <div style="margin:14px 0 6px; font-size:13px;"><b>API URL</b></div>
+    <input type="text" id="ai-url" placeholder="https://api.openai.com/v1/chat/completions" value="${escapeHtml(cfg.api_url||'')}"
+      style="width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:6px; font-size:13px; font-family:ui-monospace,monospace;" />
+
+    <div style="margin:14px 0 6px; font-size:13px;"><b>API Key</b></div>
+    <input type="password" id="ai-key" placeholder="sk-..." value="${escapeHtml(cfg.api_key||'')}"
+      style="width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:6px; font-size:13px; font-family:ui-monospace,monospace;" />
+    <p style="font-size:11px; color:var(--muted); margin-top:4px;">⚠ 存在本机浏览器 localStorage。不要在公用设备配置。</p>
+
+    <div style="margin:14px 0 6px; font-size:13px;"><b>模型名</b></div>
+    <input type="text" id="ai-model" placeholder="gpt-4o-mini / qwen-plus / claude-3-haiku-20240307" value="${escapeHtml(cfg.model||'')}"
+      style="width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:6px; font-size:13px; font-family:ui-monospace,monospace;" />
+
+    <div style="display:flex; gap:8px; margin-top:18px;">
+      <button class="btn ghost" onclick="closeAIConfigEditor()" style="flex:1;">取消</button>
+      <button class="btn" onclick="saveAIConfig()" style="flex:1;">保存</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  window.__currentAIConfigOverlay = overlay;
+};
+window.closeAIConfigEditor = function() {
+  if (window.__currentAIConfigOverlay) {
+    window.__currentAIConfigOverlay.remove();
+    window.__currentAIConfigOverlay = null;
+  }
+};
+window.saveAIConfig = function() {
+  state.ai_config = {
+    enabled: document.getElementById('ai-enabled').checked,
+    api_url: document.getElementById('ai-url').value.trim(),
+    api_key: document.getElementById('ai-key').value.trim(),
+    model: document.getElementById('ai-model').value.trim(),
+  };
+  saveState();
+  closeAIConfigEditor();
+  render();
+};
+
+// 弹出添加/编辑自定义动作 overlay（多步流程）
+//   编辑已有 (id != null) → 直接进 manual 步骤
+//   新建 (id == null) → 先进 search 步骤，找到就直接用；没找到走识别（规则+AI）；
+//                      识别后 review 确认；都不对 fallback 到 manual
 window.openCustomExerciseEditor = function(id) {
   const editing = id ? state.custom_exercises[id] : null;
   const overlay = document.createElement('div');
   overlay.className = 'setup-overlay';
+  window.__currentEditorOverlay = overlay;
+  document.body.appendChild(overlay);
+
+  // 编辑现有 → 直接进 manual
+  if (editing) {
+    renderCustomEditorManual(overlay, id, editing);
+    return;
+  }
+  // 新建 → 先 search
+  renderCustomEditorSearch(overlay);
+};
+
+// === 步骤 1：搜索内置 + 自定义动作库 ===
+function renderCustomEditorSearch(overlay) {
   overlay.innerHTML = `
-    <h2>${editing ? '编辑自定义动作' : '添加自定义动作'}</h2>
+    <h2>添加动作</h2>
+    <p style="font-size:13px; color:var(--muted); margin:6px 0 12px;">先输入动作名搜索内置库（${Object.keys(window.FITLAB_DATA.EXERCISES).length} 个）和你已有的自定义动作。</p>
+
+    <input type="text" id="ce-search" placeholder="如：保加利亚分腿蹲" autofocus
+      style="width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:8px; font-size:15px; font-family:inherit;" />
+
+    <div id="ce-search-results" style="margin-top:12px; max-height:300px; overflow-y:auto;"></div>
+
+    <div id="ce-no-match" style="display:none; margin-top:12px; padding:12px 14px; background:var(--soft-yellow); border:1px solid #f0e2b8; border-radius:8px;">
+      <p style="font-size:13px; color:#7a5a1f; margin-bottom:8px;">动作库里没有 "<b id="ce-noMatch-name"></b>"。</p>
+      <button class="btn" onclick="ceIdentifyNewAction()" style="margin:0;">让系统识别这个动作 →</button>
+      <p style="font-size:11px; color:#7a5a1f; margin-top:6px;">${state.ai_config?.enabled ? '已启用 AI：会先用本地规则，规则不识别再调 AI' : '当前仅用本地规则（去"我的→AI 识别动作"启用 AI 提升识别率）'}</p>
+    </div>
+
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--line);">
+      <button class="btn ghost" onclick="renderCustomEditorManual(window.__currentEditorOverlay, null, null)" style="margin:0;">都不是 → 手动填写 →</button>
+    </div>
+
+    <div style="margin-top:10px;">
+      <button class="btn ghost" onclick="closeCustomExerciseEditor()" style="margin:0; width:100%;">取消</button>
+    </div>
+  `;
+  const input = overlay.querySelector('#ce-search');
+  const refresh = () => ceRefreshSearchResults(input.value);
+  input.addEventListener('input', refresh);
+  refresh();
+}
+
+function ceRefreshSearchResults(query) {
+  const results = window.FITLAB_DATA.searchExerciseLibrary(query, listCustomExercises());
+  const container = document.getElementById('ce-search-results');
+  const noMatch = document.getElementById('ce-no-match');
+  const noMatchName = document.getElementById('ce-noMatch-name');
+  if (!container) return;
+  if (results.length === 0 && query.trim()) {
+    container.innerHTML = '';
+    noMatch.style.display = 'block';
+    noMatchName.textContent = query.trim();
+    return;
+  }
+  noMatch.style.display = 'none';
+  if (results.length === 0) {
+    container.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:13px; padding:14px 0;">开始输入动作名…</div>';
+    return;
+  }
+  container.innerHTML = results.map(r => {
+    const primaryZh = (r.primary||[]).map(m => muscleZh(m)).join('・');
+    const srcBadge = r.source === 'custom'
+      ? '<span style="font-size:10px; padding:1px 6px; border-radius:4px; background:#e3f1e6; color:#2a4a30; margin-left:6px;">已有</span>'
+      : '<span style="font-size:10px; padding:1px 6px; border-radius:4px; background:var(--paper-2); color:var(--muted); margin-left:6px;">内置</span>';
+    return `<div onclick="ceSelectFromSearch('${escapeHtml(r.source)}','${escapeHtml(r.id)}')"
+      style="padding:10px 12px; border:1px solid var(--line); border-radius:8px; margin-bottom:6px; cursor:pointer; background:var(--paper);">
+      <div style="font-weight:600; font-size:14px;">${escapeHtml(r.name)}${srcBadge}<span style="font-size:11px; padding:1px 6px; border-radius:4px; background:${r.is_compound?'var(--accent-light)':'var(--soft-blue)'}; color:${r.is_compound?'var(--accent)':'var(--ink-2)'}; margin-left:4px;">${r.is_compound?'复合':'孤立'}</span></div>
+      <div class="meta" style="font-size:11.5px; margin-top:2px;">${escapeHtml(primaryZh)}</div>
+    </div>`;
+  }).join('');
+}
+
+window.ceSelectFromSearch = function(source, id) {
+  let identified;
+  if (source === 'custom') {
+    // 选已有自定义动作 → 跳到 manual 步骤编辑
+    const ex = state.custom_exercises[id];
+    if (ex) {
+      window.openCustomExerciseEditor(id);
+    }
+    return;
+  }
+  // source === 'builtin' → 用 identifyExerciseByRule 拉出完整元数据
+  const ex = window.FITLAB_DATA.EXERCISES[id];
+  identified = {
+    source: 'builtin-selected',
+    builtin_id: id,
+    name: ex.name,
+    primary: ex.primary.slice(),
+    synergist: (ex.synergist||[]).slice(),
+    pattern: ex.pattern,
+    is_compound: ex.is_compound,
+    confidence: 100,
+  };
+  renderCustomEditorConfirm(window.__currentEditorOverlay, identified);
+};
+
+// 用户输入框里的动作不在库里 → 调规则引擎 + AI
+window.ceIdentifyNewAction = async function() {
+  const input = document.getElementById('ce-search');
+  const rawName = input.value.trim();
+  if (!rawName) return;
+  // 先规则识别
+  let identified = window.FITLAB_DATA.identifyExerciseByRule(rawName);
+  if (!identified) {
+    // 规则没识别 → 试 AI
+    const noMatch = document.getElementById('ce-no-match');
+    noMatch.innerHTML = '<div style="text-align:center; color:#7a5a1f; font-size:13px;">⏳ AI 识别中…</div>';
+    const aiResult = await identifyExerciseByAI(rawName);
+    if (aiResult && !aiResult._error) {
+      identified = aiResult;
+    } else {
+      // AI 也失败 → 让用户手动
+      const errMsg = aiResult?._error || (state.ai_config?.enabled ? 'AI 没识别出来' : '本地规则没识别出来 · AI 未启用');
+      noMatch.innerHTML = `<p style="font-size:13px; color:#7a5a1f;">${escapeHtml(errMsg)}</p>
+        <button class="btn" onclick="renderCustomEditorManual(window.__currentEditorOverlay, null, { name: '${escapeHtml(rawName).replace(/'/g, "\\'")}' })" style="margin-top:8px;">手动填写 →</button>`;
+      return;
+    }
+  }
+  renderCustomEditorConfirm(window.__currentEditorOverlay, identified);
+};
+
+// === 步骤 2：识别结果 review ===
+function renderCustomEditorConfirm(overlay, identified) {
+  const primaryZh = (identified.primary||[]).map(m => muscleZh(m)).join('、');
+  const synergistZh = (identified.synergist||[]).map(m => muscleZh(m)).join('、');
+  const patternZh = PATTERN_OPTIONS.find(([k]) => k === identified.pattern)?.[1] || identified.pattern;
+  const sourceLabel = ({
+    'builtin-exact':'内置库精确匹配','builtin-fuzzy':'内置库模糊匹配','builtin-selected':'内置库',
+    'keyword':'本地规则推断','ai':'AI 识别',
+  })[identified.source] || identified.source;
+  const isFromBuiltin = identified.source && identified.source.startsWith('builtin');
+
+  overlay.innerHTML = `
+    <h2>确认动作信息</h2>
+    <p style="font-size:12px; color:var(--muted); margin:4px 0 12px;">来源：${sourceLabel}${identified.confidence < 100 ? ' · 置信度 ' + identified.confidence + '%' : ''}</p>
+
+    <div style="padding:12px 14px; background:var(--paper-2); border-radius:8px; margin-bottom:14px;">
+      <div style="font-weight:700; font-size:16px;">${escapeHtml(identified.name)}
+        <span style="font-size:11px; padding:1px 7px; border-radius:5px; background:${identified.is_compound?'var(--accent-light)':'var(--soft-blue)'}; color:${identified.is_compound?'var(--accent)':'var(--ink-2)'}; margin-left:6px; font-weight:600;">${identified.is_compound?'复合':'孤立'}</span>
+      </div>
+      <div style="font-size:13px; color:var(--ink-2); margin-top:8px; line-height:1.7;">
+        <div><b>主训肌群</b>：${escapeHtml(primaryZh) || '<em style="color:var(--muted);">(未识别)</em>'}</div>
+        ${synergistZh ? `<div><b>协同肌群</b>：${escapeHtml(synergistZh)}</div>` : ''}
+        <div><b>动作模式</b>：${escapeHtml(patternZh)}</div>
+      </div>
+    </div>
+
+    <div style="margin:14px 0 6px; font-size:13px;"><b>你训练时的起步重量</b>（可选）</div>
+    <div style="display:flex; gap:8px;">
+      <input type="number" id="ce-confirm-load" step="0.5" placeholder="留空 = 按 RIR 校准"
+        style="flex:1; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px;" />
+      <select id="ce-confirm-unit" style="padding:10px 8px; border:1px solid var(--line); border-radius:8px; font-size:14px;">
+        <option value="kg" selected>kg</option><option value="reps">次（自重）</option><option value="sec">秒（支撑）</option>
+      </select>
+    </div>
+    <p style="font-size:11.5px; color:var(--muted); margin-top:6px;">填你练这个动作时的重量。留空也行，第一次训练按 RIR 3-4 校准。</p>
+
+    <div style="display:flex; gap:8px; margin-top:18px;">
+      <button class="btn ghost" onclick="renderCustomEditorManual(window.__currentEditorOverlay, null, ${JSON.stringify(identified).replace(/"/g, '&quot;')})" style="flex:1; font-size:13px;">信息不对，改 →</button>
+      <button class="btn" onclick="ceConfirmAdd(${JSON.stringify(identified).replace(/"/g, '&quot;')})" style="flex:1;">确认添加</button>
+    </div>
+    <div style="margin-top:8px;">
+      <button class="btn ghost" onclick="renderCustomEditorSearch(window.__currentEditorOverlay)" style="margin:0; width:100%; font-size:12px;">← 重新搜</button>
+    </div>
+  `;
+}
+
+window.ceConfirmAdd = function(identified) {
+  const load = document.getElementById('ce-confirm-load').value;
+  const unit = document.getElementById('ce-confirm-unit').value;
+  saveCustomExercise({
+    name: identified.name,
+    primary: identified.primary,
+    synergist: identified.synergist,
+    is_compound: identified.is_compound,
+    pattern: identified.pattern,
+    user_starting_load: load === '' ? null : parseFloat(load),
+    user_starting_unit: unit,
+    pinned_to_courses: [],
+    notes: identified.builtin_id ? '来自内置：' + identified.builtin_id : '',
+  });
+  closeCustomExerciseEditor();
+  // 如果是从 P2 临时加动作过来的，inject 进 session
+  if (window.__pendingInjectSessionN != null) {
+    const n = window.__pendingInjectSessionN;
+    window.__pendingInjectSessionN = null;
+    const id = Object.keys(state.custom_exercises).slice(-1)[0];
+    injectCustomActionToSession(n, id);
+    return;
+  }
+  render();
+};
+
+// === 步骤 3：完整手动表单（fallback）===
+function renderCustomEditorManual(overlay, id, prefill) {
+  const editing = id ? state.custom_exercises[id] : null;
+  const data = editing || prefill || {};
+  overlay.innerHTML = `
+    <h2>${editing ? '编辑自定义动作' : '手动填写动作信息'}</h2>
 
     <div style="margin:14px 0 6px; font-size:13px; color:var(--ink-2);"><b>动作名</b></div>
-    <input type="text" id="ce-name" placeholder="如：保加利亚分腿蹲" value="${escapeHtml(editing?.name||'')}"
+    <input type="text" id="ce-name" placeholder="如：保加利亚分腿蹲" value="${escapeHtml(data.name||'')}"
       style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:15px; font-family:inherit;" />
 
     <div style="margin:14px 0 6px; font-size:13px; color:var(--ink-2);"><b>主训肌群</b>（必选，可多选）</div>
     <div id="ce-primary" style="display:flex; flex-wrap:wrap; gap:5px;">
       ${MUSCLE_OPTIONS.map(([k,zh]) => {
-        const on = editing && (editing.primary||[]).includes(k);
+        const on = (data.primary||[]).includes(k);
         return `<button type="button" data-m="${k}" data-grp="primary" onclick="toggleMuscleChip(this)" style="padding:5px 10px; border-radius:12px; border:1px solid ${on?'var(--accent)':'var(--line)'}; background:${on?'var(--accent-light)':'var(--paper)'}; color:${on?'var(--accent)':'var(--ink-2)'}; font-size:12px; cursor:pointer; font-family:inherit; font-weight:${on?'600':'400'};" data-on="${on?'1':'0'}">${zh}</button>`;
       }).join('')}
     </div>
@@ -1871,7 +2205,7 @@ window.openCustomExerciseEditor = function(id) {
     <div style="margin:14px 0 6px; font-size:13px; color:var(--ink-2);"><b>协同肌群</b>（可选）</div>
     <div id="ce-synergist" style="display:flex; flex-wrap:wrap; gap:5px;">
       ${MUSCLE_OPTIONS.map(([k,zh]) => {
-        const on = editing && (editing.synergist||[]).includes(k);
+        const on = (data.synergist||[]).includes(k);
         return `<button type="button" data-m="${k}" data-grp="synergist" onclick="toggleMuscleChip(this)" style="padding:5px 10px; border-radius:12px; border:1px solid ${on?'var(--accent)':'var(--line)'}; background:${on?'var(--accent-light)':'var(--paper)'}; color:${on?'var(--accent)':'var(--ink-2)'}; font-size:12px; cursor:pointer; font-family:inherit; font-weight:${on?'600':'400'};" data-on="${on?'1':'0'}">${zh}</button>`;
       }).join('')}
     </div>
@@ -1879,26 +2213,26 @@ window.openCustomExerciseEditor = function(id) {
     <div style="margin:14px 0 6px; font-size:13px; color:var(--ink-2);"><b>动作类型</b></div>
     <div style="display:flex; gap:8px; margin-bottom:8px;">
       <label style="flex:1; padding:8px 12px; border:1px solid var(--line); border-radius:8px; cursor:pointer; font-size:13px;">
-        <input type="radio" name="ce-compound" value="1" ${(!editing || editing.is_compound) ? 'checked' : ''} style="margin-right:6px;" />复合（蹲/推/拉等）
+        <input type="radio" name="ce-compound" value="1" ${(data.is_compound !== false) ? 'checked' : ''} style="margin-right:6px;" />复合（蹲/推/拉等）
       </label>
       <label style="flex:1; padding:8px 12px; border:1px solid var(--line); border-radius:8px; cursor:pointer; font-size:13px;">
-        <input type="radio" name="ce-compound" value="0" ${(editing && !editing.is_compound) ? 'checked' : ''} style="margin-right:6px;" />孤立（弯举等）
+        <input type="radio" name="ce-compound" value="0" ${(data.is_compound === false) ? 'checked' : ''} style="margin-right:6px;" />孤立（弯举等）
       </label>
     </div>
 
     <div style="margin:14px 0 6px; font-size:13px; color:var(--ink-2);"><b>动作模式</b>（决定可钉到哪种课型）</div>
     <select id="ce-pattern" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit;">
-      ${PATTERN_OPTIONS.map(([k,zh]) => `<option value="${k}" ${editing?.pattern===k?'selected':''}>${zh}</option>`).join('')}
+      ${PATTERN_OPTIONS.map(([k,zh]) => `<option value="${k}" ${data.pattern===k?'selected':''}>${zh}</option>`).join('')}
     </select>
 
     <div style="margin:14px 0 6px; font-size:13px; color:var(--ink-2);"><b>你训练时的起步重量</b>（可选）</div>
     <div style="display:flex; gap:8px;">
-      <input type="number" id="ce-load" step="0.5" placeholder="留空 = 按 RIR 校准" value="${editing?.user_starting_load ?? ''}"
+      <input type="number" id="ce-load" step="0.5" placeholder="留空 = 按 RIR 校准" value="${data.user_starting_load ?? ''}"
         style="flex:1; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px;" />
       <select id="ce-unit" style="padding:10px 8px; border:1px solid var(--line); border-radius:8px; font-size:14px;">
-        <option value="kg" ${(!editing || editing.user_starting_unit==='kg' || !editing.user_starting_unit)?'selected':''}>kg</option>
-        <option value="reps" ${editing?.user_starting_unit==='reps'?'selected':''}>次数（自重）</option>
-        <option value="sec" ${editing?.user_starting_unit==='sec'?'selected':''}>秒（支撑）</option>
+        <option value="kg" ${(!data.user_starting_unit || data.user_starting_unit==='kg')?'selected':''}>kg</option>
+        <option value="reps" ${data.user_starting_unit==='reps'?'selected':''}>次数（自重）</option>
+        <option value="sec" ${data.user_starting_unit==='sec'?'selected':''}>秒（支撑）</option>
       </select>
     </div>
     <p style="font-size:11.5px; color:var(--muted); margin-top:6px;">填你自己练这个动作时通常用的重量。留空就显示"按 RIR 校准"。</p>
@@ -1908,9 +2242,7 @@ window.openCustomExerciseEditor = function(id) {
       <button class="btn" onclick="saveCustomExerciseFromForm(${editing ? `'${id}'` : 'null'})" style="flex:1;">${editing?'保存':'添加'}</button>
     </div>
   `;
-  document.body.appendChild(overlay);
-  window.__currentEditorOverlay = overlay;
-};
+}
 
 window.toggleMuscleChip = function(btn) {
   const on = btn.dataset.on === '1';

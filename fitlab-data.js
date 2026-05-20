@@ -293,7 +293,180 @@ const EXERCISES = {
     avoid_if: [],
     substitutes: ['dead-bug'],
   },
+
+  /* ====== 扩展动作池 v2（~70 个常见变式，覆盖力量训练 95%+ 需求）====== */
+
+  /* --- 蹲类 --- */
+  'barbell-front-squat': { name:'杠铃前蹲', pattern:'squat', primary:['quadriceps','glutes'], synergist:['erector','core'], equipment:['barbell','rack'], difficulty:4, is_compound:true, avoid_if:['knee-acute','wrist-acute'], substitutes:['barbell-back-squat'] },
+  'dumbbell-squat': { name:'哑铃深蹲', pattern:'squat', primary:['quadriceps','glutes'], synergist:['hamstrings'], equipment:['dumbbell'], difficulty:2, is_compound:true, avoid_if:['knee-acute'], substitutes:['dumbbell-goblet-squat'] },
+  'hack-squat-machine': { name:'Hack 深蹲机', pattern:'squat', primary:['quadriceps','glutes'], synergist:['hamstrings'], equipment:['machine'], difficulty:2, is_compound:true, avoid_if:['knee-acute'], substitutes:['leg-press'] },
+  'smith-squat': { name:'Smith 深蹲', pattern:'squat', primary:['quadriceps','glutes'], synergist:['hamstrings'], equipment:['smith-machine'], difficulty:2, is_compound:true, avoid_if:['knee-acute'], substitutes:['barbell-back-squat'] },
+  'bulgarian-split-squat': { name:'保加利亚分腿蹲', pattern:'lunge', primary:['quadriceps','glutes'], synergist:['hamstrings','glute-med','core'], equipment:['dumbbell','bench'], difficulty:3, is_compound:true, avoid_if:['knee-acute'], substitutes:['dumbbell-lunge'] },
+  'dumbbell-reverse-lunge': { name:'哑铃反向弓步', pattern:'lunge', primary:['quadriceps','glutes'], synergist:['hamstrings','glute-med'], equipment:['dumbbell'], difficulty:2, is_compound:true, avoid_if:['knee-acute'], substitutes:['dumbbell-lunge'] },
+  'dumbbell-step-up': { name:'哑铃台阶上蹲', pattern:'lunge', primary:['quadriceps','glutes'], synergist:['hamstrings','glute-med','core'], equipment:['dumbbell','bench'], difficulty:2, is_compound:true, avoid_if:['knee-acute'], substitutes:['dumbbell-lunge'] },
+  'pistol-squat': { name:'单腿蹲（Pistol）', pattern:'lunge', primary:['quadriceps','glutes'], synergist:['hamstrings','core'], equipment:['bodyweight'], difficulty:5, is_compound:true, avoid_if:['knee-acute'], substitutes:['bulgarian-split-squat'] },
+  'wall-sit': { name:'靠墙静蹲', pattern:'squat', primary:['quadriceps'], synergist:['glutes'], equipment:['bodyweight'], difficulty:1, is_compound:false, avoid_if:['knee-acute'], substitutes:['leg-extension'] },
+
+  /* --- 髋铰链 --- */
+  'barbell-deadlift': { name:'杠铃硬拉', pattern:'hinge', primary:['glutes','hamstrings','erector'], synergist:['back-lat','quadriceps','core'], equipment:['barbell'], difficulty:4, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-rdl','dumbbell-rdl'] },
+  'sumo-deadlift': { name:'相扑硬拉', pattern:'hinge', primary:['glutes','quadriceps','adductors'], synergist:['hamstrings','erector','back-lat'], equipment:['barbell'], difficulty:4, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-deadlift'] },
+  'dumbbell-rdl': { name:'哑铃罗马尼亚硬拉', pattern:'hinge', primary:['hamstrings','glutes'], synergist:['erector','upper-back'], equipment:['dumbbell'], difficulty:2, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-rdl'] },
+  'single-leg-rdl': { name:'单腿罗马尼亚硬拉', pattern:'hinge', primary:['hamstrings','glutes'], synergist:['glute-med','core','erector'], equipment:['dumbbell'], difficulty:3, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['dumbbell-rdl'] },
+  'good-morning': { name:'屈髋（Good morning）', pattern:'hinge', primary:['hamstrings','glutes','erector'], synergist:['upper-back'], equipment:['barbell'], difficulty:3, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-rdl'] },
+  'single-leg-hip-thrust': { name:'单腿臀推', pattern:'hinge', primary:['glutes'], synergist:['hamstrings','core'], equipment:['bench','bodyweight'], difficulty:2, is_compound:true, avoid_if:[], substitutes:['barbell-hip-thrust'] },
+  'glute-bridge': { name:'臀桥（地面臀推）', pattern:'hinge', primary:['glutes'], synergist:['hamstrings'], equipment:['bodyweight'], difficulty:1, is_compound:true, avoid_if:[], substitutes:['barbell-hip-thrust'] },
+  'cable-pull-through': { name:'绳索屈髋（Pull-through）', pattern:'hinge', primary:['glutes','hamstrings'], synergist:['erector'], equipment:['cable'], difficulty:2, is_compound:true, avoid_if:[], substitutes:['barbell-rdl'] },
+  'kettlebell-swing': { name:'壶铃摆荡', pattern:'hinge', primary:['glutes','hamstrings'], synergist:['erector','core','upper-back'], equipment:['kettlebell'], difficulty:3, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-rdl'] },
+
+  /* --- 腿弯举 / 髋外展 --- */
+  'seated-leg-curl': { name:'坐姿腿弯举', pattern:'isolation', primary:['hamstrings'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['lying-leg-curl'] },
+  'nordic-curl': { name:'北欧腿弯举', pattern:'isolation', primary:['hamstrings'], synergist:['core'], equipment:['bodyweight'], difficulty:4, is_compound:false, avoid_if:['knee-acute'], substitutes:['lying-leg-curl'] },
+  'leg-extension': { name:'坐姿腿屈伸', pattern:'isolation', primary:['quadriceps'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:['knee-acute'], substitutes:[] },
+  'hip-abduction-machine': { name:'髋外展机', pattern:'isolation', primary:['glute-med','abductors'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:[] },
+  'hip-adduction-machine': { name:'髋内收机', pattern:'isolation', primary:['adductors'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:[] },
+
+  /* --- 胸 --- */
+  'dumbbell-bench-press': { name:'哑铃平板卧推', pattern:'h-push', primary:['chest','delt-front'], synergist:['triceps'], equipment:['dumbbell','bench'], difficulty:2, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['barbell-bench-press'] },
+  'incline-barbell-press': { name:'上斜杠铃推', pattern:'h-push', primary:['chest-upper','delt-front'], synergist:['triceps'], equipment:['barbell','bench','rack'], difficulty:3, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['incline-dumbbell-press'] },
+  'decline-barbell-press': { name:'下斜杠铃推', pattern:'h-push', primary:['chest','delt-front'], synergist:['triceps'], equipment:['barbell','bench','rack'], difficulty:3, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['barbell-bench-press'] },
+  'smith-bench-press': { name:'Smith 卧推', pattern:'h-push', primary:['chest','delt-front'], synergist:['triceps'], equipment:['smith-machine','bench'], difficulty:2, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['barbell-bench-press'] },
+  'machine-chest-press': { name:'坐姿胸推机', pattern:'h-push', primary:['chest','delt-front'], synergist:['triceps'], equipment:['machine'], difficulty:1, is_compound:true, avoid_if:[], substitutes:['barbell-bench-press'] },
+  'dumbbell-fly': { name:'哑铃飞鸟', pattern:'isolation', primary:['chest'], synergist:['delt-front'], equipment:['dumbbell','bench'], difficulty:2, is_compound:false, avoid_if:['shoulder-acute'], substitutes:['cable-fly'] },
+  'incline-dumbbell-fly': { name:'上斜哑铃飞鸟', pattern:'isolation', primary:['chest-upper'], synergist:['delt-front'], equipment:['dumbbell','bench'], difficulty:2, is_compound:false, avoid_if:['shoulder-acute'], substitutes:['dumbbell-fly'] },
+  'cable-fly': { name:'绳索夹胸', pattern:'isolation', primary:['chest'], synergist:['delt-front'], equipment:['cable'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['dumbbell-fly'] },
+  'pec-deck-machine': { name:'蝴蝶机夹胸', pattern:'isolation', primary:['chest'], synergist:['delt-front'], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['cable-fly'] },
+  'incline-push-up': { name:'上斜俯卧撑', pattern:'h-push', primary:['chest','delt-front'], synergist:['triceps','core'], equipment:['bodyweight','bench'], difficulty:1, is_compound:true, avoid_if:['wrist-acute'], substitutes:['push-up'] },
+  'knee-push-up': { name:'跪姿俯卧撑', pattern:'h-push', primary:['chest','delt-front'], synergist:['triceps'], equipment:['bodyweight'], difficulty:1, is_compound:true, avoid_if:['wrist-acute'], substitutes:['push-up'] },
+  'dip-chest': { name:'双杠臂屈伸（胸版）', pattern:'h-push', primary:['chest','triceps'], synergist:['delt-front'], equipment:['parallettes'], difficulty:4, is_compound:true, avoid_if:['shoulder-acute','elbow-acute'], substitutes:['close-grip-bench-press'] },
+
+  /* --- 肩 --- */
+  'arnold-press': { name:'Arnold press', pattern:'v-push', primary:['delt-front','delt-mid'], synergist:['delt-rear','triceps'], equipment:['dumbbell','bench'], difficulty:3, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['dumbbell-shoulder-press'] },
+  'machine-shoulder-press': { name:'机器肩推', pattern:'v-push', primary:['delt-front','delt-mid'], synergist:['triceps'], equipment:['machine'], difficulty:1, is_compound:true, avoid_if:[], substitutes:['dumbbell-shoulder-press'] },
+  'smith-overhead-press': { name:'Smith 站姿推举', pattern:'v-push', primary:['delt-front','delt-mid'], synergist:['triceps','upper-chest','core'], equipment:['smith-machine'], difficulty:2, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['barbell-overhead-press'] },
+  'dumbbell-lateral-raise': { name:'哑铃侧平举', pattern:'isolation', primary:['delt-mid'], synergist:['delt-front'], equipment:['dumbbell'], difficulty:1, is_compound:false, avoid_if:['shoulder-acute'], substitutes:['cable-lateral-raise'] },
+  'cable-lateral-raise': { name:'Cable 侧平举', pattern:'isolation', primary:['delt-mid'], synergist:[], equipment:['cable'], difficulty:1, is_compound:false, avoid_if:['shoulder-acute'], substitutes:['dumbbell-lateral-raise'] },
+  'machine-lateral-raise': { name:'机器侧平举', pattern:'isolation', primary:['delt-mid'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['dumbbell-lateral-raise'] },
+  'dumbbell-front-raise': { name:'哑铃前平举', pattern:'isolation', primary:['delt-front'], synergist:[], equipment:['dumbbell'], difficulty:1, is_compound:false, avoid_if:['shoulder-acute'], substitutes:[] },
+  'rear-delt-fly': { name:'反向飞鸟（哑铃）', pattern:'isolation', primary:['delt-rear','back-rhomboid'], synergist:[], equipment:['dumbbell','bench'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['face-pull','reverse-pec-deck'] },
+  'reverse-pec-deck': { name:'反向蝴蝶机', pattern:'isolation', primary:['delt-rear','back-rhomboid'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['face-pull'] },
+
+  /* --- 水平拉（背） --- */
+  'pendlay-row': { name:'Pendlay 划船', pattern:'h-pull', primary:['back-lat','back-rhomboid'], synergist:['biceps','delt-rear','erector'], equipment:['barbell'], difficulty:3, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-row'] },
+  't-bar-row': { name:'T 杠划船', pattern:'h-pull', primary:['back-lat','back-rhomboid'], synergist:['biceps','delt-rear'], equipment:['barbell'], difficulty:3, is_compound:true, avoid_if:['lower-back-acute'], substitutes:['barbell-row'] },
+  'machine-row': { name:'机器划船', pattern:'h-pull', primary:['back-lat','back-rhomboid'], synergist:['biceps','delt-rear'], equipment:['machine'], difficulty:1, is_compound:true, avoid_if:[], substitutes:['seated-cable-row'] },
+  'inverted-row': { name:'反向划船（自重）', pattern:'h-pull', primary:['back-lat','back-rhomboid'], synergist:['biceps','core'], equipment:['barbell','bodyweight'], difficulty:2, is_compound:true, avoid_if:[], substitutes:['dumbbell-row'] },
+
+  /* --- 垂直拉 --- */
+  'chin-up': { name:'反握引体', pattern:'v-pull', primary:['back-lat','biceps'], synergist:['back-rhomboid','core'], equipment:['pull-up-bar'], difficulty:4, is_compound:true, avoid_if:['shoulder-acute','elbow-acute'], substitutes:['pull-up','lat-pulldown'] },
+  'neutral-grip-pull-up': { name:'对握引体', pattern:'v-pull', primary:['back-lat'], synergist:['biceps','back-rhomboid'], equipment:['pull-up-bar'], difficulty:4, is_compound:true, avoid_if:['shoulder-acute','elbow-acute'], substitutes:['pull-up'] },
+  'assisted-pull-up': { name:'辅助引体（机器/弹力带）', pattern:'v-pull', primary:['back-lat'], synergist:['biceps','back-rhomboid'], equipment:['machine','bodyweight'], difficulty:2, is_compound:true, avoid_if:['shoulder-acute'], substitutes:['lat-pulldown'] },
+  'neutral-grip-lat-pulldown': { name:'对握高位下拉', pattern:'v-pull', primary:['back-lat'], synergist:['biceps','back-rhomboid'], equipment:['cable','machine'], difficulty:1, is_compound:true, avoid_if:[], substitutes:['lat-pulldown'] },
+
+  /* --- 斜方肌 --- */
+  'barbell-shrug': { name:'杠铃耸肩', pattern:'isolation', primary:['back-trap'], synergist:['upper-back'], equipment:['barbell'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['dumbbell-shrug'] },
+  'dumbbell-shrug': { name:'哑铃耸肩', pattern:'isolation', primary:['back-trap'], synergist:['upper-back','forearms'], equipment:['dumbbell'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['barbell-shrug'] },
+
+  /* --- 二头 --- */
+  'barbell-curl': { name:'杠铃弯举', pattern:'isolation', primary:['biceps'], synergist:['forearms'], equipment:['barbell'], difficulty:1, is_compound:false, avoid_if:['elbow-acute','wrist-acute'], substitutes:['ez-bar-curl','dumbbell-bicep-curl'] },
+  'ez-bar-curl': { name:'EZ 杆弯举', pattern:'isolation', primary:['biceps'], synergist:['forearms'], equipment:['ez-bar'], difficulty:1, is_compound:false, avoid_if:['elbow-acute'], substitutes:['barbell-curl'] },
+  'hammer-curl': { name:'锤式弯举', pattern:'isolation', primary:['biceps','forearms'], synergist:[], equipment:['dumbbell'], difficulty:1, is_compound:false, avoid_if:['elbow-acute'], substitutes:['dumbbell-bicep-curl'] },
+  'cable-curl': { name:'绳索弯举', pattern:'isolation', primary:['biceps'], synergist:['forearms'], equipment:['cable'], difficulty:1, is_compound:false, avoid_if:['elbow-acute'], substitutes:['dumbbell-bicep-curl'] },
+  'incline-dumbbell-curl': { name:'上斜哑铃弯举', pattern:'isolation', primary:['biceps'], synergist:['forearms'], equipment:['dumbbell','bench'], difficulty:1, is_compound:false, avoid_if:['elbow-acute'], substitutes:['dumbbell-bicep-curl'] },
+  'preacher-curl': { name:'牧师凳弯举', pattern:'isolation', primary:['biceps'], synergist:['forearms'], equipment:['ez-bar','bench'], difficulty:2, is_compound:false, avoid_if:['elbow-acute'], substitutes:['barbell-curl'] },
+
+  /* --- 三头 --- */
+  'skull-crusher': { name:'Skull crusher（仰卧三头臂屈伸）', pattern:'isolation', primary:['triceps'], synergist:[], equipment:['ez-bar','bench'], difficulty:2, is_compound:false, avoid_if:['elbow-acute'], substitutes:['lying-tricep-extension'] },
+  'lying-tricep-extension': { name:'仰卧三头臂屈伸（哑铃）', pattern:'isolation', primary:['triceps'], synergist:[], equipment:['dumbbell','bench'], difficulty:1, is_compound:false, avoid_if:['elbow-acute'], substitutes:['skull-crusher'] },
+  'overhead-tricep-extension': { name:'头顶三头臂屈伸', pattern:'isolation', primary:['triceps'], synergist:[], equipment:['dumbbell'], difficulty:2, is_compound:false, avoid_if:['shoulder-acute','elbow-acute'], substitutes:['lying-tricep-extension'] },
+  'dip-triceps': { name:'三头双杠臂屈伸', pattern:'v-push', primary:['triceps','chest'], synergist:['delt-front'], equipment:['parallettes'], difficulty:4, is_compound:true, avoid_if:['shoulder-acute','elbow-acute'], substitutes:['close-grip-bench-press'] },
+  'close-grip-bench-press': { name:'窄距卧推', pattern:'h-push', primary:['triceps','chest'], synergist:['delt-front'], equipment:['barbell','bench','rack'], difficulty:2, is_compound:true, avoid_if:['elbow-acute','shoulder-acute'], substitutes:['dip-triceps'] },
+
+  /* --- 前臂 / 负重行走 --- */
+  'wrist-curl': { name:'腕弯举', pattern:'isolation', primary:['forearms'], synergist:[], equipment:['dumbbell'], difficulty:1, is_compound:false, avoid_if:['wrist-acute'], substitutes:[] },
+  'reverse-wrist-curl': { name:'反向腕弯举', pattern:'isolation', primary:['forearms'], synergist:[], equipment:['dumbbell'], difficulty:1, is_compound:false, avoid_if:['wrist-acute'], substitutes:[] },
+  'farmers-walk': { name:'农夫行走', pattern:'carry', primary:['forearms','core'], synergist:['back-trap','glutes'], equipment:['dumbbell'], difficulty:2, is_compound:true, avoid_if:[], substitutes:[] },
+
+  /* --- 核心扩展 --- */
+  'side-plank': { name:'侧平板支撑', pattern:'core', primary:['obliques','abs'], synergist:['glute-med','delt-mid'], equipment:['bodyweight'], difficulty:2, is_compound:false, avoid_if:['shoulder-acute'], substitutes:['plank'] },
+  'hanging-leg-raise': { name:'悬垂直腿举腿', pattern:'core', primary:['abs','hip-flexors'], synergist:['forearms','obliques'], equipment:['pull-up-bar'], difficulty:4, is_compound:false, avoid_if:['shoulder-acute'], substitutes:['hanging-knee-raise'] },
+  'lying-leg-raise': { name:'仰卧抬腿', pattern:'core', primary:['abs','hip-flexors'], synergist:[], equipment:['bodyweight'], difficulty:1, is_compound:false, avoid_if:['lower-back-acute'], substitutes:['hanging-knee-raise'] },
+  'cable-crunch': { name:'绳索卷腹', pattern:'core', primary:['abs'], synergist:['obliques'], equipment:['cable'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['crunch'] },
+  'crunch': { name:'卷腹', pattern:'core', primary:['abs'], synergist:[], equipment:['bodyweight'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['cable-crunch'] },
+  'sit-up': { name:'仰卧起坐', pattern:'core', primary:['abs','hip-flexors'], synergist:[], equipment:['bodyweight'], difficulty:1, is_compound:false, avoid_if:['lower-back-acute'], substitutes:['crunch'] },
+  'dead-bug': { name:'死虫', pattern:'core', primary:['abs','obliques'], synergist:[], equipment:['bodyweight'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['plank'] },
+  'bird-dog': { name:'Bird dog', pattern:'core', primary:['core','erector'], synergist:['glutes','delt-rear'], equipment:['bodyweight'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['dead-bug'] },
+  'ab-wheel-rollout': { name:'Ab wheel rollout', pattern:'core', primary:['abs'], synergist:['back-lat','obliques'], equipment:['ab-wheel'], difficulty:4, is_compound:false, avoid_if:['lower-back-acute','shoulder-acute'], substitutes:['plank'] },
+  'russian-twist': { name:'Russian twist', pattern:'core', primary:['obliques','abs'], synergist:[], equipment:['bodyweight','dumbbell'], difficulty:2, is_compound:false, avoid_if:['lower-back-acute'], substitutes:['side-plank'] },
+
+  /* --- 小腿扩展 --- */
+  'seated-calf-raise': { name:'坐姿提踵', pattern:'isolation', primary:['calves'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['standing-calf-raise'] },
+  'donkey-calf-raise': { name:'Donkey 提踵', pattern:'isolation', primary:['calves'], synergist:[], equipment:['machine'], difficulty:1, is_compound:false, avoid_if:[], substitutes:['standing-calf-raise'] },
 };
+
+/* 关键词 → 动作元数据 推断表（规则引擎用）
+ * 用户输入"XXX 弯举" → 含"弯举" → 推断主肌群 biceps、模式 isolation
+ * 用户输入"XXX 卧推" → 含"卧推" → 推断主肌群 chest+delt-front、模式 h-push、复合
+ * 按"匹配度优先级"从特殊到一般，命中最具体的关键词为准
+ */
+const EXERCISE_KEYWORDS = [
+  // --- 蹲类 ---
+  { kw:['深蹲','蹲'], primary:['quadriceps','glutes'], synergist:['hamstrings','erector','core'], pattern:'squat', is_compound:true },
+  { kw:['弓步','lunge'], primary:['quadriceps','glutes'], synergist:['hamstrings','glute-med','core'], pattern:'lunge', is_compound:true },
+  { kw:['分腿蹲'], primary:['quadriceps','glutes'], synergist:['hamstrings','glute-med','core'], pattern:'lunge', is_compound:true },
+  { kw:['台阶上蹲','step up'], primary:['quadriceps','glutes'], synergist:['hamstrings','glute-med','core'], pattern:'lunge', is_compound:true },
+  { kw:['提踵','calf'], primary:['calves'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['腿屈伸','leg extension'], primary:['quadriceps'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['腿弯举','leg curl'], primary:['hamstrings'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['腿举','leg press'], primary:['quadriceps','glutes'], synergist:['hamstrings'], pattern:'squat', is_compound:true },
+  // --- 髋铰链 ---
+  { kw:['硬拉','deadlift'], primary:['glutes','hamstrings','erector'], synergist:['back-lat','quadriceps','core'], pattern:'hinge', is_compound:true },
+  { kw:['罗马尼亚','RDL','rdl'], primary:['hamstrings','glutes'], synergist:['erector','upper-back'], pattern:'hinge', is_compound:true },
+  { kw:['臀推','hip thrust'], primary:['glutes'], synergist:['hamstrings'], pattern:'hinge', is_compound:true },
+  { kw:['屈髋','good morning','pull through','摆荡','swing'], primary:['glutes','hamstrings','erector'], synergist:['core'], pattern:'hinge', is_compound:true },
+  { kw:['臀桥','glute bridge'], primary:['glutes'], synergist:['hamstrings'], pattern:'hinge', is_compound:true },
+  // --- 胸 ---
+  { kw:['上斜','incline','上胸'], primary:['chest-upper','delt-front'], synergist:['triceps'], pattern:'h-push', is_compound:true },
+  { kw:['卧推','bench press'], primary:['chest','delt-front'], synergist:['triceps'], pattern:'h-push', is_compound:true },
+  { kw:['俯卧撑','push up','push-up'], primary:['chest','delt-front'], synergist:['triceps','core'], pattern:'h-push', is_compound:true },
+  { kw:['飞鸟','fly','夹胸'], primary:['chest'], synergist:['delt-front'], pattern:'isolation', is_compound:false },
+  { kw:['胸推'], primary:['chest','delt-front'], synergist:['triceps'], pattern:'h-push', is_compound:true },
+  // --- 肩 ---
+  { kw:['推举','overhead press','shoulder press','肩推'], primary:['delt-front','delt-mid'], synergist:['triceps','core'], pattern:'v-push', is_compound:true },
+  { kw:['侧平举','lateral raise'], primary:['delt-mid'], synergist:['delt-front'], pattern:'isolation', is_compound:false },
+  { kw:['前平举','front raise'], primary:['delt-front'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['面拉','face pull'], primary:['delt-rear','back-rhomboid'], synergist:['rotator-cuff'], pattern:'isolation', is_compound:false },
+  { kw:['反向飞鸟','rear delt fly','后束飞鸟'], primary:['delt-rear','back-rhomboid'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['耸肩','shrug'], primary:['back-trap'], synergist:['upper-back','forearms'], pattern:'isolation', is_compound:false },
+  // --- 背 ---
+  { kw:['引体','pull up','pullup','pull-up','chin'], primary:['back-lat'], synergist:['biceps','back-rhomboid'], pattern:'v-pull', is_compound:true },
+  { kw:['高位下拉','lat pulldown','下拉'], primary:['back-lat'], synergist:['biceps','back-rhomboid'], pattern:'v-pull', is_compound:true },
+  { kw:['划船','row'], primary:['back-lat','back-rhomboid'], synergist:['biceps','delt-rear'], pattern:'h-pull', is_compound:true },
+  // --- 手臂 ---
+  { kw:['弯举','curl'], primary:['biceps'], synergist:['forearms'], pattern:'isolation', is_compound:false },
+  { kw:['锤式','hammer'], primary:['biceps','forearms'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['三头下压','pushdown','三头压'], primary:['triceps'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['三头臂屈伸','tricep extension','skull crusher'], primary:['triceps'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['双杠臂屈伸','dip','双杠'], primary:['triceps','chest'], synergist:['delt-front'], pattern:'v-push', is_compound:true },
+  { kw:['窄距卧推','close grip'], primary:['triceps','chest'], synergist:['delt-front'], pattern:'h-push', is_compound:true },
+  { kw:['腕弯举','wrist curl','前臂'], primary:['forearms'], synergist:[], pattern:'isolation', is_compound:false },
+  // --- 核心 ---
+  { kw:['平板支撑','plank','平板'], primary:['abs','obliques'], synergist:['glutes','erector'], pattern:'core', is_compound:false },
+  { kw:['悬垂举腿','hanging leg raise','hanging knee'], primary:['abs','hip-flexors'], synergist:['forearms','obliques'], pattern:'core', is_compound:false },
+  { kw:['仰卧抬腿','leg raise'], primary:['abs','hip-flexors'], synergist:[], pattern:'core', is_compound:false },
+  { kw:['卷腹','crunch'], primary:['abs'], synergist:['obliques'], pattern:'core', is_compound:false },
+  { kw:['仰卧起坐','sit up'], primary:['abs','hip-flexors'], synergist:[], pattern:'core', is_compound:false },
+  { kw:['russian twist','俄罗斯转体'], primary:['obliques','abs'], synergist:[], pattern:'core', is_compound:false },
+  { kw:['帕罗夫','pallof','抗旋转'], primary:['obliques','abs'], synergist:[], pattern:'core', is_compound:false },
+  { kw:['ab wheel','ab roll','腹轮'], primary:['abs'], synergist:['back-lat','obliques'], pattern:'core', is_compound:false },
+  { kw:['side plank','侧平板'], primary:['obliques','abs'], synergist:['glute-med'], pattern:'core', is_compound:false },
+  { kw:['dead bug','死虫'], primary:['abs','obliques'], synergist:[], pattern:'core', is_compound:false },
+  { kw:['bird dog','鸟狗'], primary:['core','erector'], synergist:['glutes','delt-rear'], pattern:'core', is_compound:false },
+  // --- 髋外展 / 髋内收 ---
+  { kw:['髋外展','hip abduction','蚌式','clamshell'], primary:['glute-med','abductors'], synergist:[], pattern:'isolation', is_compound:false },
+  { kw:['髋内收','hip adduction'], primary:['adductors'], synergist:[], pattern:'isolation', is_compound:false },
+  // --- 负重行走 ---
+  { kw:['农夫','farmer','carry'], primary:['forearms','core'], synergist:['back-trap','glutes'], pattern:'carry', is_compound:true },
+];
 
 /* ---------- 课型分化模板 ----------
  * 每种分化定义：每周几次、有几个 session、每个 session 的肌群覆盖目标
@@ -1068,10 +1241,126 @@ function computeStartLoad(exerciseId, gender, expLevel, bodyWeightKg) {
   return { display: '按 RIR 3-4 自己摸索', type: 'unknown' };
 }
 
+/* ============================================================
+ * 规则引擎 · 根据动作名识别动作元数据
+ *
+ * 流程：
+ *  1) 模糊匹配内置 EXERCISES（精确 / 包含 / 别名）→ 找到就返回内置定义
+ *  2) 关键词字典命中 EXERCISE_KEYWORDS → 推断 primary/synergist/pattern/is_compound
+ *  3) 都没命中 → 返回 null，调用方走 AI 或手动 fallback
+ * ============================================================ */
+function identifyExerciseByRule(rawName) {
+  if (!rawName) return null;
+  const name = rawName.trim().toLowerCase();
+
+  // ① 内置 EXERCISES 精确匹配（按中文名 .name 或 id）
+  for (const id in EXERCISES) {
+    const ex = EXERCISES[id];
+    if (id === name || ex.name === rawName.trim() || ex.name.toLowerCase() === name) {
+      return {
+        source: 'builtin-exact',
+        builtin_id: id,
+        name: ex.name,
+        primary: ex.primary.slice(),
+        synergist: (ex.synergist||[]).slice(),
+        pattern: ex.pattern,
+        is_compound: ex.is_compound,
+        confidence: 100,
+      };
+    }
+  }
+
+  // ② 内置 EXERCISES 模糊匹配（用户输入是已有动作名的子串，或反向）
+  let best = null;
+  for (const id in EXERCISES) {
+    const ex = EXERCISES[id];
+    const exNameLow = ex.name.toLowerCase();
+    if (exNameLow.includes(name) || name.includes(exNameLow)) {
+      const score = Math.min(name.length, exNameLow.length) / Math.max(name.length, exNameLow.length);
+      if (!best || score > best.score) {
+        best = { id, ex, score };
+      }
+    }
+  }
+  if (best && best.score >= 0.4) {
+    return {
+      source: 'builtin-fuzzy',
+      builtin_id: best.id,
+      name: best.ex.name,
+      primary: best.ex.primary.slice(),
+      synergist: (best.ex.synergist||[]).slice(),
+      pattern: best.ex.pattern,
+      is_compound: best.ex.is_compound,
+      confidence: Math.round(best.score * 80) + 10, // 10-90
+    };
+  }
+
+  // ③ 关键词字典命中（按字典顺序，第一个匹配的关键词为准 —— 字典已按"特殊→通用"排）
+  for (const rule of EXERCISE_KEYWORDS) {
+    for (const kw of rule.kw) {
+      if (name.includes(kw.toLowerCase()) || rawName.includes(kw)) {
+        return {
+          source: 'keyword',
+          builtin_id: null,
+          name: rawName.trim(),
+          primary: rule.primary.slice(),
+          synergist: (rule.synergist||[]).slice(),
+          pattern: rule.pattern,
+          is_compound: rule.is_compound,
+          confidence: 60,
+          matched_keyword: kw,
+        };
+      }
+    }
+  }
+
+  // 都没命中
+  return null;
+}
+
+/* ============================================================
+ * 搜索内置 + 自定义动作库（用户输入时实时显示匹配项）
+ * 输入：name（用户当前输入的字符串），customs（state.custom_exercises 数组）
+ * 输出：[{id, name, source: 'builtin'|'custom', primary, is_compound}]
+ * ============================================================ */
+function searchExerciseLibrary(query, customs) {
+  customs = customs || [];
+  const q = (query || '').trim().toLowerCase();
+  if (!q) {
+    // 空查询：返回前 20 个常见动作 + 所有自定义
+    const popular = ['barbell-back-squat','barbell-deadlift','barbell-bench-press','barbell-overhead-press',
+                     'barbell-row','pull-up','dumbbell-bicep-curl','tricep-pushdown','plank','barbell-hip-thrust',
+                     'incline-dumbbell-press','dumbbell-shoulder-press','dumbbell-row','lat-pulldown',
+                     'dumbbell-lateral-raise','barbell-curl','seated-leg-curl','leg-press','standing-calf-raise','barbell-rdl'];
+    const results = [];
+    customs.forEach(c => results.push({ id:c.id, name:c.name, source:'custom', primary:c.primary||[], is_compound:!!c.is_compound, pattern:c.pattern }));
+    popular.forEach(id => { if (EXERCISES[id]) results.push({ id, name:EXERCISES[id].name, source:'builtin', primary:EXERCISES[id].primary, is_compound:EXERCISES[id].is_compound, pattern:EXERCISES[id].pattern }); });
+    return results.slice(0, 30);
+  }
+
+  const results = [];
+  // 自定义动作优先
+  customs.forEach(c => {
+    if (c.name.toLowerCase().includes(q)) {
+      results.push({ id:c.id, name:c.name, source:'custom', primary:c.primary||[], is_compound:!!c.is_compound, pattern:c.pattern });
+    }
+  });
+  // 内置匹配
+  for (const id in EXERCISES) {
+    const ex = EXERCISES[id];
+    if (ex.name.toLowerCase().includes(q) || id.toLowerCase().includes(q)) {
+      results.push({ id, name:ex.name, source:'builtin', primary:ex.primary, is_compound:ex.is_compound, pattern:ex.pattern });
+    }
+  }
+  return results.slice(0, 30);
+}
+
 // 浏览器全局 + Node.js module export 兼容
 if (typeof window !== 'undefined') {
-  window.FITLAB_DATA = { EXERCISES, SPLITS, MESOCYCLES, STARTING_LOADS, computeStartLoad };
+  window.FITLAB_DATA = { EXERCISES, SPLITS, MESOCYCLES, STARTING_LOADS, EXERCISE_KEYWORDS,
+                        computeStartLoad, identifyExerciseByRule, searchExerciseLibrary };
 }
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { EXERCISES, SPLITS, MESOCYCLES, STARTING_LOADS, computeStartLoad };
+  module.exports = { EXERCISES, SPLITS, MESOCYCLES, STARTING_LOADS, EXERCISE_KEYWORDS,
+                     computeStartLoad, identifyExerciseByRule, searchExerciseLibrary };
 }
